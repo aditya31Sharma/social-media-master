@@ -544,34 +544,130 @@ select.input { appearance: none; padding-right: 30px;
 .note--err  { color: var(--danger-ink); }
 .note--ok   { color: var(--ok); }
 
+/* ── Switch ───────────────────────────────────────────────────── */
+
+/* The lock. A switch rather than a checkbox because it turns a mode on, and
+   because it has to read as a deliberate act from across a phone screen. */
+.switch { display: inline-flex; align-items: center; gap: 9px; flex: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
+.switch input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+.switch__track {
+  width: 44px; height: 26px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  transition: background .18s var(--ease), border-color .18s var(--ease);
+}
+
+.switch__knob {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--sh-1);
+  transition: transform .18s var(--ease);
+}
+
+.switch input:checked + .switch__track { background: var(--accent); border-color: var(--accent); }
+.switch input:checked + .switch__track .switch__knob { transform: translateX(18px); }
+.switch input:focus-visible + .switch__track { outline: 2px solid var(--accent); outline-offset: 2px; }
+.switch__text { font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+
+/* ── Round icon button ────────────────────────────────────────── */
+
+.round {
+  width: 40px; height: 40px;
+  flex: none;
+  display: grid; place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .16s var(--ease), opacity .16s var(--ease);
+}
+
+.round:hover:not(:disabled) { background: var(--surface-2); }
+.round:disabled { opacity: .35; cursor: not-allowed; }
+.round svg { width: 16px; height: 16px; }
+
+.flag {
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: var(--accent-sub);
+  color: var(--danger-ink);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
 /* ── Stage ────────────────────────────────────────────────────── */
 
 .stagehead { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .stagehead__actions { display: flex; gap: 8px; }
 
-.grid {
+/* On a phone this is the way a carousel is actually reviewed: one slide at a
+   time, swiped through, the next one peeking. On a wide screen the whole set at
+   once is more useful, so the same element becomes a grid. */
+.track {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 14px;
+  grid-auto-flow: column;
+  grid-auto-columns: 76%;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  margin-inline: calc(var(--pad) * -1);
+  padding-inline: var(--pad);
+  scrollbar-width: none;
 }
 
-@media (min-width: 1200px) { .grid { grid-template-columns: repeat(6, 1fr); } }
+.track::-webkit-scrollbar { display: none; }
+.track > .tile { scroll-snap-align: center; }
+.track:has(.empty) { display: block; margin-inline: 0; padding-inline: 0; }
+
+@media (min-width: 940px) {
+  .track {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    overflow: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}
+
+@media (min-width: 1200px) { .track { grid-template-columns: repeat(6, 1fr); } }
+
+.dots { display: flex; justify-content: center; gap: 6px; padding-top: 2px; }
+
+.dots i {
+  width: 6px; height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--line);
+  transition: width .2s var(--ease), background .2s var(--ease);
+}
+
+.dots i.is-on { width: 18px; background: var(--ink); }
+
+@media (min-width: 940px) { .dots { display: none; } }
 
 /* An empty state that says what the tool does, not that nothing is here. */
 .empty {
-  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 64px 20px;
+  padding: 56px 20px;
   border: 1px dashed var(--line);
   border-radius: var(--r-card);
   text-align: center;
 }
 
 .empty strong { font-weight: 500; font-size: 15px; color: var(--ink); }
-.empty span { font-size: 13px; color: var(--ink-3); max-width: 42ch; }
+.empty span { font-size: 13px; color: var(--ink-3); max-width: 46ch; line-height: 1.5; }
 
 .tile { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 
@@ -582,7 +678,7 @@ select.input { appearance: none; padding-right: 30px;
   overflow: hidden;
   background: var(--surface-3);
   border: 1px solid var(--line-2);
-  cursor: zoom-in;
+  cursor: pointer;
 }
 
 .tile__frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -608,8 +704,9 @@ select.input { appearance: none; padding-right: 30px;
   font-variant-numeric: tabular-nums;
 }
 
-/* The zoom affordance has to be visible on touch, where there is no hover. */
-.tile__zoom {
+/* Visible without hover, because on the surface this matters most there is no
+   hover to reveal it. */
+.tile__open {
   position: absolute;
   right: 8px; bottom: 8px;
   width: 30px; height: 30px;
@@ -617,88 +714,122 @@ select.input { appearance: none; padding-right: 30px;
   border: 0; border-radius: 50%;
   background: rgba(11, 11, 12, 0.62);
   color: #fff;
-  cursor: zoom-in;
-  opacity: 1;
-  transition: background .16s var(--ease);
-}
-
-.tile__zoom svg { width: 15px; height: 15px; }
-.tile__zoom:hover { background: rgba(11, 11, 12, 0.85); }
-
-.tile__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.tile__name { font-size: 11px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-/* ── Viewer ───────────────────────────────────────────────────── */
-
-.viewer {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-modal);
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  background: rgba(240, 241, 243, 0.94);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-.viewer__bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: max(12px, env(safe-area-inset-top)) var(--pad) 12px;
-}
-
-.viewer__meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.viewer__title { font-size: 13px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.viewer__sub { font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
-.viewer__tools { display: flex; gap: 8px; align-items: center; }
-
-.viewer__stage {
-  position: relative;
-  overflow: hidden;
-  touch-action: none;
-  cursor: zoom-in;
-  display: grid;
-  place-items: center;
-}
-
-.viewer__stage.can-pan { cursor: grab; }
-.viewer__stage.is-pan  { cursor: grabbing; }
-
-.viewer__stage img {
-  transform-origin: 0 0;
-  will-change: transform;
-  user-select: none;
-  -webkit-user-select: none;
-  box-shadow: var(--sh-2);
-  background: var(--surface);
-}
-
-.viewer__foot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px var(--pad) max(14px, env(safe-area-inset-bottom));
-}
-
-.viewer__nav {
-  width: 40px; height: 40px;
-  display: grid; place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--ink);
   cursor: pointer;
   transition: background .16s var(--ease);
 }
 
-.viewer__nav:hover:not(:disabled) { background: var(--surface-2); }
-.viewer__nav:disabled { opacity: .35; cursor: not-allowed; }
-.viewer__nav svg { width: 16px; height: 16px; }
+.tile__open svg { width: 15px; height: 15px; }
+.tile__open:hover { background: rgba(11, 11, 12, 0.88); }
 
-.viewer__count { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; min-width: 6ch; text-align: center; }
+.tile__flag {
+  position: absolute;
+  top: 8px; right: 8px;
+  padding: 3px 8px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 10px;
+  letter-spacing: .02em;
+}
+
+.tile__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tile__name { font-size: 11px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── Editor ───────────────────────────────────────────────────── */
+
+.editor {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: rgba(240, 241, 243, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.editor__bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: max(12px, env(safe-area-inset-top)) var(--pad) 12px;
+}
+
+.editor__meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+.editor__titlerow { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.editor__title { font-size: 13px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.editor__sub { font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.editor__stage {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 2px var(--pad);
+  touch-action: none;
+  container-type: size;
+}
+
+.editor__stage.can-pan { cursor: grab; }
+.editor__stage.is-pan  { cursor: grabbing; }
+
+/* Height-led, so the slide is as big as the stage allows, but never wider than
+   it. `75cqh` is the width at which a 3:4 box is exactly the container's
+   height; min() picks whichever constraint bites first. */
+.editor__slide {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  width: min(100%, 75cqh);
+  border-radius: var(--r-ctl);
+  overflow: hidden;
+  box-shadow: var(--sh-2);
+  background: var(--surface);
+  will-change: transform;
+}
+
+.editor__slide canvas { display: block; width: 100%; height: 100%; }
+
+.editor.is-editing .editor__slide { cursor: grab; touch-action: none; }
+.editor.is-editing .editor__slide.is-drag { cursor: grabbing; }
+.editor.is-editing .editor__slide.is-drag .crop__thirds { opacity: 1; }
+
+.editor__busy {
+  position: absolute;
+  inset: auto 0 12px 0;
+  text-align: center;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.editor__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px var(--pad) max(12px, env(safe-area-inset-bottom));
+}
+
+.editor__zoomrow { display: flex; align-items: center; gap: 12px; }
+.editor__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.editor__nav { display: flex; align-items: center; gap: 10px; }
+.editor__count { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; min-width: 6ch; text-align: center; }
+.editor__actions { display: flex; align-items: center; gap: 8px; }
+
+/* A phone cannot hold the toggle, the title and the close on one line, nor the
+   nav and three actions. Rather than let either row scroll - a clipped primary
+   action is worse than a shorter slide - each wraps to its own line. */
+@media (max-width: 560px) {
+  .editor__bar { flex-wrap: wrap; row-gap: 10px; }
+  .editor__meta { order: 1; }
+  .editor__bar .round { order: 2; }
+  .switch { order: 3; flex: 1 0 100%; }
+
+  .editor__row { flex-direction: column; align-items: stretch; gap: 10px; }
+  .editor__nav { justify-content: center; }
+  .editor__actions { justify-content: center; flex-wrap: wrap; }
+  .editor__actions .btn { padding: 11px 15px; }
+  .editor__zoomrow { gap: 9px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

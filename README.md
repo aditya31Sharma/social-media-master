@@ -24,10 +24,29 @@ what lets it sit on GitHub Pages.
    `shop.tenzen.in/products/...`), or type the six-character SKU code.
    The heading, subheading, SKU and order are filled in and stay editable.
 3. **Output.** Choose a width (1080 / 1620 / 3000) and a format, then Build.
-4. **Look.** Any slide opens full screen: wheel, pinch or double-tap to zoom to
-   6x, drag to pan, arrow keys to step through the set. The copy is set at 100px
-   in a 3000px frame, so a 190px tile is not enough to judge it by.
-5. **Save.** Each tile saves on its own, or *Save all* writes them one by one.
+4. **Review and edit.** On a phone the draft is a run of slides you swipe
+   through, one at a time, with dots underneath; on a wide screen it is a grid.
+   Tap any slide to open it full screen.
+
+   Every slide starts **locked**. Locked, the gestures inspect: pinch, wheel or
+   double-tap to zoom to 6x, drag to pan, swipe or the arrows to move through
+   the set. Turn on **Allow changes** and the same gestures reframe the
+   photograph inside that slide, with the same snapping the cover has. Nothing
+   can be changed by accident.
+
+   Most product shots are 2:3 and sit in a 2:3 box, so at 100% they fill it
+   exactly and there is nowhere to drag to. The editor says so; zoom in first.
+
+5. **Save into the draft.** *Save image* does not write to the device. It
+   re-renders that slide at export size and makes it the draft's current version
+   of it, which is what the tile shows. Edit several slides and *Save all*
+   commits them together. A slide that has been changed but not saved is flagged
+   both in the editor and on its tile.
+
+6. **Download.** Separately, and only when you want the files: each tile has its
+   own Download, *Download all* writes them one by one, and on a phone *Share*
+   hands the whole set to the share sheet so they land in Photos together.
+   Always separate images, never a zip.
    On a phone *Share* hands the whole set to the share sheet, so they land in
    Photos together. Always separate images, never a zip.
 
@@ -72,8 +91,10 @@ at *Oversized Hoodie*. Both fields are editable before you build.
 | `lib/shopify.js` | catalogue, product, carousel orders, image fallbacks |
 | `lib/cutout.js` | the matting model and its IndexedDB cache |
 | `lib/render.js` | the slides, drawn in Figma's 3000x4000 space |
-| `lib/cropper.js` | the 3:4 cover editor and its snapping |
-| `lib/viewer.js` | the full-screen zoom |
+| `lib/frame.js` | where a photo sits in a frame: clamping, snapping, zoom |
+| `lib/framer.js` | the gestures that move it - drag, pinch, wheel, keys |
+| `lib/cropper.js` | the inline 3:4 cover editor |
+| `lib/editor.js` | the full-screen slide surface, locked and unlocked |
 | `coi-serviceworker.js` | adds COOP/COEP so WebAssembly gets threads |
 | `assets/logo.svg` | the wordmark, drawn with `currentColor` so it recolours |
 
@@ -113,9 +134,15 @@ python3 -m http.server 8801
 
 - The slide copy is set in Helvetica Neue, which is present on Apple devices and
   not on most others. Elsewhere it falls back to Arial and the tool says so.
-- The cover crop is held as three resolution-independent numbers (scale, and the
-  photo's centre offset as a fraction of the frame), so what you frame at 340px
-  on screen is what gets drawn at 3000px. There is no second code path.
+- A crop is three resolution-independent numbers: scale as a multiple of "just
+  covers the frame", and the photo's centre offset as a fraction of the frame.
+  The same three describe it at 340px in the rail, at 1000px in the editor's
+  live preview and at 3000px on export, so the preview can be trusted as the
+  thing that will be saved. Scale has a floor of 1, which is why a gap is not
+  something you can produce.
+- The editor's preview redraws on every pointer move. That is affordable only
+  because decoded photos and computed mattes are held in memory, so a redraw is
+  a few drawImage calls rather than a fetch and a decode.
 - PNG is the default for fidelity, which makes a photographic cover slide large.
   Switch to JPEG when the file size matters more than the last bit of gradient.
 - The static outro slide is not generated here, by design.

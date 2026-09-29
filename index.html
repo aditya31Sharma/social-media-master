@@ -20,8 +20,8 @@
     <g id="i-upload" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 16V4M12 4 7.5 8.5M12 4l4.5 4.5M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16"/>
     </g>
-    <g id="i-zoom" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6M10.5 8v5M8 10.5h5"/>
+    <g id="i-edit" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 20h4l10-10a2.1 2.1 0 0 0-3-3L5 17v3Z"/>
     </g>
     <g id="i-close" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
       <path d="m6 6 12 12M18 6 6 18"/>
@@ -31,9 +31,6 @@
     </g>
     <g id="i-right" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
       <path d="m9.5 5 7 7-7 7"/>
-    </g>
-    <g id="i-down" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 4v12M7.5 11.5 12 16l4.5-4.5M4 20h16"/>
     </g>
   </defs>
 </svg>
@@ -77,12 +74,12 @@
           <span class="crop__thirds" aria-hidden="true"></span>
           <span class="crop__logo" id="cropLogo" aria-hidden="true"></span>
           <span class="crop__guides" aria-hidden="true">
-            <i class="crop__guide" data-axis="v" data-guide="vl"></i>
+            <i class="crop__guide" data-axis="v" data-guide="vs"></i>
             <i class="crop__guide" data-axis="v" data-guide="vc"></i>
-            <i class="crop__guide" data-axis="v" data-guide="vr"></i>
-            <i class="crop__guide" data-axis="h" data-guide="ht"></i>
+            <i class="crop__guide" data-axis="v" data-guide="ve"></i>
+            <i class="crop__guide" data-axis="h" data-guide="hs"></i>
             <i class="crop__guide" data-axis="h" data-guide="hc"></i>
-            <i class="crop__guide" data-axis="h" data-guide="hb"></i>
+            <i class="crop__guide" data-axis="h" data-guide="he"></i>
           </span>
         </div>
 
@@ -174,23 +171,26 @@
     <p class="note note--status" id="status" role="status" aria-live="polite"></p>
   </div>
 
-  <!-- ── Preview ──────────────────────────────────────────────── -->
+  <!-- ── Draft ────────────────────────────────────────────────── -->
   <div class="stage">
     <div class="stagehead">
-      <h2 class="sec__title">Preview</h2>
+      <h2 class="sec__title">Draft</h2>
       <div class="stagehead__actions">
         <button type="button" class="btn btn--quiet" id="btnShare" hidden>Share</button>
-        <button type="button" class="btn" id="btnSaveAll" hidden>Save all</button>
+        <button type="button" class="btn" id="btnDownloadAll" hidden>Download all</button>
       </div>
     </div>
-    <div class="grid" id="grid">
+
+    <!-- A grid on a big screen, a swipeable run of slides on a phone. -->
+    <div class="track" id="grid">
       <div class="empty">
         <strong>Six slides, ready to post</strong>
         <span>Frame a cover shot and pick a product. You get the cover with the
               wordmark on it, then the five product slides in that SKU's order,
-              backgrounds cut out.</span>
+              backgrounds cut out. Tap any slide to look closely or reframe it.</span>
       </div>
     </div>
+    <div class="dots" id="dots" hidden aria-hidden="true"></div>
   </div>
 
 </main>
@@ -198,36 +198,74 @@
 <!-- Outside the rail on purpose: the rail scrolls and clips its children. -->
 <ul class="combo__list" id="prodList" role="listbox" aria-label="Products" hidden></ul>
 
-<!-- ── Viewer ─────────────────────────────────────────────────── -->
-<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Slide viewer" hidden>
-  <div class="viewer__bar">
-    <span class="viewer__meta">
-      <span class="viewer__title" data-v-title></span>
-      <span class="viewer__sub" data-v-sub></span>
+<!-- ── Editor ─────────────────────────────────────────────────── -->
+<div class="editor" id="editor" role="dialog" aria-modal="true" aria-label="Slide editor" hidden>
+
+  <header class="editor__bar">
+    <span class="editor__meta">
+      <span class="editor__titlerow">
+        <span class="editor__title" data-e-title></span>
+        <span class="flag" data-e-dirty hidden>Unsaved</span>
+      </span>
+      <span class="editor__sub" data-e-sub></span>
     </span>
-    <span class="viewer__tools">
-      <span class="viewer__sub" data-v-zoom>100%</span>
-      <button type="button" class="btn btn--quiet btn--tiny" data-v-fit>Zoom</button>
-      <button type="button" class="btn btn--quiet btn--tiny" data-v-save>Save</button>
-      <button type="button" class="viewer__nav" data-v-close aria-label="Close">
-        <svg viewBox="0 0 24 24"><use href="#i-close"/></svg>
-      </button>
-    </span>
+
+    <label class="switch" title="Locked until you turn this on">
+      <input type="checkbox" data-e-lock>
+      <span class="switch__track" aria-hidden="true"><span class="switch__knob"></span></span>
+      <span class="switch__text">Allow changes</span>
+    </label>
+
+    <button type="button" class="round" data-e-close aria-label="Close">
+      <svg viewBox="0 0 24 24"><use href="#i-close"/></svg>
+    </button>
+  </header>
+
+  <div class="editor__stage" data-e-stage>
+    <div class="editor__slide" data-e-slide role="application"
+         aria-label="Slide framing. Drag to move, pinch or scroll to zoom, arrow keys to nudge.">
+      <canvas data-e-canvas width="1000" height="1333"></canvas>
+      <span class="crop__thirds" aria-hidden="true"></span>
+      <span class="crop__guides" aria-hidden="true">
+        <i class="crop__guide" data-axis="v" data-e-guide="vs"></i>
+        <i class="crop__guide" data-axis="v" data-e-guide="vc"></i>
+        <i class="crop__guide" data-axis="v" data-e-guide="ve"></i>
+        <i class="crop__guide" data-axis="h" data-e-guide="hs"></i>
+        <i class="crop__guide" data-axis="h" data-e-guide="hc"></i>
+        <i class="crop__guide" data-axis="h" data-e-guide="he"></i>
+      </span>
+      <span class="editor__busy" data-e-busy hidden>Rendering&hellip;</span>
+    </div>
   </div>
 
-  <div class="viewer__stage" data-v-stage>
-    <img data-v-img alt="">
-  </div>
+  <footer class="editor__foot">
+    <div class="editor__zoomrow" data-e-zoomrow hidden>
+      <span class="row__label">Size</span>
+      <input type="range" data-e-zoom min="1" max="5" step="0.01" value="1" aria-label="Slide zoom">
+      <output data-e-zoomout>100%</output>
+      <button type="button" class="btn btn--quiet btn--tiny" data-e-recentre>Recentre</button>
+    </div>
+    <p class="note" data-e-hint hidden>This photo already fills the frame exactly. Zoom in to reposition it.</p>
 
-  <div class="viewer__foot">
-    <button type="button" class="viewer__nav" data-v-prev aria-label="Previous slide">
-      <svg viewBox="0 0 24 24"><use href="#i-left"/></svg>
-    </button>
-    <span class="viewer__count" data-v-count></span>
-    <button type="button" class="viewer__nav" data-v-next aria-label="Next slide">
-      <svg viewBox="0 0 24 24"><use href="#i-right"/></svg>
-    </button>
-  </div>
+    <div class="editor__row">
+      <span class="editor__nav">
+        <button type="button" class="round" data-e-prev aria-label="Previous slide">
+          <svg viewBox="0 0 24 24"><use href="#i-left"/></svg>
+        </button>
+        <span class="editor__count" data-e-count></span>
+        <button type="button" class="round" data-e-next aria-label="Next slide">
+          <svg viewBox="0 0 24 24"><use href="#i-right"/></svg>
+        </button>
+      </span>
+
+      <span class="editor__actions">
+        <span data-e-viewtools><span class="editor__sub" data-e-viewzoom>100%</span></span>
+        <button type="button" class="btn btn--quiet" data-e-download>Download</button>
+        <button type="button" class="btn" data-e-save disabled>Save image</button>
+        <button type="button" class="btn btn--primary" data-e-saveall hidden>Save all</button>
+      </span>
+    </div>
+  </footer>
 </div>
 
 <script type="module" src="app.js"></script>
