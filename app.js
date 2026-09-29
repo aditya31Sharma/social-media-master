@@ -1,5 +1,5 @@
-/* Carousel Studio - build a Tenzen Instagram carousel from one cover shot and
-   one product link.
+/* Social Media Master - build a Tenzen Instagram carousel from one cover shot
+   and one product link.
 
    Everything runs in the browser. There is no server, because there is nothing
    here a server would be needed for: the catalogue comes from Shopify's

@@ -1,4 +1,4 @@
-# Carousel Studio
+# Social Media Master
 
 Builds a Tenzen Instagram carousel from one cover shot and one product link.
 
