@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d0d0f">
+<title>Carousel Studio</title>
+<meta name="description" content="Build a Tenzen Instagram carousel from a cover shot and a product link.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>&#9635;</text></svg>">
+<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="app.css">
+<script src="coi-serviceworker.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand__mark" id="brandMark"></span>
+    <span class="brand__name">Carousel Studio</span>
+  </div>
+  <button type="button" class="ghost" id="btnReset">Reset</button>
+</header>
+
+<main class="shell">
+
+  <!-- ── Controls ───────────────────────────────────────────────── -->
+  <section class="panel" aria-label="Controls">
+
+    <!-- Step 1: cover -->
+    <div class="step">
+      <h2 class="step__title"><span class="step__n">1</span> Cover shot</h2>
+      <label class="drop" id="drop" tabindex="0">
+        <input type="file" id="coverFile" accept="image/*" hidden>
+        <span class="drop__inner" id="dropInner">
+          <span class="drop__icon" aria-hidden="true">&#8593;</span>
+          <span class="drop__text">Tap to choose, or drop an image</span>
+          <span class="drop__hint">This becomes slide 1. The logo goes on top.</span>
+        </span>
+        <img id="coverThumb" alt="" hidden>
+      </label>
+
+      <div class="field">
+        <span class="field__label">Logo colour</span>
+        <div class="seg" role="radiogroup" aria-label="Logo colour">
+          <button type="button" class="seg__btn is-on" data-logo="#ffffff" role="radio" aria-checked="true">White</button>
+          <button type="button" class="seg__btn" data-logo="#000000" role="radio" aria-checked="false">Black</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: product -->
+    <div class="step">
+      <h2 class="step__title"><span class="step__n">2</span> Product</h2>
+      <div class="combo">
+        <input type="search" id="prodInput" class="input" autocomplete="off" spellcheck="false"
+               placeholder="Search a product, paste a link, or type a SKU code"
+               aria-label="Product" aria-expanded="false" aria-controls="prodList" role="combobox">
+        <ul class="combo__list" id="prodList" role="listbox" hidden></ul>
+      </div>
+      <p class="note" id="prodNote">Loading catalogue&hellip;</p>
+
+      <div id="prodCard" class="pcard" hidden>
+        <div class="pcard__row"><span>Heading</span>
+          <input type="text" id="fHeading" class="input input--sm"></div>
+        <div class="pcard__row"><span>Subheading</span>
+          <input type="text" id="fSub" class="input input--sm"></div>
+        <div class="pcard__row"><span>SKU code</span>
+          <input type="text" id="fSku" class="input input--sm"></div>
+        <div class="pcard__row"><span>Order</span>
+          <select id="fOrder" class="input input--sm">
+            <option value="man-front">Man front</option>
+            <option value="man-back">Man back</option>
+            <option value="woman-front">Woman front</option>
+            <option value="woman-back">Woman back</option>
+          </select></div>
+      </div>
+    </div>
+
+    <!-- Step 3: options -->
+    <div class="step">
+      <h2 class="step__title"><span class="step__n">3</span> Output</h2>
+
+      <div class="field">
+        <span class="field__label">Size</span>
+        <div class="seg" role="radiogroup" aria-label="Export size">
+          <button type="button" class="seg__btn" data-size="1080" role="radio" aria-checked="false">1080</button>
+          <button type="button" class="seg__btn is-on" data-size="1620" role="radio" aria-checked="true">1620</button>
+          <button type="button" class="seg__btn" data-size="3000" role="radio" aria-checked="false">3000</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field__label">Format</span>
+        <div class="seg" role="radiogroup" aria-label="Export format">
+          <button type="button" class="seg__btn is-on" data-fmt="png" role="radio" aria-checked="true">PNG</button>
+          <button type="button" class="seg__btn" data-fmt="jpeg" role="radio" aria-checked="false">JPEG</button>
+        </div>
+      </div>
+
+      <label class="check">
+        <input type="checkbox" id="optCut" checked>
+        <span>Cut out backgrounds<em>Slides 2, 3, 5 and 6. The close-up stays full bleed.</em></span>
+      </label>
+
+      <p class="note" id="engineNote"></p>
+    </div>
+
+    <button type="button" class="cta" id="btnBuild" disabled>Build carousel</button>
+    <p class="note note--status" id="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <!-- ── Preview ────────────────────────────────────────────────── -->
+  <section class="panel panel--out" aria-label="Preview">
+    <div class="outhead">
+      <h2 class="step__title">Preview</h2>
+      <div class="outhead__actions">
+        <button type="button" class="ghost" id="btnShare" hidden>Share</button>
+        <button type="button" class="cta cta--sm" id="btnSaveAll" hidden>Save all</button>
+      </div>
+    </div>
+    <div class="grid" id="grid">
+      <p class="empty">Your slides will appear here.</p>
+    </div>
+  </section>
+
+</main>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button type="button" class="lightbox__close" id="lbClose" aria-label="Close">&times;</button>
+  <img id="lbImg" alt="">
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
