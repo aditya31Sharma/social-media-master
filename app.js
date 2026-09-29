@@ -12,7 +12,7 @@
 
 import { ORDERS, KINDS, loadCatalogue, readProduct, pickImage } from './lib/shopify.js';
 import { warm } from './lib/cutout.js';
-import { renderToFile } from './lib/render.js';
+import { renderToFile, defaultAdjust } from './lib/render.js';
 import { IDENTITY } from './lib/frame.js';
 import { createCropper } from './lib/cropper.js';
 import { createEditor } from './lib/editor.js';
@@ -215,13 +215,14 @@ async function build() {
     if (!hit) return;
     used.add(hit.name);
     if (hit.name !== want) swapped.push(`${want} -> ${hit.name}`);
+    const start = defaultAdjust(KINDS[i], hit.width, hit.height);
     slides.push({
       kind: KINDS[i],
       name: hit.name,
       url: hit.url,
       natural: { w: hit.width, h: hit.height },
-      adjust: { ...IDENTITY },
-      committed: { ...IDENTITY },
+      adjust: { ...start },
+      committed: { ...start },
       editable: false,
       dirty: false,
     });

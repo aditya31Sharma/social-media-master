@@ -34,8 +34,12 @@ what lets it sit on GitHub Pages.
    photograph inside that slide, with the same snapping the cover has. Nothing
    can be changed by accident.
 
-   Most product shots are 2:3 and sit in a 2:3 box, so at 100% they fill it
-   exactly and there is nowhere to drag to. The editor says so; zoom in first.
+   Every slide frames against the whole 3:4, the cover included, so all six
+   move and zoom the same way. *Recentre* returns a slide to where it started:
+   full frame for the cover and the close-up, the board's inset placement (89%)
+   for the flats and the model shots. Those can go below 100%, because the
+   gradient is drawn behind them; the cover and the close-up cannot, because
+   there the photo is the background.
 
 5. **Save into the draft.** *Save image* does not write to the device. It
    re-renders that slide at export size and makes it the draft's current version
