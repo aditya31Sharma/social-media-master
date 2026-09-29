@@ -13,6 +13,7 @@ import { ORDERS, KINDS, loadCatalogue, readProduct, pickImage } from './lib/shop
 import { warm } from './lib/cutout.js';
 import { renderToFile, renderThumb, defaultAdjust } from './lib/render.js';
 import { createEditor } from './lib/editor.js';
+import { buildCaption, captionStats, copyText } from './lib/caption.js';
 
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -374,7 +375,16 @@ function renderCarousel(c) {
       </span>
     </header>
     <div class="track" data-track></div>
-    <div class="dots" data-dots aria-hidden="true"></div>`;
+    <div class="dots" data-dots aria-hidden="true"></div>
+    <div class="cap">
+      <textarea class="cap__text" data-cap rows="6" spellcheck="false"
+                aria-label="Caption for this post"></textarea>
+      <div class="cap__foot">
+        <span class="cap__count" data-capcount></span>
+        <button type="button" class="btn btn--quiet btn--tiny" data-act="capreset">Reset</button>
+        <button type="button" class="btn btn--tiny" data-act="capcopy">Copy caption</button>
+      </div>
+    </div>`;
 
   $('.cara__title', sec).textContent = c.product.title;
   $('.cara__n', sec).textContent = state.carousels.indexOf(c) + 1;
@@ -398,6 +408,35 @@ function renderCarousel(c) {
 
   const dots = $('[data-dots]', sec);
   for (let i = 0; i < c.slides.length; i++) dots.appendChild(document.createElement('i'));
+
+  /* The caption is generated from the product's own copy, then it is the
+     user's: edits stick to the carousel and Reset goes back to the draft. */
+  const cap = $('[data-cap]', sec);
+  c.caption = c.caption ?? buildCaption(c.product);
+  cap.value = c.caption;
+  const tally = () => {
+    const { chars, overLimit } = captionStats(cap.value);
+    const el = $('[data-capcount]', sec);
+    el.textContent = `${chars} characters${overLimit ? ' — over Instagram\u2019s 2,200 limit' : ''}`;
+    el.classList.toggle('is-over', overLimit);
+  };
+  cap.addEventListener('input', () => { c.caption = cap.value; tally(); });
+  tally();
+
+  const copyBtn = $('[data-act="capcopy"]', sec);
+  copyBtn.addEventListener('click', async () => {
+    /* Held in a variable, not read off the event: `currentTarget` is null by
+       the time an async handler resumes after its first await. */
+    const ok = await copyText(cap.value);
+    copyBtn.textContent = ok ? 'Copied' : 'Press Cmd-C';
+    copyBtn.classList.toggle('is-done', ok);
+    setTimeout(() => { copyBtn.textContent = 'Copy caption'; copyBtn.classList.remove('is-done'); }, 1600);
+  });
+  $('[data-act="capreset"]', sec).addEventListener('click', () => {
+    c.caption = buildCaption(c.product);
+    cap.value = c.caption;
+    tally();
+  });
 
   track.addEventListener('scroll', () => syncDots(c), { passive: true });
   $('[data-act="cdl"]', sec).addEventListener('click', () => downloadCarousel(c));

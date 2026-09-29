@@ -629,6 +629,37 @@ select.input {
 .tile__foot { display: flex; align-items: center; gap: 4px; padding-inline: 2px; }
 .tile__foot .btn { flex: 1; justify-content: flex-start; padding-inline: 8px; }
 
+/* ── Caption ──────────────────────────────────────────────────── */
+
+/* Generated from the product's own copy and then handed over: it is a text
+   field, not a read-only block, because the last edit before a post goes up is
+   always the caption. */
+.cap { display: flex; flex-direction: column; gap: 7px; margin-top: 4px; }
+
+.cap__text {
+  width: 100%;
+  min-height: 108px;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.55;
+  resize: vertical;
+  outline: none;
+  transition: border-color var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+}
+
+.cap__text:hover { border-color: rgba(16, 17, 19, 0.18); }
+.cap__text:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(16, 17, 19, 0.07); }
+
+.cap__foot { display: flex; align-items: center; gap: 8px; }
+.cap__count { flex: 1; min-width: 0; font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.cap__count.is-over { color: var(--danger-ink); }
+.cap__foot .is-done { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+
 /* ── Editor ───────────────────────────────────────────────────── */
 
 .editor {
