@@ -12,13 +12,22 @@ what lets it sit on GitHub Pages.
 
 ## Using it
 
-1. **Cover shot.** Tap the box, drop a file on it, or paste an image. Pick the
-   wordmark in white or black.
+1. **Cover shot.** Tap the box, drop a file on it, or paste an image - any size
+   or shape. It opens in a fixed 3:4 frame you drag the photo around inside.
+   Scroll, pinch or use the Size slider to scale it; arrow keys nudge, shift for
+   bigger steps. It clicks into place at the centre on both axes and against
+   each of the four edges, and a red guide shows which alignment caught. The
+   photo can never be pulled far enough to leave a gap. The wordmark is drawn in
+   the frame so you can frame around it; its size and position are fixed by the
+   layout, so the only choice is white or black.
 2. **Product.** Search by name, paste a product link (`tenzen.in/...`,
    `shop.tenzen.in/products/...`), or type the six-character SKU code.
    The heading, subheading, SKU and order are filled in and stay editable.
 3. **Output.** Choose a width (1080 / 1620 / 3000) and a format, then Build.
-4. **Save.** Each tile saves on its own, or *Save all* writes them one by one.
+4. **Look.** Any slide opens full screen: wheel, pinch or double-tap to zoom to
+   6x, drag to pan, arrow keys to step through the set. The copy is set at 100px
+   in a 3000px frame, so a 190px tile is not enough to judge it by.
+5. **Save.** Each tile saves on its own, or *Save all* writes them one by one.
    On a phone *Share* hands the whole set to the share sheet, so they land in
    Photos together. Always separate images, never a zip.
 
@@ -58,8 +67,13 @@ at *Oversized Hoodie*. Both fields are editable before you build.
 | Piece | What it does |
 |---|---|
 | `index.html` | markup |
-| `app.css` | the tool's chrome, one deliberate dark theme |
-| `app.js` | catalogue, cut-outs, slide rendering, saving |
+| `app.css` | the tool's chrome, built from the storefront's own parts |
+| `app.js` | wiring only |
+| `lib/shopify.js` | catalogue, product, carousel orders, image fallbacks |
+| `lib/cutout.js` | the matting model and its IndexedDB cache |
+| `lib/render.js` | the slides, drawn in Figma's 3000x4000 space |
+| `lib/cropper.js` | the 3:4 cover editor and its snapping |
+| `lib/viewer.js` | the full-screen zoom |
 | `coi-serviceworker.js` | adds COOP/COEP so WebAssembly gets threads |
 | `assets/logo.svg` | the wordmark, drawn with `currentColor` so it recolours |
 
@@ -99,6 +113,9 @@ python3 -m http.server 8801
 
 - The slide copy is set in Helvetica Neue, which is present on Apple devices and
   not on most others. Elsewhere it falls back to Arial and the tool says so.
+- The cover crop is held as three resolution-independent numbers (scale, and the
+  photo's centre offset as a fraction of the frame), so what you frame at 340px
+  on screen is what gets drawn at 3000px. There is no second code path.
 - PNG is the default for fidelity, which makes a photographic cover slide large.
   Switch to JPEG when the file size matters more than the last bit of gradient.
 - The static outro slide is not generated here, by design.
