@@ -78,7 +78,7 @@ at *Oversized Hoodie*. Both fields are editable before you build.
 | Piece | What it does |
 |---|---|
 | `index.html` | markup |
-| `app.css` | the tool's chrome, built from the storefront's own parts |
+| `app.css` | the tool's chrome; all wide-screen overrides in one block at the end |
 | `app.js` | wiring only |
 | `lib/shopify.js` | catalogue, product, carousel orders, image fallbacks |
 | `lib/cutout.js` | the matting model and its IndexedDB cache |
@@ -141,6 +141,13 @@ python3 -m http.server 8801
   smaller than the snap radius lands in the zone and is pulled back, so nudging
   did nothing and only a flick escaped. Snapping stays on through the release,
   or the alignment the drag just found springs off again the moment you let go.
+- The tile shows a slide at about 300px and gets its own small JPEG. Handing
+  it the 1620px export meant twelve tiles held 38MB of PNG and roughly 170MB
+  once decoded, which is what made a phone crawl; the export stays a Blob and
+  is never decoded until it is saved.
+- Every `min-width: 900px` override lives in one block at the end of the
+  stylesheet. Scattered through the file, three of them were declared before
+  the base rule they meant to beat and silently lost the cascade.
 - Slide width on a phone is a viewport unit, never a percentage. A percentage
   resolves against a container whose own width depends on this content, and the
   browser breaks that cycle with the max-content size - which quietly puts the

@@ -11,7 +11,7 @@
 
 import { ORDERS, KINDS, loadCatalogue, readProduct, pickImage } from './lib/shopify.js';
 import { warm } from './lib/cutout.js';
-import { renderToFile, defaultAdjust } from './lib/render.js';
+import { renderToFile, renderThumb, defaultAdjust } from './lib/render.js';
 import { createEditor } from './lib/editor.js';
 
 const $  = (s, r = document) => r.querySelector(s);
@@ -296,6 +296,7 @@ async function build() {
     say(`Rendering ${i + 1} of ${slides.length}: ${s.name}...`);
     try {
       s.file = await renderToFile(s, p, cutFor(s), state.size, state.fmt, fileName(carousel, i, s));
+      s.thumb = await renderThumb(s, p, cutFor(s));
       fillTile(carousel, i);
     } catch (err) {
       failTile(carousel, i, err.message);
@@ -321,6 +322,7 @@ async function commit(s) {
   if (!c) return;
   const i = c.slides.indexOf(s);
   s.file = await renderToFile(s, c.product, cutFor(s), state.size, state.fmt, fileName(c, i, s));
+  s.thumb = await renderThumb(s, c.product, cutFor(s));
   s.committed = { ...s.adjust };
   s.dirty = false;
   fillTile(c, i);
@@ -366,7 +368,7 @@ function renderCarousel(c) {
       <span class="cara__actions">
         <button type="button" class="btn btn--quiet btn--tiny" data-act="cshare" hidden>Share</button>
         <button type="button" class="btn btn--quiet btn--tiny" data-act="cdl" disabled>Download 6</button>
-        <button type="button" class="round round--sm" data-act="crm" aria-label="Remove this carousel">
+        <button type="button" class="round round--sm round--danger" data-act="crm" aria-label="Remove this carousel">
           <svg viewBox="0 0 24 24"><use href="#i-close"/></svg>
         </button>
       </span>
@@ -386,7 +388,9 @@ function renderCarousel(c) {
       <div class="tile__frame is-busy"><span class="tile__n"><b>${i + 1}</b> <span></span></span></div>
       <div class="tile__foot">
         <button type="button" class="btn btn--quiet btn--tiny" data-act="edit" hidden>Edit</button>
-        <button type="button" class="btn btn--quiet btn--tiny" data-act="dl" hidden>Save</button>
+        <button type="button" class="round round--sm" data-act="dl" hidden aria-label="Save this slide to the device">
+          <svg viewBox="0 0 24 24"><use href="#i-dl"/></svg>
+        </button>
       </div>`;
     $('.tile__n span', tile).textContent = s.name;
     track.appendChild(tile);
@@ -435,7 +439,7 @@ function fillTile(c, i) {
     frame.prepend(img);
   }
   const old = img.src;
-  img.src = URL.createObjectURL(s.file);
+  img.src = URL.createObjectURL(s.thumb || s.file);
   img.alt = `Slide ${i + 1}, ${s.name}`;
   if (old) setTimeout(() => URL.revokeObjectURL(old), 2000);
 
