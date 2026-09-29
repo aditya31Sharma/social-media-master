@@ -26,7 +26,8 @@ what lets it sit on GitHub Pages.
    **Allow edits** and the same gestures move the photograph inside the 3:4
    frame: drag, pinch, scroll, arrow keys.
 
-   Snapping offers the centre and each edge, and six alignment buttons put an
+   The lock re-arms every time you leave, so a slide you edited once does not
+   open unlocked the next time. Snapping offers the centre and each edge, and six alignment buttons put an
    edge or a centre exactly where it belongs. Nothing is confined: a photo can
    hang off any edge or sit in half the frame and leave the rest to the
    background.
