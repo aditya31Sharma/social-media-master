@@ -13,7 +13,8 @@ import { ORDERS, KINDS, loadCatalogue, readProduct, pickImage } from './lib/shop
 import { warm } from './lib/cutout.js';
 import { renderToFile, renderThumb, defaultAdjust } from './lib/render.js';
 import { createEditor } from './lib/editor.js';
-import { buildCaption, captionStats, copyText } from './lib/caption.js';
+import { SHAPES, FIXED_TAGS, buildCaption, captionStats, copyText,
+         suggestTags, suggestHook } from './lib/caption.js';
 
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -377,6 +378,13 @@ function renderCarousel(c) {
     <div class="track" data-track></div>
     <div class="dots" data-dots aria-hidden="true"></div>
     <div class="cap">
+      <div class="cap__controls">
+        <div class="seg seg--sm" data-capshape role="radiogroup" aria-label="Caption shape"></div>
+        <label class="cap__toggle"><input type="checkbox" data-caplink checked><span>Short link</span></label>
+      </div>
+      <input type="text" class="input input--sm cap__hook" data-caphook hidden
+             placeholder="The North remembers." aria-label="Opening line">
+      <div class="cap__tags" data-captags></div>
       <textarea class="cap__text" data-cap rows="6" spellcheck="false"
                 aria-label="Caption for this post"></textarea>
       <div class="cap__foot">
@@ -409,19 +417,105 @@ function renderCarousel(c) {
   const dots = $('[data-dots]', sec);
   for (let i = 0; i < c.slides.length; i++) dots.appendChild(document.createElement('i'));
 
-  /* The caption is generated from the product's own copy, then it is the
-     user's: edits stick to the carousel and Reset goes back to the draft. */
-  const cap = $('[data-cap]', sec);
-  c.caption = c.caption ?? buildCaption(c.product);
-  cap.value = c.caption;
-  const tally = () => {
+  /* The caption maker. Every control regenerates the draft; typing in the box
+     marks it hand-edited and the controls stop overwriting it until Reset. */
+  const cap      = $('[data-cap]', sec);
+  const hookIn   = $('[data-caphook]', sec);
+  const linkIn   = $('[data-caplink]', sec);
+  const shapeBox = $('[data-capshape]', sec);
+  const tagBox   = $('[data-captags]', sec);
+
+  c.cap = c.cap || {
+    shape: 'name',
+    hook: suggestHook(c.product),
+    link: true,
+    edited: false,
+    tags: suggestTags(c.product),
+  };
+
+  SHAPES.forEach(sh => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'seg__btn' + (sh.id === c.cap.shape ? ' is-on' : '');
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', String(sh.id === c.cap.shape));
+    b.textContent = sh.label;
+    b.addEventListener('click', () => {
+      c.cap.shape = sh.id;
+      $$('.seg__btn', shapeBox).forEach(x => {
+        x.classList.toggle('is-on', x === b);
+        x.setAttribute('aria-checked', String(x === b));
+      });
+      regen();
+    });
+    shapeBox.appendChild(b);
+  });
+
+  function paintTags() {
+    tagBox.innerHTML = '';
+    for (const t of FIXED_TAGS) {
+      const el = document.createElement('span');
+      el.className = 'chip is-fixed';
+      el.textContent = '#' + t;
+      el.title = 'Always on';
+      tagBox.appendChild(el);
+    }
+    c.cap.tags.forEach(entry => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip' + (entry.on ? ' is-on' : '');
+      b.setAttribute('aria-pressed', String(entry.on));
+      b.textContent = '#' + entry.tag;
+      b.addEventListener('click', () => { entry.on = !entry.on; paintTags(); regen(); });
+      tagBox.appendChild(b);
+    });
+    /* Somewhere to put the tag no catalogue can derive - the Northumbria post
+       ran #england, which comes from the print and nothing else. */
+    const add = document.createElement('input');
+    add.type = 'text';
+    add.className = 'chip chip--add';
+    add.placeholder = '+ tag';
+    add.setAttribute('aria-label', 'Add a hashtag');
+    add.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      const v = add.value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      if (v && !c.cap.tags.some(x => x.tag === v) && !FIXED_TAGS.includes(v)) {
+        c.cap.tags.push({ tag: v, on: true });
+        paintTags();
+        regen();
+      }
+      add.value = '';
+    });
+    tagBox.appendChild(add);
+  }
+
+  function regen() {
+    hookIn.hidden = c.cap.shape !== 'line';
+    hookIn.value = c.cap.hook;
+    linkIn.checked = c.cap.link;
+    c.cap.edited = false;
+    c.caption = buildCaption(c.product, {
+      shape: c.cap.shape,
+      hook: c.cap.hook,
+      link: c.cap.link,
+      tags: c.cap.tags.filter(t => t.on).map(t => t.tag),
+    });
+    cap.value = c.caption;
+    tally();
+  }
+
+  function tally() {
     const { chars, overLimit } = captionStats(cap.value);
     const el = $('[data-capcount]', sec);
-    el.textContent = `${chars} characters${overLimit ? ' — over Instagram\u2019s 2,200 limit' : ''}`;
+    el.textContent = `${chars} characters${c.cap.edited ? ' · edited' : ''}` +
+                     (overLimit ? ' — over Instagram\u2019s 2,200 limit' : '');
     el.classList.toggle('is-over', overLimit);
-  };
-  cap.addEventListener('input', () => { c.caption = cap.value; tally(); });
-  tally();
+  }
+
+  hookIn.addEventListener('input', () => { c.cap.hook = hookIn.value; regen(); });
+  linkIn.addEventListener('change', () => { c.cap.link = linkIn.checked; regen(); });
+  cap.addEventListener('input', () => { c.caption = cap.value; c.cap.edited = true; tally(); });
 
   const copyBtn = $('[data-act="capcopy"]', sec);
   copyBtn.addEventListener('click', async () => {
@@ -432,11 +526,16 @@ function renderCarousel(c) {
     copyBtn.classList.toggle('is-done', ok);
     setTimeout(() => { copyBtn.textContent = 'Copy caption'; copyBtn.classList.remove('is-done'); }, 1600);
   });
+
   $('[data-act="capreset"]', sec).addEventListener('click', () => {
-    c.caption = buildCaption(c.product);
-    cap.value = c.caption;
-    tally();
+    c.cap.hook = suggestHook(c.product);
+    c.cap.tags = suggestTags(c.product);
+    paintTags();
+    regen();
   });
+
+  paintTags();
+  regen();
 
   track.addEventListener('scroll', () => syncDots(c), { passive: true });
   $('[data-act="cdl"]', sec).addEventListener('click', () => downloadCarousel(c));

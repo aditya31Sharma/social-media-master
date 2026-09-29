@@ -655,6 +655,52 @@ select.input {
 .cap__text:hover { border-color: rgba(16, 17, 19, 0.18); }
 .cap__text:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(16, 17, 19, 0.07); }
 
+.cap__controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.seg--sm .seg__btn { padding: 4px 11px; min-height: 26px; font-size: 12px; }
+
+.cap__toggle { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; font-size: 12px; color: var(--ink-2); }
+.cap__toggle input {
+  appearance: none; width: 16px; height: 16px; flex: none;
+  border: 1px solid var(--line); border-radius: 4px; background: var(--surface);
+  display: grid; place-items: center; cursor: pointer;
+  transition: background var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
+.cap__toggle input:checked { background: var(--ink); border-color: var(--ink); }
+.cap__toggle input:checked::after { content: "✓"; color: var(--surface); font-size: 10px; line-height: 1; }
+
+.cap__hook { max-width: none; text-align: left; }
+
+/* Hashtags as chips: the two fixed ones are shown but not touchable, the
+   suggestions toggle, and the last slot takes the one the print implies. */
+.cap__tags { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.chip {
+  display: inline-flex; align-items: center;
+  height: 26px; padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--ink-3);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background var(--fast) var(--ease), color var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
+
+.chip:hover { color: var(--ink); border-color: rgba(16, 17, 19, 0.2); }
+.chip.is-on { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+.chip.is-fixed { background: var(--surface-2); border-color: transparent; color: var(--ink-2); cursor: default; }
+.chip.is-fixed:hover { color: var(--ink-2); border-color: transparent; }
+
+.chip--add {
+  width: 74px;
+  border-style: dashed;
+  color: var(--ink);
+  font: inherit; font-size: 12px;
+  outline: none;
+}
+.chip--add::placeholder { color: var(--ink-3); }
+.chip--add:focus { border-style: solid; border-color: var(--ink); }
+
 .cap__foot { display: flex; align-items: center; gap: 8px; }
 .cap__count { flex: 1; min-width: 0; font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 .cap__count.is-over { color: var(--danger-ink); }
