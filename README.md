@@ -15,29 +15,32 @@ what lets it sit on GitHub Pages.
 1. **Pick a product.** Search it, paste a link (`tenzen.in/...`,
    `shop.tenzen.in/products/...`), or type the six-character SKU. Everything
    else appears once there is a product to apply it to.
-2. **Add a cover shot** and choose the wordmark in white or black, then set the
-   export width and format.
-3. **Build.** You get six slides: the cover, then the five product slides in
-   that SKU's order, backgrounds cut out.
+2. **Add a cover shot**, choose the wordmark in white or black, set the export
+   width and format, and **Build**. Six slides appear: the cover, then the five
+   product slides in that SKU's order, backgrounds cut out.
+3. **Add another SKU.** The composer clears itself and the next carousel stacks
+   below the last. Each keeps its own product, its own slides and its own six
+   files, because each one is a separate post.
 4. **Edit.** Every slide has an Edit button and opens full screen. It starts
-   **locked** - the gestures inspect, and you can swipe through the set.
-   Turn on **Allow edits** and the same gestures move the photograph inside the
-   3:4 frame: drag, pinch, scroll, arrow keys, with snapping to the centre and
-   to each edge.
+   **locked** - the gestures inspect, and you can swipe through the set. Turn on
+   **Allow edits** and the same gestures move the photograph inside the 3:4
+   frame: drag, pinch, scroll, arrow keys.
 
-   Nothing is confined. A photo can hang off any edge or sit in half the frame
-   and leave the rest to the background - that is a composition, not an error.
+   Snapping offers the centre and each edge, and six alignment buttons put an
+   edge or a centre exactly where it belongs. Nothing is confined: a photo can
+   hang off any edge or sit in half the frame and leave the rest to the
+   background.
 
 5. **Save changes** re-renders that slide at export size, makes it the draft's
    current version, and takes you back to the set. **Save all** does the same
-   for every slide you changed. Neither writes to the device. A slide changed
-   but not saved is flagged in the editor and on its tile.
-6. **Download.** Separately: each tile has its own Download, *Download all*
-   writes them one by one, and on a phone *Share* hands the whole set to the
-   share sheet. Always separate images, never a zip.
+   for everything you changed. Neither writes to the device. A slide changed but
+   not saved is flagged in both places.
+6. **Download.** Separately: each slide has its own Save, each carousel has
+   **Download 6**, and **Download everything** writes every carousel in order.
+   Always separate images, never a zip.
 
 On a phone the slides take the screen, one at a time with dots underneath, and
-the controls live in a sheet at the bottom that collapses to a single line.
+the composer is a sheet at the bottom that collapses to a single line.
 
 ## What it decides for you
 
@@ -136,7 +139,12 @@ python3 -m http.server 8801
 - The gesture tracks an unsnapped position and snapping is applied on top of it.
   Writing the snapped value back as the new truth traps the photo: every move
   smaller than the snap radius lands in the zone and is pulled back, so nudging
-  did nothing and only a flick escaped.
+  did nothing and only a flick escaped. Snapping stays on through the release,
+  or the alignment the drag just found springs off again the moment you let go.
+- Slide width on a phone is a viewport unit, never a percentage. A percentage
+  resolves against a container whose own width depends on this content, and the
+  browser breaks that cycle with the max-content size - which quietly puts the
+  whole page into sideways scroll.
 - PNG is the default for fidelity, which makes a photographic cover slide large.
   Switch to JPEG when the file size matters more than the last bit of gradient.
 - The static outro slide is not generated here, by design.

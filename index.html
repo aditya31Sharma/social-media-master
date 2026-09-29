@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f2f3f5">
 <title>Social Media Master</title>
-<meta name="description" content="Build a Tenzen Instagram carousel from a cover shot and a product link.">
+<meta name="description" content="Build Tenzen Instagram carousels from a cover shot and a product link.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='6' y='3' width='20' height='26' rx='4' fill='%230b0b0c'/></svg>">
 <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -14,7 +14,6 @@
 </head>
 <body>
 
-<!-- Icon sprite. One stroke weight, one cap style, used everywhere. -->
 <svg hidden aria-hidden="true">
   <defs>
     <g id="i-upload" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -35,6 +34,31 @@
     <g id="i-down" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
       <path d="m5 9.5 7 7 7-7"/>
     </g>
+    <g id="i-plus" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+      <path d="M12 5v14M5 12h14"/>
+    </g>
+    <g id="i-dl" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M4.5 19h15"/>
+    </g>
+    <!-- Alignment. A bar for the frame edge, a block for the photograph. -->
+    <g id="i-al" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+      <path d="M4 4v16"/><rect x="7.5" y="7.5" width="11" height="9" rx="1.5" fill="currentColor" stroke="none"/>
+    </g>
+    <g id="i-ac" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+      <path d="M12 3v18"/><rect x="5.5" y="7.5" width="13" height="9" rx="1.5" fill="currentColor" stroke="none" opacity=".92"/>
+    </g>
+    <g id="i-ar" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+      <path d="M20 4v16"/><rect x="5.5" y="7.5" width="11" height="9" rx="1.5" fill="currentColor" stroke="none"/>
+    </g>
+    <g id="i-at" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+      <path d="M4 4h16"/><rect x="7.5" y="7.5" width="9" height="11" rx="1.5" fill="currentColor" stroke="none"/>
+    </g>
+    <g id="i-am" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+      <path d="M3 12h18"/><rect x="7.5" y="5.5" width="9" height="13" rx="1.5" fill="currentColor" stroke="none" opacity=".92"/>
+    </g>
+    <g id="i-ab" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+      <path d="M4 20h16"/><rect x="7.5" y="5.5" width="9" height="11" rx="1.5" fill="currentColor" stroke="none"/>
+    </g>
   </defs>
 </svg>
 
@@ -43,7 +67,10 @@
     <span class="brand__mark" role="img" aria-label="Tenzen"></span>
     <span class="brand__name">Social Media Master</span>
   </div>
-  <button type="button" class="btn btn--quiet" id="btnReset">Start over</button>
+  <div class="topbar__actions">
+    <button type="button" class="btn btn--quiet" id="btnDownloadEvery" hidden>Download everything</button>
+    <button type="button" class="btn btn--quiet" id="btnReset">Start over</button>
+  </div>
 </header>
 
 <main class="shell">
@@ -52,27 +79,19 @@
   <!-- First in the source so it is first on a phone: the slides are the
        point, and the controls sit under them in a sheet. -->
   <div class="stage">
-    <div class="stagehead">
-      <h2 class="sec__title">Draft</h2>
-      <div class="stagehead__actions">
-        <button type="button" class="btn btn--quiet" id="btnShare" hidden>Share</button>
-        <button type="button" class="btn" id="btnDownloadAll" hidden>Download all</button>
-      </div>
-    </div>
+    <div id="carousels" class="carousels"></div>
 
-    <!-- A grid on a big screen, one slide at a time on a phone. -->
-    <div class="track" id="grid">
-      <div class="empty">
-        <strong>Six slides, ready to post</strong>
-        <span>Pick a product and a cover shot. You get the cover with the
-              wordmark on it, then the five product slides in that SKU's order,
-              backgrounds cut out. Edit any of them afterwards.</span>
-      </div>
+    <div class="empty" id="emptyState">
+      <span class="empty__mark" aria-hidden="true"></span>
+      <strong>One SKU, six slides</strong>
+      <span>Pick a product and a cover shot below. You get the cover with the
+            wordmark on it, then the five product slides in that SKU's order,
+            backgrounds cut out. Add as many SKUs as you like; each one keeps
+            its own set.</span>
     </div>
-    <div class="dots" id="dots" hidden aria-hidden="true"></div>
   </div>
 
-  <!-- ── Controls ─────────────────────────────────────────────── -->
+  <!-- ── Composer ─────────────────────────────────────────────── -->
   <div class="rail" id="rail">
 
     <button type="button" class="sheet__grip" id="sheetToggle" aria-expanded="false" aria-controls="rail">
@@ -83,113 +102,111 @@
 
     <div class="more" id="more">
 
-    <!-- 1. Product -->
-    <section class="sec">
-      <div class="sec__head">
-        <span class="sec__n">1</span>
-        <h2 class="sec__title">Product</h2>
-      </div>
+      <section class="sec">
+        <div class="sec__head">
+          <span class="sec__n">1</span>
+          <h2 class="sec__title">Product</h2>
+        </div>
 
-      <div class="combo">
-        <input type="search" id="prodInput" class="input" autocomplete="off" spellcheck="false"
-               placeholder="Search, paste a link, or type a SKU"
-               aria-label="Product" aria-expanded="false" aria-controls="prodList"
-               role="combobox" aria-autocomplete="list">
-        <button type="button" class="combo__clear" id="prodClear" aria-label="Clear" hidden>
-          <svg viewBox="0 0 24 24" width="13" height="13"><use href="#i-close"/></svg>
-        </button>
-      </div>
-      <p class="note" id="prodNote">Loading the catalogue&hellip;</p>
-    </section>
+        <div class="combo">
+          <input type="search" id="prodInput" class="input" autocomplete="off" spellcheck="false"
+                 placeholder="Search, paste a link, or type a SKU"
+                 aria-label="Product" aria-expanded="false" aria-controls="prodList"
+                 role="combobox" aria-autocomplete="list">
+          <button type="button" class="combo__clear" id="prodClear" aria-label="Clear" hidden>
+            <svg viewBox="0 0 24 24" width="13" height="13"><use href="#i-close"/></svg>
+          </button>
+        </div>
+        <p class="note" id="prodNote">Loading the catalogue&hellip;</p>
+      </section>
 
       <!-- Everything below waits until there is a product to apply it to. -->
       <div class="more" id="afterProduct" hidden>
 
-      <div id="detail" class="detail">
-        <div class="row"><span class="row__label">Heading</span>
-          <input type="text" id="fHeading" class="input input--sm"></div>
-        <div class="row"><span class="row__label">Subheading</span>
-          <input type="text" id="fSub" class="input input--sm"></div>
-        <div class="row"><span class="row__label">SKU code</span>
-          <input type="text" id="fSku" class="input input--sm"></div>
-        <div class="row"><span class="row__label">Order</span>
-          <select id="fOrder" class="input input--sm">
-            <option value="man-front">Man front</option>
-            <option value="man-back">Man back</option>
-            <option value="woman-front">Woman front</option>
-            <option value="woman-back">Woman back</option>
-          </select></div>
-      </div>
-
-      <!-- 2. Cover -->
-      <section class="sec">
-        <div class="sec__head">
-          <span class="sec__n">2</span>
-          <h2 class="sec__title">Cover shot</h2>
+        <div id="detail" class="detail">
+          <div class="row"><span class="row__label">Heading</span>
+            <input type="text" id="fHeading" class="input input--sm"></div>
+          <div class="row"><span class="row__label">Subheading</span>
+            <input type="text" id="fSub" class="input input--sm"></div>
+          <div class="row"><span class="row__label">SKU code</span>
+            <input type="text" id="fSku" class="input input--sm"></div>
+          <div class="row"><span class="row__label">Order</span>
+            <select id="fOrder" class="input input--sm">
+              <option value="man-front">Man front</option>
+              <option value="man-back">Man back</option>
+              <option value="woman-front">Woman front</option>
+              <option value="woman-back">Woman back</option>
+            </select></div>
         </div>
 
-        <label class="filerow" id="picker" tabindex="0">
-          <input type="file" id="coverFile" accept="image/*" hidden>
-          <span class="filerow__thumb" id="coverThumb">
-            <svg viewBox="0 0 24 24"><use href="#i-upload"/></svg>
-          </span>
-          <span class="filerow__text">
-            <strong id="coverName">Choose an image</strong>
-            <em>Becomes slide 1. Frame it after building.</em>
-          </span>
-          <span class="btn btn--quiet btn--tiny" aria-hidden="true">Browse</span>
-        </label>
-
-        <div class="row">
-          <span class="row__label">Logo colour</span>
-          <div class="seg" role="radiogroup" aria-label="Logo colour">
-            <button type="button" class="seg__btn is-on" data-logo="#ffffff" role="radio" aria-checked="true">White</button>
-            <button type="button" class="seg__btn" data-logo="#000000" role="radio" aria-checked="false">Black</button>
+        <section class="sec">
+          <div class="sec__head">
+            <span class="sec__n">2</span>
+            <h2 class="sec__title">Cover shot</h2>
           </div>
-        </div>
-      </section>
 
-      <!-- 3. Output -->
-      <section class="sec">
-        <div class="sec__head">
-          <span class="sec__n">3</span>
-          <h2 class="sec__title">Output</h2>
-        </div>
+          <label class="filerow" id="picker" tabindex="0">
+            <input type="file" id="coverFile" accept="image/*" hidden>
+            <span class="filerow__thumb" id="coverThumb">
+              <svg viewBox="0 0 24 24"><use href="#i-upload"/></svg>
+            </span>
+            <span class="filerow__text">
+              <strong id="coverName">Choose an image</strong>
+              <em>Becomes slide 1. Frame it after building.</em>
+            </span>
+            <span class="btn btn--quiet btn--tiny" aria-hidden="true">Browse</span>
+          </label>
 
-        <div class="row">
-          <span class="row__label">Width</span>
-          <div class="seg" role="radiogroup" aria-label="Export width">
-            <button type="button" class="seg__btn" data-size="1080" role="radio" aria-checked="false">1080</button>
-            <button type="button" class="seg__btn is-on" data-size="1620" role="radio" aria-checked="true">1620</button>
-            <button type="button" class="seg__btn" data-size="3000" role="radio" aria-checked="false">3000</button>
+          <div class="row">
+            <span class="row__label">Logo colour</span>
+            <div class="seg" role="radiogroup" aria-label="Logo colour">
+              <button type="button" class="seg__btn is-on" data-logo="#ffffff" role="radio" aria-checked="true">White</button>
+              <button type="button" class="seg__btn" data-logo="#000000" role="radio" aria-checked="false">Black</button>
+            </div>
           </div>
-        </div>
+        </section>
 
-        <div class="row">
-          <span class="row__label">Format</span>
-          <div class="seg" role="radiogroup" aria-label="Export format">
-            <button type="button" class="seg__btn is-on" data-fmt="png" role="radio" aria-checked="true">PNG</button>
-            <button type="button" class="seg__btn" data-fmt="jpeg" role="radio" aria-checked="false">JPEG</button>
+        <section class="sec">
+          <div class="sec__head">
+            <span class="sec__n">3</span>
+            <h2 class="sec__title">Output</h2>
           </div>
-        </div>
 
-        <label class="check">
-          <input type="checkbox" id="optCut" checked>
-          <span>Cut out backgrounds<em>Slides 2, 3, 5 and 6. The close-up stays full bleed.</em></span>
-        </label>
+          <div class="row">
+            <span class="row__label">Width</span>
+            <div class="seg" role="radiogroup" aria-label="Export width">
+              <button type="button" class="seg__btn" data-size="1080" role="radio" aria-checked="false">1080</button>
+              <button type="button" class="seg__btn is-on" data-size="1620" role="radio" aria-checked="true">1620</button>
+              <button type="button" class="seg__btn" data-size="3000" role="radio" aria-checked="false">3000</button>
+            </div>
+          </div>
 
-        <p class="note" id="engineNote"></p>
-      </section>
+          <div class="row">
+            <span class="row__label">Format</span>
+            <div class="seg" role="radiogroup" aria-label="Export format">
+              <button type="button" class="seg__btn is-on" data-fmt="png" role="radio" aria-checked="true">PNG</button>
+              <button type="button" class="seg__btn" data-fmt="jpeg" role="radio" aria-checked="false">JPEG</button>
+            </div>
+          </div>
+
+          <label class="check">
+            <input type="checkbox" id="optCut" checked>
+            <span>Cut out backgrounds<em>The flats and the model shots. The close-up stays full bleed.</em></span>
+          </label>
+
+          <p class="note" id="engineNote"></p>
+        </section>
       </div>
     </div>
 
-    <button type="button" class="btn btn--primary btn--full" id="btnBuild" disabled>Build carousel</button>
-    <p class="note note--status" id="status" role="status" aria-live="polite"></p>
+    <div class="rail__actions">
+      <button type="button" class="btn btn--primary btn--full" id="btnBuild" disabled>Build carousel</button>
+      <p class="note note--status" id="status" role="status" aria-live="polite"></p>
+    </div>
   </div>
 
 </main>
 
-<!-- Outside the rail on purpose: the rail scrolls and clips its children. -->
 <ul class="combo__list" id="prodList" role="listbox" aria-label="Products" hidden></ul>
 
 <!-- ── Editor ─────────────────────────────────────────────────── -->
@@ -220,7 +237,7 @@
     <div class="editor__slide" data-e-slide role="application"
          aria-label="Slide framing. Drag to move, pinch or scroll to zoom, arrow keys to nudge.">
       <canvas class="layer" data-e-bg width="900" height="1200"></canvas>
-      <img class="layer layer--photo" data-e-photo alt="">
+      <img class="layer layer--photo" data-e-photo alt="" draggable="false">
       <canvas class="layer" data-e-fg width="900" height="1200"></canvas>
       <span class="crop__thirds" aria-hidden="true"></span>
       <span class="crop__guides" aria-hidden="true">
@@ -236,11 +253,23 @@
   </div>
 
   <footer class="editor__foot">
-    <div class="editor__zoomrow" data-e-zoomrow hidden>
-      <span class="row__label">Size</span>
-      <input type="range" data-e-zoom min="0.2" max="5" step="0.01" value="1" aria-label="Slide zoom">
-      <output data-e-zoomout>100%</output>
-      <button type="button" class="btn btn--quiet btn--tiny" data-e-recentre>Reset</button>
+    <div class="editor__tools" data-e-tools hidden>
+      <div class="editor__zoomrow">
+        <span class="row__label">Size</span>
+        <input type="range" data-e-zoom min="0.2" max="5" step="0.01" value="1" aria-label="Slide zoom">
+        <output data-e-zoomout>100%</output>
+        <button type="button" class="btn btn--quiet btn--tiny" data-e-recentre>Reset</button>
+      </div>
+
+      <div class="aligns" role="group" aria-label="Align the photograph to the frame">
+        <button type="button" class="aligns__btn" data-align="x:start"  aria-label="Flush left"><svg viewBox="0 0 24 24"><use href="#i-al"/></svg></button>
+        <button type="button" class="aligns__btn" data-align="x:centre" aria-label="Centre horizontally"><svg viewBox="0 0 24 24"><use href="#i-ac"/></svg></button>
+        <button type="button" class="aligns__btn" data-align="x:end"    aria-label="Flush right"><svg viewBox="0 0 24 24"><use href="#i-ar"/></svg></button>
+        <span class="aligns__sep" aria-hidden="true"></span>
+        <button type="button" class="aligns__btn" data-align="y:start"  aria-label="Flush top"><svg viewBox="0 0 24 24"><use href="#i-at"/></svg></button>
+        <button type="button" class="aligns__btn" data-align="y:centre" aria-label="Centre vertically"><svg viewBox="0 0 24 24"><use href="#i-am"/></svg></button>
+        <button type="button" class="aligns__btn" data-align="y:end"    aria-label="Flush bottom"><svg viewBox="0 0 24 24"><use href="#i-ab"/></svg></button>
+      </div>
     </div>
 
     <div class="editor__row">

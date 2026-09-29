@@ -2,13 +2,12 @@
 
    The work lives in lib/: shopify.js reads the catalogue, cutout.js lifts the
    backgrounds, frame.js and framer.js are the crop arithmetic and its gestures,
-   render.js draws the slides and editor.js is the full-screen surface. This
-   file connects them to the page and holds the draft.
+   render.js draws the slides and editor.js is the full-screen surface.
 
-   The draft is the point. A built carousel is not six finished files, it is six
-   slides that can still be reframed; Save changes writes a new version into the
-   draft, and Download is the separate, later act of putting them on the
-   device. */
+   The page is a stack of carousels and a composer. The composer always builds
+   the NEXT one: pick a product, pick a cover, Build, and a carousel is appended
+   below the last. Each keeps its own product, its own slides and its own set of
+   six files, because each one is a separate post. */
 
 import { ORDERS, KINDS, loadCatalogue, readProduct, pickImage } from './lib/shopify.js';
 import { warm } from './lib/cutout.js';
@@ -20,17 +19,17 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
 const state = {
   catalogue: [],
-  coverBitmap: null,
-  coverName: '',
-  logo: '#ffffff',
   size: 1620,
   fmt: 'png',
   cut: true,
+  logo: '#ffffff',
   product: null,
-  slides: [],
+  coverBitmap: null,
+  carousels: [],
 };
 
 let editor = null;
+let nextId = 1;
 
 function say(msg, tone = '') {
   const el = $('#status');
@@ -38,41 +37,56 @@ function say(msg, tone = '') {
   el.className = 'note note--status' + (tone ? ` note--${tone}` : '');
 }
 
-const refreshBuild = () => { $('#btnBuild').disabled = !(state.coverBitmap && state.product); };
+/* Hidden rather than disabled until there is a product: a large dead primary
+   button is the loudest thing on a collapsed sheet, and it is louder the less
+   there is to do. */
+function refreshBuild() {
+  const btn = $('#btnBuild');
+  btn.hidden = !state.product;
+  btn.disabled = !(state.coverBitmap && state.product);
+}
+const cutFor = s => state.cut && s.kind !== 'macro' && s.kind !== 'cover' && !!s.url;
+const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const fileName = (c, i, s) =>
+  `${c.product.sku || c.product.handle}-${i + 1}-${slug(s.name)}.${state.fmt === 'png' ? 'png' : 'jpg'}`;
 
-// -- The sheet ---------------------------------------------------
+const carouselOf = s => state.carousels.find(c => c.slides.includes(s));
+
+// -- Layout measuring --------------------------------------------
 
 /* On a phone the controls are a sheet over the slides, so the slides need to
-   know how much of the screen is left. Measured rather than guessed, because
-   the collapsed height changes with the product name and the status line. */
+   know how much screen is left. Measured rather than guessed: the collapsed
+   height changes with the product name and the status line. */
 function measureSheet() {
   const rail = $('#rail');
   if (getComputedStyle(rail).position !== 'fixed') return;
   document.documentElement.style.setProperty('--sheet-h', `${rail.offsetHeight}px`);
-  measureStage();
 }
 
-/* How wide a slide may be, so the strip and its dots sit clear of the sheet.
-   Derived from where the strip actually starts and where the sheet actually
-   begins, so it survives the heading wrapping or the sheet growing a line. */
+/* How wide a slide may be. Derived from where the first strip starts and where
+   the sheet begins, so it survives the heading wrapping or the sheet growing a
+   line. Set once on the root: every strip is the same size. */
 function measureStage() {
-  const track = $('#grid');
+  const root = document.documentElement;
   const rail = $('#rail');
-  if (getComputedStyle(rail).position !== 'fixed') {
-    track.style.removeProperty('--slide-w');
+  const track = $('.track');
+  if (!track || getComputedStyle(rail).position !== 'fixed') {
+    root.style.removeProperty('--slide-w');
     return;
   }
-  const dots = $('#dots').hidden ? 0 : $('#dots').offsetHeight + 12;
-  const room = window.innerHeight - track.offsetTop - rail.offsetHeight - dots - 8;
+  const dots = 20;
+  const head = 44;                          // the carousel's own header row
+  const room = window.innerHeight - track.getBoundingClientRect().top - rail.offsetHeight - dots - 8;
   const caption = 40;                       // the tile's name and buttons
-  track.style.setProperty('--slide-w', `${Math.max(170, Math.round((room - caption) * 0.75))}px`);
+  root.style.setProperty('--slide-w', `${Math.max(160, Math.round((room - caption) * 0.75))}px`);
 }
+
+function relayout() { measureSheet(); measureStage(); }
 
 function openSheet(open) {
   $('#rail').classList.toggle('is-open', open);
   $('#sheetToggle').setAttribute('aria-expanded', String(open));
-  measureSheet();
-  measureStage();
+  relayout();
 }
 
 // -- Cover -------------------------------------------------------
@@ -80,7 +94,6 @@ function openSheet(open) {
 async function setCover(file) {
   if (!file || !file.type.startsWith('image/')) return;
   state.coverBitmap = await createImageBitmap(file);
-  state.coverName = file.name;
 
   const thumb = $('#coverThumb');
   thumb.innerHTML = '';
@@ -92,7 +105,15 @@ async function setCover(file) {
 
   warm(onWarm).catch(() => {});
   refreshBuild();
-  measureSheet();
+  relayout();
+}
+
+function clearCover() {
+  state.coverBitmap = null;
+  const thumb = $('#coverThumb');
+  thumb.innerHTML = '<svg viewBox="0 0 24 24"><use href="#i-upload"/></svg>';
+  $('#coverName').textContent = 'Choose an image';
+  $('#coverFile').value = '';
 }
 
 function onWarm(pct) {
@@ -180,8 +201,8 @@ function resolve(text) {
     const hit = state.catalogue.find(p => p.sku.toUpperCase() === code);
     if (hit) return hit.handle;
   }
-  const slug = raw.replace(/^https?:\/\/[^/]+\//i, '').replace(/[?#].*$/, '').replace(/\/$/, '');
-  if (/^[a-z0-9-]+$/i.test(slug) && state.catalogue.some(p => p.handle === slug)) return slug;
+  const slugged = raw.replace(/^https?:\/\/[^/]+\//i, '').replace(/[?#].*$/, '').replace(/\/$/, '');
+  if (/^[a-z0-9-]+$/i.test(slugged) && state.catalogue.some(p => p.handle === slugged)) return slugged;
   return null;
 }
 
@@ -198,11 +219,8 @@ async function choose(handle) {
     $('#fSub').value = p.sub;
     $('#fSku').value = p.sku;
     $('#fOrder').value = p.order;
-    $('#prodNote').textContent =
-      `${Object.keys(p.byName).length} images. Order tag: ${p.order}.`;
+    $('#prodNote').textContent = `${Object.keys(p.byName).length} images. Order tag: ${p.order}.`;
     $('#sheetLabel').textContent = p.title;
-
-    /* The rest only means anything once there is a product to apply it to. */
     $('#afterProduct').hidden = false;
     openSheet(true);
     say('');
@@ -212,12 +230,18 @@ async function choose(handle) {
   }
 }
 
-// -- Build -------------------------------------------------------
+function resetComposer() {
+  state.product = null;
+  clearCover();
+  $('#prodInput').value = '';
+  $('#prodClear').hidden = true;
+  $('#afterProduct').hidden = true;
+  $('#sheetLabel').textContent = 'Add another SKU';
+  $('#btnBuild').textContent = 'Build carousel';
+  refreshBuild();
+}
 
-const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-const nameFor = (i, s) =>
-  `${state.product.sku || state.product.handle}-${i + 1}-${slug(s.name)}.${state.fmt === 'png' ? 'png' : 'jpg'}`;
-const cutFor = s => state.cut && s.kind !== 'macro' && s.kind !== 'cover' && !!s.url;
+// -- Build -------------------------------------------------------
 
 async function build() {
   const p = state.product;
@@ -226,8 +250,6 @@ async function build() {
   const btn = $('#btnBuild');
   btn.disabled = true;
   btn.innerHTML = '<span class="spin"></span>Building';
-  $('#btnDownloadAll').hidden = true;
-  $('#btnShare').hidden = true;
 
   p.heading = $('#fHeading').value.trim();
   p.sub = $('#fSub').value.trim();
@@ -237,18 +259,15 @@ async function build() {
   const swapped = [];
   const used = new Set();
 
-  /* The cover is simply slide one. It is picked in the sheet and framed in the
-     same editor as everything else, rather than having a stage of its own. */
+  /* The cover is simply slide one. It is picked in the composer and framed in
+     the same editor as everything else. */
   const coverStart = defaultAdjust('cover', state.coverBitmap.width, state.coverBitmap.height);
   const slides = [{
-    kind: 'cover',
-    name: 'Cover',
+    kind: 'cover', name: 'Cover',
     bitmap: state.coverBitmap,
     logo: state.logo,
-    adjust: { ...coverStart },
-    committed: { ...coverStart },
-    editable: false,
-    dirty: false,
+    adjust: { ...coverStart }, committed: { ...coverStart },
+    editable: false, dirty: false,
   }];
 
   order.forEach((want, i) => {
@@ -258,39 +277,37 @@ async function build() {
     if (hit.name !== want) swapped.push(`${want} -> ${hit.name}`);
     const start = defaultAdjust(KINDS[i], hit.width, hit.height);
     slides.push({
-      kind: KINDS[i],
-      name: hit.name,
-      url: hit.url,
-      adjust: { ...start },
-      committed: { ...start },
-      editable: false,
-      dirty: false,
+      kind: KINDS[i], name: hit.name, url: hit.url,
+      adjust: { ...start }, committed: { ...start },
+      editable: false, dirty: false,
     });
   });
 
-  state.slides = slides;
-  skeleton(slides);
-  openSheet(false);                    // get out of the way of the result
+  const carousel = { id: nextId++, product: p, logo: state.logo, slides };
+  state.carousels.push(carousel);
+  $('#emptyState').hidden = true;
+  const section = renderCarousel(carousel);
+  openSheet(false);
+  section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  relayout();
 
   for (let i = 0; i < slides.length; i++) {
     const s = slides[i];
     say(`Rendering ${i + 1} of ${slides.length}: ${s.name}...`);
     try {
-      s.file = await renderToFile(s, p, cutFor(s), state.size, state.fmt, nameFor(i, s));
-      fillTile(i);
+      s.file = await renderToFile(s, p, cutFor(s), state.size, state.fmt, fileName(carousel, i, s));
+      fillTile(carousel, i);
     } catch (err) {
-      failTile(i, err.message);
+      failTile(carousel, i, err.message);
     }
   }
 
-  btn.disabled = false;
-  btn.textContent = 'Build carousel';
+  resetComposer();
   refreshDraftActions();
-  measureSheet();
-  measureStage();
+  relayout();
   say(swapped.length
       ? `Done. Substituted ${swapped.join(', ')}.`
-      : `Done. ${state.slides.filter(s => s.file).length} slides.`,
+      : `Done. ${slides.filter(s => s.file).length} slides. Add another SKU below.`,
       swapped.length ? 'warn' : 'ok');
 }
 
@@ -300,78 +317,146 @@ async function build() {
    swaps that into the draft, which is what the tile shows and what Download
    writes out later. */
 async function commit(s) {
-  const i = state.slides.indexOf(s);
-  s.file = await renderToFile(s, state.product, cutFor(s), state.size, state.fmt, nameFor(i, s));
+  const c = carouselOf(s);
+  if (!c) return;
+  const i = c.slides.indexOf(s);
+  s.file = await renderToFile(s, c.product, cutFor(s), state.size, state.fmt, fileName(c, i, s));
   s.committed = { ...s.adjust };
   s.dirty = false;
-  fillTile(i);
+  fillTile(c, i);
   refreshDraftActions();
 }
 
 async function commitAll() {
-  for (const s of state.slides) if (s.dirty) await commit(s);
+  for (const c of state.carousels) {
+    for (const s of c.slides) if (s.dirty) await commit(s);
+  }
 }
 
 function refreshDraftActions() {
-  const files = state.slides.map(s => s.file).filter(Boolean);
-  $('#btnDownloadAll').hidden = files.length === 0;
-  $('#btnShare').hidden = !(files.length && navigator.canShare?.({ files }));
+  const any = state.carousels.some(c => c.slides.some(s => s.file));
+  $('#btnDownloadEvery').hidden = state.carousels.length < 2 || !any;
+  for (const c of state.carousels) {
+    const sec = sectionOf(c);
+    if (!sec) continue;
+    const files = c.slides.map(s => s.file).filter(Boolean);
+    $('[data-act="cdl"]', sec).disabled = !files.length;
+    $('[data-act="cshare"]', sec).hidden = !(files.length && navigator.canShare?.({ files }));
+    $('.cara__meta', sec).textContent =
+      `${c.product.sku || '—'} · ${files.length} of ${c.slides.length} ready`;
+  }
   editor?.refreshActions();
 }
 
-// -- Tiles -------------------------------------------------------
+const sectionOf = c => $(`.cara[data-c="${c.id}"]`);
 
-function skeleton(slides) {
-  const grid = $('#grid');
-  grid.innerHTML = '';
-  slides.forEach((s, i) => {
+// -- Carousel sections -------------------------------------------
+
+function renderCarousel(c) {
+  const sec = document.createElement('section');
+  sec.className = 'cara';
+  sec.dataset.c = c.id;
+  sec.innerHTML = `
+    <header class="cara__head">
+      <span class="cara__n"></span>
+      <span class="cara__id">
+        <strong class="cara__title"></strong>
+        <em class="cara__meta"></em>
+      </span>
+      <span class="cara__actions">
+        <button type="button" class="btn btn--quiet btn--tiny" data-act="cshare" hidden>Share</button>
+        <button type="button" class="btn btn--quiet btn--tiny" data-act="cdl" disabled>Download 6</button>
+        <button type="button" class="round round--sm" data-act="crm" aria-label="Remove this carousel">
+          <svg viewBox="0 0 24 24"><use href="#i-close"/></svg>
+        </button>
+      </span>
+    </header>
+    <div class="track" data-track></div>
+    <div class="dots" data-dots aria-hidden="true"></div>`;
+
+  $('.cara__title', sec).textContent = c.product.title;
+  $('.cara__n', sec).textContent = state.carousels.indexOf(c) + 1;
+
+  const track = $('[data-track]', sec);
+  c.slides.forEach((s, i) => {
     const tile = document.createElement('div');
     tile.className = 'tile';
     tile.dataset.i = i;
     tile.innerHTML = `
-      <div class="tile__frame is-busy"><span class="tile__n">${i + 1}</span></div>
+      <div class="tile__frame is-busy"><span class="tile__n"><b>${i + 1}</b> <span></span></span></div>
       <div class="tile__foot">
-        <span class="tile__name"></span>
         <button type="button" class="btn btn--quiet btn--tiny" data-act="edit" hidden>Edit</button>
-        <button type="button" class="btn btn--quiet btn--tiny" data-act="dl" hidden>Download</button>
+        <button type="button" class="btn btn--quiet btn--tiny" data-act="dl" hidden>Save</button>
       </div>`;
-    $('.tile__name', tile).textContent = s.name;
-    grid.appendChild(tile);
+    $('.tile__n span', tile).textContent = s.name;
+    track.appendChild(tile);
   });
-  buildDots(slides.length);
+
+  const dots = $('[data-dots]', sec);
+  for (let i = 0; i < c.slides.length; i++) dots.appendChild(document.createElement('i'));
+
+  track.addEventListener('scroll', () => syncDots(c), { passive: true });
+  $('[data-act="cdl"]', sec).addEventListener('click', () => downloadCarousel(c));
+  $('[data-act="cshare"]', sec).addEventListener('click', () => shareCarousel(c));
+  $('[data-act="crm"]', sec).addEventListener('click', () => removeCarousel(c));
+
+  $('#carousels').appendChild(sec);
+  syncDots(c);
+  return sec;
 }
 
-function fillTile(i) {
-  const s = state.slides[i];
-  const tile = $(`.tile[data-i="${i}"]`);
+function removeCarousel(c) {
+  const at = state.carousels.indexOf(c);
+  if (at < 0) return;
+  state.carousels.splice(at, 1);
+  sectionOf(c)?.remove();
+  $$('.cara').forEach((sec, i) => { $('.cara__n', sec).textContent = i + 1; });
+  $('#emptyState').hidden = state.carousels.length > 0;
+  refreshDraftActions();
+  relayout();
+}
+
+function fillTile(c, i) {
+  const s = c.slides[i];
+  const sec = sectionOf(c);
+  const tile = sec && $(`.tile[data-i="${i}"]`, sec);
   if (!tile || !s.file) return;
   const frame = $('.tile__frame', tile);
   frame.classList.remove('is-busy');
 
-  const old = $('img', frame);
-  if (old) { URL.revokeObjectURL(old.src); old.remove(); }
-  const img = new Image();
+  /* The src is swapped in place rather than the node being replaced. Taking an
+     image out of a scroll-snap strip and putting a new one back reflows the
+     strip, and a mandatory snap container that reflows under you can stop
+     responding to a swipe until it is touched again. */
+  let img = $('img', frame);
+  if (!img) {
+    img = new Image();
+    img.draggable = false;
+    frame.prepend(img);
+  }
+  const old = img.src;
   img.src = URL.createObjectURL(s.file);
   img.alt = `Slide ${i + 1}, ${s.name}`;
-  frame.prepend(img);
+  if (old) setTimeout(() => URL.revokeObjectURL(old), 2000);
 
   if (!frame.dataset.wired) {
     frame.dataset.wired = '1';
-    frame.addEventListener('click', () => openEditor(i));
+    frame.addEventListener('click', () => openEditor(c, i));
   }
 
-  markTile(i);
+  markTile(c, i);
   const edit = $('[data-act="edit"]', tile);
   const dl = $('[data-act="dl"]', tile);
   edit.hidden = false;
   dl.hidden = false;
-  edit.onclick = e => { e.stopPropagation(); openEditor(i); };
+  edit.onclick = e => { e.stopPropagation(); openEditor(c, i); };
   dl.onclick = e => { e.stopPropagation(); saveOne(s.file); };
 }
 
-function markTile(i) {
-  const s = state.slides[i];
-  const frame = $(`.tile[data-i="${i}"] .tile__frame`);
+function markTile(c, i) {
+  const s = c.slides[i];
+  const sec = sectionOf(c);
+  const frame = sec && $(`.tile[data-i="${i}"] .tile__frame`, sec);
   if (!frame || !s) return;
   const flag = $('.tile__flag', frame);
   if (s.dirty && !flag) {
@@ -382,40 +467,34 @@ function markTile(i) {
   } else if (!s.dirty && flag) flag.remove();
 }
 
-function failTile(i, msg) {
-  const tile = $(`.tile[data-i="${i}"]`);
+function failTile(c, i, msg) {
+  const sec = sectionOf(c);
+  const tile = sec && $(`.tile[data-i="${i}"]`, sec);
   if (!tile) return;
   $('.tile__frame', tile).classList.remove('is-busy');
-  const name = $('.tile__name', tile);
-  name.textContent = msg;
-  name.style.color = 'var(--danger-ink)';
+  const chip = $('.tile__n', tile);
+  chip.textContent = msg;
+  chip.style.background = 'var(--danger-ink)';
 }
 
-function openEditor(i) {
-  editor.open(state.slides, i, { product: state.product, cut: state.cut });
+function markAll() {
+  for (const c of state.carousels) c.slides.forEach((_, i) => markTile(c, i));
 }
 
-// -- Dots --------------------------------------------------------
-
-function buildDots(n) {
-  const dots = $('#dots');
-  dots.innerHTML = '';
-  for (let i = 0; i < n; i++) dots.appendChild(document.createElement('i'));
-  dots.hidden = n === 0;
-  syncDots();
+function openEditor(c, i) {
+  editor.open(c.slides, i, { product: c.product, cut: state.cut });
 }
 
-/* Whichever slide is nearest the middle of the strip. Dividing the scroll
-   offset by an average slide width, which is what this replaced, drifts once
-   the gaps and the end padding are counted and never quite reaches the last
-   dot. */
-function syncDots() {
-  const track = $('#grid');
-  const dots = [...$('#dots').children];
+/* Whichever slide is nearest the middle of the strip. Viewport coordinates
+   throughout: `offsetLeft` is measured from the offsetParent while
+   `scrollLeft` is measured inside the track, and mixing the two puts the
+   marker one slide out. */
+function syncDots(c) {
+  const sec = sectionOf(c);
+  if (!sec) return;
+  const track = $('[data-track]', sec);
+  const dots = [...$('[data-dots]', sec).children];
   if (!dots.length) return;
-  /* Viewport coordinates throughout. `offsetLeft` is measured from the
-     offsetParent while `scrollLeft` is measured inside the track, and mixing
-     the two puts the marker one slide out. */
   const box = track.getBoundingClientRect();
   const mid = box.left + box.width / 2;
   let best = 0, bestGap = Infinity;
@@ -442,19 +521,33 @@ function saveOne(file) {
 
 /* One at a time, with a beat between: browsers rate-limit a burst of
    programmatic downloads and silently drop the tail of one. */
-async function downloadAll() {
-  const files = state.slides.map(s => s.file).filter(Boolean);
+async function downloadFiles(files) {
   for (const f of files) { saveOne(f); await new Promise(r => setTimeout(r, 400)); }
-  say(`Downloaded ${files.length} images.`, 'ok');
 }
 
-/* On a phone the share sheet is the only route into Photos, and it takes the
-   whole set at once - still separate images, never a zip. */
-async function shareAll() {
+async function downloadCarousel(c) {
+  const files = c.slides.map(s => s.file).filter(Boolean);
+  await downloadFiles(files);
+  say(`Downloaded ${files.length} images for ${c.product.sku || c.product.title}.`, 'ok');
+}
+
+async function downloadEverything() {
+  let n = 0;
+  for (const c of state.carousels) {
+    const files = c.slides.map(s => s.file).filter(Boolean);
+    await downloadFiles(files);
+    n += files.length;
+  }
+  say(`Downloaded ${n} images across ${state.carousels.length} carousels.`, 'ok');
+}
+
+/* On a phone the share sheet is the only route into Photos, and it takes a
+   whole carousel at once - still separate images, never a zip. */
+async function shareCarousel(c) {
   try {
     await navigator.share({
-      files: state.slides.map(s => s.file).filter(Boolean),
-      title: state.product?.title || 'Carousel',
+      files: c.slides.map(s => s.file).filter(Boolean),
+      title: c.product.title,
     });
   } catch (err) {
     if (err.name !== 'AbortError') say(err.message, 'err');
@@ -485,15 +578,14 @@ function init() {
   editor = createEditor($('#editor'), {
     onSave: commit,
     onSaveAll: commitAll,
-    onDirty: () => state.slides.forEach((_, i) => markTile(i)),
+    onDirty: markAll,
   });
 
-  // Sheet
   $('#sheetToggle').addEventListener('click', () => openSheet(!$('#rail').classList.contains('is-open')));
-  new ResizeObserver(() => { if (!$('#rail').classList.contains('is-open')) measureSheet(); }).observe($('#rail'));
-  window.addEventListener('resize', () => { measureSheet(); measureStage(); });
+  new ResizeObserver(() => { if (!$('#rail').classList.contains('is-open')) relayout(); }).observe($('#rail'));
+  window.addEventListener('resize', () => { relayout(); placeList(); });
+  window.addEventListener('scroll', placeList, true);
 
-  // Cover
   const picker = $('#picker');
   picker.addEventListener('click', () => $('#coverFile').click());
   picker.addEventListener('keydown', e => {
@@ -510,13 +602,11 @@ function init() {
     if (item) setCover(item.getAsFile());
   });
 
-  // Options
   segGroup('logo', v => { state.logo = v; });
   segGroup('size', v => { state.size = +v; });
   segGroup('fmt',  v => { state.fmt = v; });
   $('#optCut').addEventListener('change', e => { state.cut = e.target.checked; });
 
-  // Product
   const input = $('#prodInput');
   input.addEventListener('input', () => {
     $('#prodClear').hidden = !input.value;
@@ -539,30 +629,25 @@ function init() {
     $('#prodClear').hidden = true;
     state.product = null;
     $('#afterProduct').hidden = true;
-    $('#sheetLabel').textContent = 'Pick a product to start';
+    $('#sheetLabel').textContent = state.carousels.length ? 'Add another SKU' : 'Pick a product to start';
     refreshBuild();
-    measureSheet();
+    relayout();
     input.focus();
   });
-  window.addEventListener('resize', placeList);
-  window.addEventListener('scroll', placeList, true);
-  $('#grid').addEventListener('scroll', syncDots, { passive: true });
 
-  // Actions
   $('#btnBuild').addEventListener('click', build);
-  $('#btnDownloadAll').addEventListener('click', downloadAll);
-  $('#btnShare').addEventListener('click', shareAll);
+  $('#btnDownloadEvery').addEventListener('click', downloadEverything);
   $('#btnReset').addEventListener('click', () => location.reload());
 
   /* Open to begin with, because the first thing to do is in there. It closes
      itself once there is a carousel to look at. */
   openSheet(true);
-  measureSheet();
+  relayout();
 
   loadCatalogue().then(list => {
     state.catalogue = list;
     $('#prodNote').textContent = `${list.length} products. Search, paste a link, or type a SKU.`;
-    measureSheet();
+    relayout();
   }).catch(err => {
     $('#prodNote').textContent = `Could not load the catalogue: ${err.message}`;
     $('#prodNote').className = 'note note--err';

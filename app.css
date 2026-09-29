@@ -82,6 +82,8 @@ button, input, select { font: inherit; color: inherit; }
 
 /* ── Top bar ──────────────────────────────────────────────────── */
 
+.topbar__actions { display: flex; align-items: center; gap: 8px; }
+
 .topbar {
   position: sticky;
   top: 0;
@@ -123,7 +125,9 @@ button, input, select { font: inherit; color: inherit; }
 .shell { display: grid; grid-template-columns: 1fr; }
 
 .rail  { display: flex; flex-direction: column; gap: 18px; padding: 16px var(--pad) 24px; }
-.stage { display: flex; flex-direction: column; gap: 12px; padding: 14px var(--pad) 24px; }
+.rail__actions { display: flex; flex-direction: column; gap: 7px; }
+.rail__actions:has(#btnBuild[hidden]) { padding-top: 0; box-shadow: none; }
+.stage { display: flex; flex-direction: column; gap: 12px; padding: 14px var(--pad) 24px; min-width: 0; }
 
 /* Desktop: two columns, controls on the left. The stage comes first in the
    source because on a phone the slides must come first; the grid puts it back. */
@@ -175,6 +179,19 @@ button, input, select { font: inherit; color: inherit; }
 
   /* Room for the sheet, so the last slide is never hidden behind it. */
   .stage { padding-bottom: calc(var(--sheet-h) + 14px); }
+
+  /* The sheet scrolls once it is open, and the one button worth reaching for
+     was ending up below its fold. Pinned to the bottom of the sheet it is
+     always a thumb away, whatever is scrolled above it. */
+  .rail__actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    margin-inline: calc(var(--pad) * -1);
+    padding: 10px var(--pad) 2px;
+    background: var(--surface);
+    box-shadow: 0 -10px 18px -12px rgba(11, 11, 12, 0.3);
+  }
 }
 
 .sheet__grip {
@@ -485,68 +502,113 @@ select.input {
 
 /* ── Stage ────────────────────────────────────────────────────── */
 
-.stagehead { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.stagehead__actions { display: flex; gap: 8px; }
+.carousels { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+
+/* One card per SKU, because one SKU is one post. Stacking them is the whole
+   point: build a set, build the next, and each keeps its own six files. */
+.cara {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 13px 14px 15px;
+  min-width: 0;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  box-shadow: var(--sh-1);
+}
+
+.cara__head { display: flex; align-items: center; gap: 11px; }
+
+.cara__n {
+  display: grid; place-items: center;
+  width: 24px; height: 24px; flex: none;
+  border-radius: 50%;
+  background: var(--ink); color: var(--surface);
+  font-size: 11px; font-variant-numeric: tabular-nums;
+}
+
+.cara__id { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+.cara__title { font-weight: 400; font-size: 14px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cara__meta { font-style: normal; font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.cara__actions { display: flex; align-items: center; gap: 7px; flex: none; }
+
+.round--sm { width: 30px; height: 30px; }
+.round--sm svg { width: 13px; height: 13px; }
 
 /* On a phone this is how a carousel is actually reviewed: one slide at a time,
    swiped through, the next peeking. On a wide screen the whole set at once is
    more useful, so the same element becomes a grid. */
+/* `min-width: 0` all the way down, and a viewport unit rather than a
+   percentage for the slide width. A percentage here resolves against a
+   container whose own width depends on this content, and the browser breaks
+   that cycle by using the max-content size - which stretched the whole stage
+   past the viewport and put the page into sideways scroll. */
 .track {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 84%;
-  gap: 12px;
+  grid-auto-columns: 78vw;
+  min-width: 0;
+  gap: 10px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   overscroll-behavior-x: contain;
-  margin-inline: calc(var(--pad) * -1);
-  padding-inline: var(--pad);
+  margin-inline: -14px;
+  padding-inline: 14px;
   scrollbar-width: none;
 }
 
 /* A slide is sized to the room actually left between the strip and the sheet.
-   `--slide-w` is measured in script rather than guessed at in a calc here,
-   because the pieces above and below it - a heading that wraps once the export
-   buttons appear, the dots, the tile's own caption row - are not constants.
-   Stated after the rule above so it wins; same specificity, later declaration. */
+   `--slide-w` is measured in script rather than guessed at in a calc, because
+   the pieces around it are not constants. Stated after the rule above so it
+   wins; same specificity, later declaration. */
 @media (max-width: 939px) {
-  .track { grid-auto-columns: min(84%, var(--slide-w, 84%)); }
+  .track { grid-auto-columns: min(78vw, var(--slide-w, 78vw)); }
 }
 
 .track::-webkit-scrollbar { display: none; }
 .track > .tile { scroll-snap-align: center; }
-.track:has(.empty) { display: block; margin-inline: 0; padding-inline: 0; }
 
 @media (min-width: 940px) {
   .track {
     grid-auto-flow: row;
     grid-auto-columns: auto;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     overflow: visible;
     margin-inline: 0;
     padding-inline: 0;
+    gap: 12px;
   }
 }
 
-@media (min-width: 1200px) { .track { grid-template-columns: repeat(6, 1fr); } }
-
-.dots { display: flex; justify-content: center; gap: 6px; padding-top: 2px; }
+.dots { display: flex; justify-content: center; gap: 6px; }
 .dots i { width: 6px; height: 6px; border-radius: var(--r-pill); background: var(--line); transition: width .2s var(--ease), background .2s var(--ease); }
 .dots i.is-on { width: 18px; background: var(--ink); }
+
+/* Stated after the rule above so it wins; same specificity, later declaration.
+   A grid of six needs no position marker. */
 @media (min-width: 940px) { .dots { display: none; } }
 
 /* An empty state that says what the tool does, not that nothing is here. */
 .empty {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  padding: 52px 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 46px 22px 50px;
   border: 1px dashed var(--line); border-radius: var(--r-card);
   text-align: center;
+}
+
+.empty__mark {
+  width: 78px; height: 25.6px;
+  margin-bottom: 4px;
+  background: var(--line);
+  -webkit-mask: var(--logo) center / contain no-repeat;
+          mask: var(--logo) center / contain no-repeat;
 }
 
 .empty strong { font-weight: 500; font-size: 15px; color: var(--ink); }
 .empty span { font-size: 13px; color: var(--ink-3); max-width: 46ch; line-height: 1.5; }
 
-.tile { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tile { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
 
 .tile__frame {
   position: relative;
@@ -568,24 +630,32 @@ select.input {
 
 @keyframes sweep { to { background-position: -220% 0; } }
 
+/* Number and frame name in one chip on the image. They used to sit in the row
+   below, where they fought two buttons for a 160px tile and lost - every
+   caption read "Mode..." or "Macr...". */
 .tile__n {
-  position: absolute; top: 8px; left: 8px;
-  min-width: 22px; padding: 3px 7px;
+  position: absolute; top: 7px; left: 7px;
+  max-width: calc(100% - 14px);
+  padding: 3px 8px;
   border-radius: var(--r-pill);
-  background: rgba(11, 11, 12, 0.62);
-  color: #fff; font-size: 11px; text-align: center;
-  font-variant-numeric: tabular-nums;
+  background: rgba(11, 11, 12, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff; font-size: 10px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
+.tile__n b { font-weight: 400; font-variant-numeric: tabular-nums; opacity: .7; }
+
 .tile__flag {
-  position: absolute; top: 8px; right: 8px;
-  padding: 3px 8px; border-radius: var(--r-pill);
+  position: absolute; top: 7px; right: 7px;
+  padding: 2px 7px; border-radius: var(--r-pill);
   background: var(--accent); color: var(--accent-ink);
   font-size: 10px;
 }
 
-.tile__foot { display: flex; align-items: center; gap: 8px; }
-.tile__name { flex: 1; min-width: 0; font-size: 11px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tile__foot { display: flex; align-items: center; gap: 6px; }
+.tile__foot .btn { flex: 1; }
 
 /* ── Editor ───────────────────────────────────────────────────── */
 
@@ -667,7 +737,35 @@ select.input {
 .editor__busy { position: absolute; inset: auto 0 12px 0; text-align: center; font-size: 11px; color: var(--ink-3); z-index: 5; }
 
 .editor__foot { display: flex; flex-direction: column; gap: 10px; padding: 10px var(--pad) max(12px, env(safe-area-inset-bottom)); }
+.editor__tools { display: flex; flex-direction: column; gap: 10px; }
 .editor__zoomrow { display: flex; align-items: center; gap: 12px; }
+
+/* Alignment, the way a design tool puts it: six exact places, one tap each. */
+.aligns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  align-self: center;
+}
+
+.aligns__btn {
+  width: 38px; height: 34px;
+  display: grid; place-items: center;
+  border: 0; border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background .14s var(--ease), color .14s var(--ease);
+}
+
+.aligns__btn:hover { background: var(--surface); color: var(--ink); }
+.aligns__btn:active { background: var(--ink); color: var(--surface); }
+.aligns__btn svg { width: 19px; height: 19px; }
+.aligns__sep { width: 1px; height: 20px; background: var(--line); margin-inline: 3px; }
 .editor__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .editor__nav { display: flex; align-items: center; gap: 10px; }
 .editor__count { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; min-width: 6ch; text-align: center; }
