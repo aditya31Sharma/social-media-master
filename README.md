@@ -12,47 +12,32 @@ what lets it sit on GitHub Pages.
 
 ## Using it
 
-1. **Cover shot.** Tap the box, drop a file on it, or paste an image - any size
-   or shape. It opens in a fixed 3:4 frame you drag the photo around inside.
-   Scroll, pinch or use the Size slider to scale it; arrow keys nudge, shift for
-   bigger steps. It clicks into place at the centre on both axes and against
-   each of the four edges, and a red guide shows which alignment caught. The
-   photo can never be pulled far enough to leave a gap. The wordmark is drawn in
-   the frame so you can frame around it; its size and position are fixed by the
-   layout, so the only choice is white or black.
-2. **Product.** Search by name, paste a product link (`tenzen.in/...`,
-   `shop.tenzen.in/products/...`), or type the six-character SKU code.
-   The heading, subheading, SKU and order are filled in and stay editable.
-3. **Output.** Choose a width (1080 / 1620 / 3000) and a format, then Build.
-4. **Review and edit.** On a phone the draft is a run of slides you swipe
-   through, one at a time, with dots underneath; on a wide screen it is a grid.
-   Tap any slide to open it full screen.
+1. **Pick a product.** Search it, paste a link (`tenzen.in/...`,
+   `shop.tenzen.in/products/...`), or type the six-character SKU. Everything
+   else appears once there is a product to apply it to.
+2. **Add a cover shot** and choose the wordmark in white or black, then set the
+   export width and format.
+3. **Build.** You get six slides: the cover, then the five product slides in
+   that SKU's order, backgrounds cut out.
+4. **Edit.** Every slide has an Edit button and opens full screen. It starts
+   **locked** - the gestures inspect, and you can swipe through the set.
+   Turn on **Allow edits** and the same gestures move the photograph inside the
+   3:4 frame: drag, pinch, scroll, arrow keys, with snapping to the centre and
+   to each edge.
 
-   Every slide starts **locked**. Locked, the gestures inspect: pinch, wheel or
-   double-tap to zoom to 6x, drag to pan, swipe or the arrows to move through
-   the set. Turn on **Allow changes** and the same gestures reframe the
-   photograph inside that slide, with the same snapping the cover has. Nothing
-   can be changed by accident.
+   Nothing is confined. A photo can hang off any edge or sit in half the frame
+   and leave the rest to the background - that is a composition, not an error.
 
-   Every slide frames against the whole 3:4, the cover included, so all six
-   move and zoom the same way. *Recentre* returns a slide to where it started:
-   full frame for the cover and the close-up, the board's inset placement (89%)
-   for the flats and the model shots. Those can go below 100%, because the
-   gradient is drawn behind them; the cover and the close-up cannot, because
-   there the photo is the background.
+5. **Save changes** re-renders that slide at export size, makes it the draft's
+   current version, and takes you back to the set. **Save all** does the same
+   for every slide you changed. Neither writes to the device. A slide changed
+   but not saved is flagged in the editor and on its tile.
+6. **Download.** Separately: each tile has its own Download, *Download all*
+   writes them one by one, and on a phone *Share* hands the whole set to the
+   share sheet. Always separate images, never a zip.
 
-5. **Save into the draft.** *Save image* does not write to the device. It
-   re-renders that slide at export size and makes it the draft's current version
-   of it, which is what the tile shows. Edit several slides and *Save all*
-   commits them together. A slide that has been changed but not saved is flagged
-   both in the editor and on its tile.
-
-6. **Download.** Separately, and only when you want the files: each tile has its
-   own Download, *Download all* writes them one by one, and on a phone *Share*
-   hands the whole set to the share sheet so they land in Photos together.
-   Always separate images, never a zip.
-   On a phone *Share* hands the whole set to the share sheet, so they land in
-   Photos together. Always separate images, never a zip.
+On a phone the slides take the screen, one at a time with dots underneath, and
+the controls live in a sheet at the bottom that collapses to a single line.
 
 ## What it decides for you
 
@@ -97,7 +82,6 @@ at *Oversized Hoodie*. Both fields are editable before you build.
 | `lib/render.js` | the slides, drawn in Figma's 3000x4000 space |
 | `lib/frame.js` | where a photo sits in a frame: clamping, snapping, zoom |
 | `lib/framer.js` | the gestures that move it - drag, pinch, wheel, keys |
-| `lib/cropper.js` | the inline 3:4 cover editor |
 | `lib/editor.js` | the full-screen slide surface, locked and unlocked |
 | `coi-serviceworker.js` | adds COOP/COEP so WebAssembly gets threads |
 | `assets/logo.svg` | the wordmark, drawn with `currentColor` so it recolours |
@@ -144,9 +128,15 @@ python3 -m http.server 8801
   live preview and at 3000px on export, so the preview can be trusted as the
   thing that will be saved. Scale has a floor of 1, which is why a gap is not
   something you can produce.
-- The editor's preview redraws on every pointer move. That is affordable only
-  because decoded photos and computed mattes are held in memory, so a redraw is
-  a few drawImage calls rather than a fetch and a decode.
+- The editor draws a slide as three layers - a background canvas, the cut-out
+  as an `<img>`, a foreground canvas - so moving the photograph is one transform
+  on one element and the compositor does the work. A 40-step drag makes zero
+  canvas calls. Redrawing the whole canvas per pointer move, which this
+  replaced, rebuilt an offscreen surface and recomposited a matte every frame.
+- The gesture tracks an unsnapped position and snapping is applied on top of it.
+  Writing the snapped value back as the new truth traps the photo: every move
+  smaller than the snap radius lands in the zone and is pulled back, so nudging
+  did nothing and only a flick escaped.
 - PNG is the default for fidelity, which makes a photographic cover slide large.
   Switch to JPEG when the file size matters more than the last bit of gradient.
 - The static outro slide is not generated here, by design.

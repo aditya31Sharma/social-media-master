@@ -1,47 +1,35 @@
 /* Social Media Master
 
    Light, and deliberately Tenzen's own light: the storefront is Helvetica Neue
-   on #f8f8f8 with hairline rules and pill controls, so the tool is built from
-   the same parts rather than given a look of its own. The slate the slides set
-   their copy in (#768696) reappears here on the labels, which is what ties the
-   chrome to the thing it makes.
+   on near-white with hairline rules and pill controls, so the tool is built
+   from the same parts rather than given a look of its own.
 
-   This is a tool, so it stays in the product register: one family, a fixed type
-   scale, complete component states, motion only where it reports a state. */
-
-/* ── Tokens ───────────────────────────────────────────────────── */
+   On a phone the slides get the screen and the controls live in a sheet at the
+   bottom that collapses to one line. On a wide screen the controls take a rail
+   down the left and everything is visible at once. */
 
 :root {
-  /* Surfaces, cool-neutral like the storefront rather than pure grey */
   --paper:      #f2f3f5;
   --surface:    #ffffff;
   --surface-2:  #f7f8f9;
   --surface-3:  #eceef1;
 
-  /* Ink. Every value below is >= 4.5:1 on --surface; --slate is reserved for
-     large text and marks, where 3:1 is the bar. */
-  --ink:        #0b0b0c;   /* 19.6:1 */
-  --ink-2:      #40464e;   /*  9.7:1 */
-  --ink-3:      #5f6b78;   /*  5.4:1 */
-  --slate:      #768696;   /*  3.7:1 - the slides' own tint; marks only, never text */
+  /* Every ink below is >= 4.5:1 on --surface; --slate is for marks, not text. */
+  --ink:        #0b0b0c;
+  --ink-2:      #40464e;
+  --ink-3:      #5f6b78;
+  --slate:      #768696;
 
   --line:       rgba(11, 11, 12, 0.11);
   --line-2:     rgba(11, 11, 12, 0.06);
 
-  --accent:     #db3737;   /* the storefront's own badge red - fills, not small text */
+  --accent:     #db3737;
   --accent-ink: #ffffff;
   --accent-sub: rgba(219, 55, 55, 0.10);
 
-  /* Status text is set in darker cousins of the fills. The brand red is 4.1:1
-     on --paper, which is fine behind white button copy and nowhere near enough
-     for a 12px note. */
-  --danger-ink: #a32b2b;   /*  6.4:1 */
-  --warn-ink:   #7a4c07;   /*  6.6:1 */
-  --ok:         #1f7a4d;   /*  4.8:1 */
-
-  /* The gradient the slides are built on, reused for canvas chrome */
-  --slide-1:    #f2f2f2;
-  --slide-2:    #c6c9cc;
+  --danger-ink: #a32b2b;
+  --warn-ink:   #7a4c07;
+  --ok:         #1f7a4d;
 
   --r-pill: 999px;
   --r-card: 18px;
@@ -51,14 +39,14 @@
   --sh-2: 0 4px 18px rgba(11, 11, 12, 0.07);
   --sh-3: 0 20px 56px rgba(11, 11, 12, 0.18);
 
-  /* Semantic, so nothing ever reaches for 9999 */
   --z-sticky:   20;
   --z-dropdown: 30;
   --z-guide:    40;
   --z-modal:    60;
 
   --pad: 16px;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);   /* ease-out-quart */
+  --sheet-h: 148px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   --font: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, system-ui, sans-serif;
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
@@ -66,9 +54,8 @@
 
 * { box-sizing: border-box; }
 
-/* Several things here are laid out with flex or grid AND toggled with the
-   `hidden` attribute. A class-level `display` beats the UA rule for `hidden`,
-   so without this they never hide at all. */
+/* Things here are laid out with flex or grid AND toggled with `hidden`. A
+   class-level display beats the UA rule, so without this they never hide. */
 [hidden] { display: none !important; }
 
 html, body {
@@ -85,8 +72,7 @@ html, body {
 }
 
 body { min-height: 100svh; }
-
-button, input, select, textarea { font: inherit; color: inherit; }
+button, input, select { font: inherit; color: inherit; }
 
 :where(button, [tabindex], input, select, a):focus-visible {
   outline: 2px solid var(--accent);
@@ -104,8 +90,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: max(11px, env(safe-area-inset-top)) var(--pad) 11px;
-  background: rgba(242, 243, 245, 0.86);
+  padding: max(10px, env(safe-area-inset-top)) var(--pad) 10px;
+  background: rgba(242, 243, 245, 0.88);
   backdrop-filter: saturate(1.6) blur(14px);
   -webkit-backdrop-filter: saturate(1.6) blur(14px);
   border-bottom: 1px solid var(--line-2);
@@ -114,8 +100,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
 
 .brand__mark {
-  width: 78px;
-  height: 25.6px;          /* the wordmark is 1000x328 */
+  width: 74px;
+  height: 24.3px;              /* the wordmark is 1000x328 */
   flex: none;
   background: var(--ink);
   -webkit-mask: var(--logo) center / contain no-repeat;
@@ -136,9 +122,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .shell { display: grid; grid-template-columns: 1fr; }
 
-.rail  { padding: 18px var(--pad) 30px; display: flex; flex-direction: column; gap: 22px; }
-.stage { padding: 6px var(--pad) 40px; display: flex; flex-direction: column; gap: 14px; }
+.rail  { display: flex; flex-direction: column; gap: 18px; padding: 16px var(--pad) 24px; }
+.stage { display: flex; flex-direction: column; gap: 12px; padding: 14px var(--pad) 24px; }
 
+/* Desktop: two columns, controls on the left. The stage comes first in the
+   source because on a phone the slides must come first; the grid puts it back. */
 @media (min-width: 940px) {
   .shell {
     grid-template-columns: 404px minmax(0, 1fr);
@@ -147,189 +135,109 @@ button, input, select, textarea { font: inherit; color: inherit; }
     align-items: start;
   }
   .rail {
+    grid-column: 1; grid-row: 1;
     position: sticky;
-    top: 48px;
-    max-height: calc(100svh - 48px);
-    /* Nothing inside may rely on absolute positioning escaping this box - the
-       product list is a <dialog>-free popover pinned with position:fixed for
-       exactly that reason. */
+    top: 46px;
+    max-height: calc(100svh - 46px);
     overflow-y: auto;
     overscroll-behavior: contain;
     border-right: 1px solid var(--line-2);
-    padding-bottom: 40px;
+    padding-bottom: 36px;
   }
-  .stage { padding-top: 18px; }
+  .stage { grid-column: 2; grid-row: 1; padding-top: 16px; }
+  .sheet__grip { display: none; }
+  .more { display: flex; flex-direction: column; gap: 18px; }
 }
+
+/* ── The sheet, on a phone ────────────────────────────────────── */
+
+@media (max-width: 939px) {
+  .rail {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: var(--z-sticky);
+    gap: 14px;
+    padding: 0 var(--pad) max(14px, env(safe-area-inset-bottom));
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -12px 44px rgba(11, 11, 12, 0.12);
+    max-height: 84svh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* Collapsed, the sheet is a grip and the one button worth reaching for.
+     Everything else - including the product field - is one tap away. */
+  .rail:not(.is-open) .more { display: none; }
+
+  .more { display: flex; flex-direction: column; gap: 18px; }
+
+  /* Room for the sheet, so the last slide is never hidden behind it. */
+  .stage { padding-bottom: calc(var(--sheet-h) + 14px); }
+}
+
+.sheet__grip {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: calc(100% + var(--pad) * 2);
+  margin-inline: calc(var(--pad) * -1);
+  padding: 16px var(--pad) 9px;
+  border: 0;
+  border-radius: 22px 22px 0 0;
+  background: var(--surface);
+  cursor: pointer;
+  text-align: left;
+}
+
+.sheet__bar {
+  position: absolute;
+  top: 7px; left: 50%;
+  transform: translateX(-50%);
+  width: 38px; height: 4px;
+  border-radius: 2px;
+  background: var(--surface-3);
+}
+
+.sheet__label {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sheet__chev { display: grid; place-items: center; width: 22px; height: 22px; color: var(--ink-3); transition: transform .22s var(--ease); }
+.sheet__chev svg { width: 15px; height: 15px; }
+.rail.is-open .sheet__chev { transform: rotate(180deg); }
 
 /* ── Section ──────────────────────────────────────────────────── */
 
-.sec { display: flex; flex-direction: column; gap: 12px; }
-
+.sec { display: flex; flex-direction: column; gap: 11px; }
 .sec__head { display: flex; align-items: center; gap: 9px; }
 
 .sec__n {
-  display: grid;
-  place-items: center;
-  width: 19px;
-  height: 19px;
+  display: grid; place-items: center;
+  width: 19px; height: 19px;
   flex: none;
   border-radius: 50%;
   background: var(--ink);
   color: var(--surface);
-  font-size: 10px;
-  font-weight: 500;
+  font-size: 10px; font-weight: 500;
 }
 
 .sec__title {
   margin: 0;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 11px; font-weight: 500;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--ink-3);
-}
-
-.sec__aside { margin-left: auto; }
-
-/* ── Cover editor ─────────────────────────────────────────────── */
-
-.picker {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 3 / 4;
-  max-height: 360px;
-  border: 1px dashed var(--line);
-  border-radius: var(--r-card);
-  background: var(--surface);
-  cursor: pointer;
-  transition: border-color .18s var(--ease), background .18s var(--ease);
-}
-
-.picker:hover { border-color: var(--slate); background: var(--surface-2); }
-.picker.is-over { border-color: var(--accent); background: var(--accent-sub); }
-
-.picker__inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  padding: 22px;
-  text-align: center;
-}
-
-.picker__icon {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--surface-3);
-  color: var(--ink-2);
-}
-
-.picker__icon svg { width: 19px; height: 19px; }
-.picker__text { font-size: 14px; color: var(--ink); }
-.picker__hint { font-size: 12px; color: var(--ink-3); max-width: 26ch; line-height: 1.4; }
-
-/* The frame is the product: a true 3:4 window, the photo moving behind it. */
-.crop {
-  position: relative;
-  aspect-ratio: 3 / 4;
-  border-radius: var(--r-card);
-  overflow: hidden;
-  background: var(--surface-3);
-  box-shadow: var(--sh-1);
-  touch-action: none;          /* drag and pinch are ours, not the page's */
-  cursor: grab;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.crop.is-drag { cursor: grabbing; }
-.crop img { position: absolute; transform-origin: 0 0; will-change: transform; pointer-events: none; }
-
-/* The wordmark sits where the slide puts it and is not draggable: position and
-   size are fixed by the layout, and only its colour is a choice. */
-.crop__logo {
-  position: absolute;
-  left: 50%;
-  top: 6.25%;                  /* 250 / 4000 */
-  width: 20.325%;              /* 609.757 / 3000 */
-  aspect-ratio: 609.757 / 200;
-  transform: translateX(-50%);
-  background: var(--logo-ink, #fff);
-  -webkit-mask: var(--logo) center / contain no-repeat;
-          mask: var(--logo) center / contain no-repeat;
-  pointer-events: none;
-}
-
-.crop__guides { position: absolute; inset: 0; pointer-events: none; z-index: var(--z-guide); }
-
-.crop__guide {
-  position: absolute;
-  background: var(--accent);
-  opacity: 0;
-  transition: opacity .12s linear;
-}
-
-.crop__guide.is-on { opacity: 1; }
-.crop__guide[data-axis="v"] { top: 0; bottom: 0; width: 1.5px; margin-left: -0.75px; }
-.crop__guide[data-axis="h"] { left: 0; right: 0; height: 1.5px; margin-top: -0.75px; }
-
-/* A rule of thirds, shown only while the photo is actually being moved. */
-.crop__thirds {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity .18s var(--ease);
-  background:
-    linear-gradient(to right,  transparent calc(33.333% - .5px), rgba(255,255,255,.5) calc(33.333% - .5px) calc(33.333% + .5px), transparent calc(33.333% + .5px)),
-    linear-gradient(to right,  transparent calc(66.666% - .5px), rgba(255,255,255,.5) calc(66.666% - .5px) calc(66.666% + .5px), transparent calc(66.666% + .5px)),
-    linear-gradient(to bottom, transparent calc(33.333% - .5px), rgba(255,255,255,.5) calc(33.333% - .5px) calc(33.333% + .5px), transparent calc(33.333% + .5px)),
-    linear-gradient(to bottom, transparent calc(66.666% - .5px), rgba(255,255,255,.5) calc(66.666% - .5px) calc(66.666% + .5px), transparent calc(66.666% + .5px));
-}
-
-.crop.is-drag .crop__thirds { opacity: 1; }
-
-.zoomrow { display: flex; align-items: center; gap: 12px; }
-
-.zoomrow output {
-  min-width: 4.5ch;
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-  color: var(--ink-3);
-  text-align: right;
-}
-
-input[type="range"] {
-  appearance: none;
-  flex: 1;
-  height: 22px;
-  background: transparent;
-  cursor: pointer;
-}
-
-input[type="range"]::-webkit-slider-runnable-track {
-  height: 4px; border-radius: 2px; background: var(--surface-3);
-}
-input[type="range"]::-moz-range-track {
-  height: 4px; border-radius: 2px; background: var(--surface-3);
-}
-input[type="range"]::-webkit-slider-thumb {
-  appearance: none;
-  width: 18px; height: 18px; margin-top: -7px;
-  border-radius: 50%;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  box-shadow: var(--sh-1);
-}
-input[type="range"]::-moz-range-thumb {
-  width: 18px; height: 18px;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: var(--surface);
-  box-shadow: var(--sh-1);
 }
 
 /* ── Fields ───────────────────────────────────────────────────── */
@@ -337,13 +245,7 @@ input[type="range"]::-moz-range-thumb {
 .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .row__label { font-size: 13px; color: var(--ink-2); }
 
-.seg {
-  display: inline-flex;
-  padding: 3px;
-  gap: 2px;
-  border-radius: var(--r-pill);
-  background: var(--surface-3);
-}
+.seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: var(--r-pill); background: var(--surface-3); }
 
 .seg__btn {
   appearance: none;
@@ -359,11 +261,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .seg__btn:hover { color: var(--ink); }
-.seg__btn.is-on {
-  background: var(--surface);
-  color: var(--ink);
-  box-shadow: var(--sh-1);
-}
+.seg__btn.is-on { background: var(--surface); color: var(--ink); box-shadow: var(--sh-1); }
 
 .input {
   width: 100%;
@@ -381,16 +279,50 @@ input[type="range"]::-moz-range-thumb {
 .input::placeholder { color: var(--ink-3); }
 .input:hover { border-color: var(--slate); }
 .input:focus { border-color: var(--ink); box-shadow: 0 0 0 3px var(--accent-sub); }
-
 .input--sm { padding: 8px 11px; min-height: 36px; font-size: 14px; max-width: 60%; text-align: right; }
 
-select.input { appearance: none; padding-right: 30px;
+select.input {
+  appearance: none; padding-right: 30px;
   background-image: linear-gradient(45deg, transparent 50%, var(--ink-3) 50%),
                     linear-gradient(135deg, var(--ink-3) 50%, transparent 50%);
   background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%;
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
 }
+
+/* ── File row ─────────────────────────────────────────────────── */
+
+.filerow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color .16s var(--ease), background .16s var(--ease);
+}
+
+.filerow:hover, .filerow:focus-visible { border-color: var(--slate); background: var(--surface-2); }
+.filerow.is-over { border-color: var(--accent); background: var(--accent-sub); }
+
+.filerow__thumb {
+  width: 42px; height: 56px;
+  flex: none;
+  display: grid; place-items: center;
+  border-radius: 8px;
+  background: var(--surface-3);
+  color: var(--ink-3);
+  overflow: hidden;
+}
+
+.filerow__thumb svg { width: 17px; height: 17px; }
+.filerow__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.filerow__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.filerow__text strong { font-weight: 400; font-size: 14px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.filerow__text em { font-style: normal; font-size: 12px; color: var(--ink-3); }
 
 /* ── Product combo ────────────────────────────────────────────── */
 
@@ -405,20 +337,18 @@ select.input { appearance: none; padding-right: 30px;
   border: 0; border-radius: 50%;
   background: var(--surface-3);
   color: var(--ink-2);
-  font-size: 15px; line-height: 1;
   cursor: pointer;
 }
 
-/* position:fixed, not absolute: the rail scrolls and clips on desktop, which
-   would slice this list in half. Placement is set from script. */
+/* position:fixed, not absolute: the rail scrolls and clips, which would slice
+   this list in half. Placement is set from script. */
 .combo__list {
   position: fixed;
   z-index: var(--z-dropdown);
   max-height: 46svh;
   overflow-y: auto;
   overscroll-behavior: contain;
-  margin: 0;
-  padding: 5px;
+  margin: 0; padding: 5px;
   list-style: none;
   border: 1px solid var(--line);
   border-radius: var(--r-card);
@@ -427,38 +357,28 @@ select.input { appearance: none; padding-right: 30px;
 }
 
 .combo__list li {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px 11px;
-  min-height: 42px;
-  border-radius: var(--r-ctl);
-  cursor: pointer;
-  font-size: 14px;
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; padding: 10px 11px; min-height: 42px;
+  border-radius: var(--r-ctl); cursor: pointer; font-size: 14px;
 }
 
-.combo__list li:hover,
-.combo__list li.is-active { background: var(--surface-2); }
-
+.combo__list li:hover, .combo__list li.is-active { background: var(--surface-2); }
 .combo__list b { font-weight: 400; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .combo__list code { flex: none; font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
-
 .combo__empty { padding: 14px 11px; font-size: 13px; color: var(--ink-3); }
 
-/* ── Detail card ──────────────────────────────────────────────── */
+/* ── Detail ───────────────────────────────────────────────────── */
 
 .detail {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: flex; flex-direction: column; gap: 8px;
   padding: 13px 14px;
   border: 1px solid var(--line-2);
   border-radius: var(--r-card);
-  background: var(--surface);
+  background: var(--surface-2);
 }
 
 .detail .row__label { font-size: 12px; color: var(--ink-3); flex: none; }
+.detail .input { background: var(--surface); }
 
 /* ── Check ────────────────────────────────────────────────────── */
 
@@ -466,15 +386,10 @@ select.input { appearance: none; padding-right: 30px;
 
 .check input {
   appearance: none;
-  width: 20px; height: 20px;
-  margin: 1px 0 0;
-  flex: none;
-  border: 1px solid var(--line);
-  border-radius: 6px;
+  width: 20px; height: 20px; margin: 1px 0 0; flex: none;
+  border: 1px solid var(--line); border-radius: 6px;
   background: var(--surface);
-  cursor: pointer;
-  display: grid;
-  place-items: center;
+  cursor: pointer; display: grid; place-items: center;
   transition: background .16s var(--ease), border-color .16s var(--ease);
 }
 
@@ -483,22 +398,39 @@ select.input { appearance: none; padding-right: 30px;
 .check span { font-size: 14px; line-height: 1.35; color: var(--ink); }
 .check em { display: block; font-style: normal; font-size: 12px; color: var(--ink-3); margin-top: 2px; }
 
+/* ── Switch ───────────────────────────────────────────────────── */
+
+.switch { display: inline-flex; align-items: center; gap: 9px; flex: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
+.switch input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+.switch__track {
+  width: 44px; height: 26px; flex: none;
+  display: inline-flex; align-items: center; padding: 2px;
+  border: 1px solid var(--line); border-radius: var(--r-pill);
+  background: var(--surface-3);
+  transition: background .18s var(--ease), border-color .18s var(--ease);
+}
+
+.switch__knob {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--surface); box-shadow: var(--sh-1);
+  transition: transform .18s var(--ease);
+}
+
+.switch input:checked + .switch__track { background: var(--accent); border-color: var(--accent); }
+.switch input:checked + .switch__track .switch__knob { transform: translateX(18px); }
+.switch input:focus-visible + .switch__track { outline: 2px solid var(--accent); outline-offset: 2px; }
+.switch__text { font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+
 /* ── Buttons ──────────────────────────────────────────────────── */
 
 .btn {
   appearance: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 12px 18px;
-  border: 1px solid transparent;
-  border-radius: var(--r-pill);
-  background: var(--ink);
-  color: var(--surface);
-  font-size: 14px;
-  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 12px 18px;
+  border: 1px solid transparent; border-radius: var(--r-pill);
+  background: var(--ink); color: var(--surface);
+  font-size: 14px; cursor: pointer;
   transition: background .16s var(--ease), color .16s var(--ease),
               border-color .16s var(--ease), opacity .16s var(--ease);
 }
@@ -510,82 +442,25 @@ select.input { appearance: none; padding-right: 30px;
 .btn--primary { background: var(--accent); color: var(--accent-ink); }
 .btn--primary:hover:not(:disabled) { background: #c62f2f; }
 .btn--primary:active:not(:disabled) { background: #ad2828; }
-
 .btn--full { width: 100%; }
 
-.btn--quiet {
-  background: transparent;
-  color: var(--ink-2);
-  border-color: var(--line);
-  min-height: 36px;
-  padding: 8px 14px;
-  font-size: 13px;
-}
-
+.btn--quiet { background: transparent; color: var(--ink-2); border-color: var(--line); min-height: 36px; padding: 8px 14px; font-size: 13px; }
 .btn--quiet:hover:not(:disabled) { background: var(--surface); color: var(--ink); border-color: var(--slate); }
-
 .btn--tiny { min-height: 30px; padding: 6px 12px; font-size: 12px; }
 
 .btn .spin {
   width: 14px; height: 14px; flex: none;
-  border: 2px solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
+  border: 2px solid currentColor; border-right-color: transparent;
+  border-radius: 50%; animation: spin .7s linear infinite;
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Notes ────────────────────────────────────────────────────── */
-
-.note { margin: 0; font-size: 12px; line-height: 1.45; color: var(--ink-3); }
-.note--status { min-height: 1.2em; }
-.note--warn { color: var(--warn-ink); }
-.note--err  { color: var(--danger-ink); }
-.note--ok   { color: var(--ok); }
-
-/* ── Switch ───────────────────────────────────────────────────── */
-
-/* The lock. A switch rather than a checkbox because it turns a mode on, and
-   because it has to read as a deliberate act from across a phone screen. */
-.switch { display: inline-flex; align-items: center; gap: 9px; flex: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
-.switch input { position: absolute; width: 1px; height: 1px; opacity: 0; }
-
-.switch__track {
-  width: 44px; height: 26px;
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  padding: 2px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-pill);
-  background: var(--surface-3);
-  transition: background .18s var(--ease), border-color .18s var(--ease);
-}
-
-.switch__knob {
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  background: var(--surface);
-  box-shadow: var(--sh-1);
-  transition: transform .18s var(--ease);
-}
-
-.switch input:checked + .switch__track { background: var(--accent); border-color: var(--accent); }
-.switch input:checked + .switch__track .switch__knob { transform: translateX(18px); }
-.switch input:focus-visible + .switch__track { outline: 2px solid var(--accent); outline-offset: 2px; }
-.switch__text { font-size: 13px; color: var(--ink-2); white-space: nowrap; }
-
-/* ── Round icon button ────────────────────────────────────────── */
-
 .round {
-  width: 40px; height: 40px;
-  flex: none;
+  width: 40px; height: 40px; flex: none;
   display: grid; place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--ink);
+  border: 1px solid var(--line); border-radius: 50%;
+  background: var(--surface); color: var(--ink);
   cursor: pointer;
   transition: background .16s var(--ease), opacity .16s var(--ease);
 }
@@ -595,26 +470,31 @@ select.input { appearance: none; padding-right: 30px;
 .round svg { width: 16px; height: 16px; }
 
 .flag {
-  padding: 4px 10px;
-  border-radius: var(--r-pill);
-  background: var(--accent-sub);
-  color: var(--danger-ink);
-  font-size: 11px;
-  white-space: nowrap;
+  padding: 4px 10px; border-radius: var(--r-pill);
+  background: var(--accent-sub); color: var(--danger-ink);
+  font-size: 11px; white-space: nowrap;
 }
+
+/* ── Notes ────────────────────────────────────────────────────── */
+
+.note { margin: 0; font-size: 12px; line-height: 1.45; color: var(--ink-3); }
+.note--status { min-height: 1.2em; }
+.note--warn { color: var(--warn-ink); }
+.note--err  { color: var(--danger-ink); }
+.note--ok   { color: var(--ok); }
 
 /* ── Stage ────────────────────────────────────────────────────── */
 
 .stagehead { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .stagehead__actions { display: flex; gap: 8px; }
 
-/* On a phone this is the way a carousel is actually reviewed: one slide at a
-   time, swiped through, the next one peeking. On a wide screen the whole set at
-   once is more useful, so the same element becomes a grid. */
+/* On a phone this is how a carousel is actually reviewed: one slide at a time,
+   swiped through, the next peeking. On a wide screen the whole set at once is
+   more useful, so the same element becomes a grid. */
 .track {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 76%;
+  grid-auto-columns: 84%;
   gap: 12px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -622,6 +502,15 @@ select.input { appearance: none; padding-right: 30px;
   margin-inline: calc(var(--pad) * -1);
   padding-inline: var(--pad);
   scrollbar-width: none;
+}
+
+/* A slide is sized to the room actually left between the strip and the sheet.
+   `--slide-w` is measured in script rather than guessed at in a calc here,
+   because the pieces above and below it - a heading that wraps once the export
+   buttons appear, the dots, the tile's own caption row - are not constants.
+   Stated after the rule above so it wins; same specificity, later declaration. */
+@media (max-width: 939px) {
+  .track { grid-auto-columns: min(84%, var(--slide-w, 84%)); }
 }
 
 .track::-webkit-scrollbar { display: none; }
@@ -642,27 +531,15 @@ select.input { appearance: none; padding-right: 30px;
 @media (min-width: 1200px) { .track { grid-template-columns: repeat(6, 1fr); } }
 
 .dots { display: flex; justify-content: center; gap: 6px; padding-top: 2px; }
-
-.dots i {
-  width: 6px; height: 6px;
-  border-radius: var(--r-pill);
-  background: var(--line);
-  transition: width .2s var(--ease), background .2s var(--ease);
-}
-
+.dots i { width: 6px; height: 6px; border-radius: var(--r-pill); background: var(--line); transition: width .2s var(--ease), background .2s var(--ease); }
 .dots i.is-on { width: 18px; background: var(--ink); }
-
 @media (min-width: 940px) { .dots { display: none; } }
 
 /* An empty state that says what the tool does, not that nothing is here. */
 .empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 56px 20px;
-  border: 1px dashed var(--line);
-  border-radius: var(--r-card);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 52px 20px;
+  border: 1px dashed var(--line); border-radius: var(--r-card);
   text-align: center;
 }
 
@@ -692,48 +569,23 @@ select.input { appearance: none; padding-right: 30px;
 @keyframes sweep { to { background-position: -220% 0; } }
 
 .tile__n {
-  position: absolute;
-  top: 8px; left: 8px;
-  min-width: 22px;
-  padding: 3px 7px;
+  position: absolute; top: 8px; left: 8px;
+  min-width: 22px; padding: 3px 7px;
   border-radius: var(--r-pill);
   background: rgba(11, 11, 12, 0.62);
-  color: #fff;
-  font-size: 11px;
-  text-align: center;
+  color: #fff; font-size: 11px; text-align: center;
   font-variant-numeric: tabular-nums;
 }
 
-/* Visible without hover, because on the surface this matters most there is no
-   hover to reveal it. */
-.tile__open {
-  position: absolute;
-  right: 8px; bottom: 8px;
-  width: 30px; height: 30px;
-  display: grid; place-items: center;
-  border: 0; border-radius: 50%;
-  background: rgba(11, 11, 12, 0.62);
-  color: #fff;
-  cursor: pointer;
-  transition: background .16s var(--ease);
-}
-
-.tile__open svg { width: 15px; height: 15px; }
-.tile__open:hover { background: rgba(11, 11, 12, 0.88); }
-
 .tile__flag {
-  position: absolute;
-  top: 8px; right: 8px;
-  padding: 3px 8px;
-  border-radius: var(--r-pill);
-  background: var(--accent);
-  color: var(--accent-ink);
+  position: absolute; top: 8px; right: 8px;
+  padding: 3px 8px; border-radius: var(--r-pill);
+  background: var(--accent); color: var(--accent-ink);
   font-size: 10px;
-  letter-spacing: .02em;
 }
 
-.tile__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.tile__name { font-size: 11px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tile__foot { display: flex; align-items: center; gap: 8px; }
+.tile__name { flex: 1; min-width: 0; font-size: 11px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ── Editor ───────────────────────────────────────────────────── */
 
@@ -743,18 +595,10 @@ select.input { appearance: none; padding-right: 30px;
   z-index: var(--z-modal);
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  background: rgba(240, 241, 243, 0.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--paper);
 }
 
-.editor__bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: max(12px, env(safe-area-inset-top)) var(--pad) 12px;
-}
-
+.editor__bar { display: flex; align-items: center; gap: 12px; padding: max(12px, env(safe-area-inset-top)) var(--pad) 12px; }
 .editor__meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
 .editor__titlerow { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .editor__title { font-size: 13px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -763,8 +607,7 @@ select.input { appearance: none; padding-right: 30px;
 .editor__stage {
   position: relative;
   overflow: hidden;
-  display: grid;
-  place-items: center;
+  display: grid; place-items: center;
   padding: 2px var(--pad);
   touch-action: none;
   container-type: size;
@@ -773,9 +616,8 @@ select.input { appearance: none; padding-right: 30px;
 .editor__stage.can-pan { cursor: grab; }
 .editor__stage.is-pan  { cursor: grabbing; }
 
-/* Height-led, so the slide is as big as the stage allows, but never wider than
-   it. `75cqh` is the width at which a 3:4 box is exactly the container's
-   height; min() picks whichever constraint bites first. */
+/* Height-led, so the slide is as big as the stage allows and never wider.
+   `75cqh` is the width at which a 3:4 box is exactly the container's height. */
 .editor__slide {
   position: relative;
   aspect-ratio: 3 / 4;
@@ -786,38 +628,68 @@ select.input { appearance: none; padding-right: 30px;
   box-shadow: var(--sh-2);
   background: var(--surface);
   will-change: transform;
+  isolation: isolate;
 }
 
-.editor__slide canvas { display: block; width: 100%; height: 100%; }
+/* Three layers. Only the photograph moves, and it moves on the compositor. */
+.editor__slide .layer { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
-.editor.is-editing .editor__slide { cursor: grab; touch-action: none; }
+.layer--photo {
+  inset: auto;
+  left: 0; top: 0;
+  width: auto; height: auto;
+  transform-origin: 0 0;
+  will-change: transform;
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+
+.editor.is-editing .editor__slide { cursor: grab; }
 .editor.is-editing .editor__slide.is-drag { cursor: grabbing; }
 .editor.is-editing .editor__slide.is-drag .crop__thirds { opacity: 1; }
 
-.editor__busy {
-  position: absolute;
-  inset: auto 0 12px 0;
-  text-align: center;
-  font-size: 11px;
-  color: var(--ink-3);
+.crop__thirds {
+  position: absolute; inset: 0; pointer-events: none; z-index: 3;
+  opacity: 0; transition: opacity .18s var(--ease);
+  background:
+    linear-gradient(to right,  transparent calc(33.333% - .5px), rgba(255,255,255,.55) calc(33.333% - .5px) calc(33.333% + .5px), transparent calc(33.333% + .5px)),
+    linear-gradient(to right,  transparent calc(66.666% - .5px), rgba(255,255,255,.55) calc(66.666% - .5px) calc(66.666% + .5px), transparent calc(66.666% + .5px)),
+    linear-gradient(to bottom, transparent calc(33.333% - .5px), rgba(255,255,255,.55) calc(33.333% - .5px) calc(33.333% + .5px), transparent calc(33.333% + .5px)),
+    linear-gradient(to bottom, transparent calc(66.666% - .5px), rgba(255,255,255,.55) calc(66.666% - .5px) calc(66.666% + .5px), transparent calc(66.666% + .5px));
 }
 
-.editor__foot {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 10px var(--pad) max(12px, env(safe-area-inset-bottom));
-}
+.crop__guides { position: absolute; inset: 0; pointer-events: none; z-index: var(--z-guide); }
+.crop__guide { position: absolute; background: var(--accent); opacity: 0; transition: opacity .12s linear; }
+.crop__guide.is-on { opacity: 1; }
+.crop__guide[data-axis="v"] { top: 0; bottom: 0; width: 1.5px; margin-left: -0.75px; }
+.crop__guide[data-axis="h"] { left: 0; right: 0; height: 1.5px; margin-top: -0.75px; }
 
+.editor__busy { position: absolute; inset: auto 0 12px 0; text-align: center; font-size: 11px; color: var(--ink-3); z-index: 5; }
+
+.editor__foot { display: flex; flex-direction: column; gap: 10px; padding: 10px var(--pad) max(12px, env(safe-area-inset-bottom)); }
 .editor__zoomrow { display: flex; align-items: center; gap: 12px; }
-.editor__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.editor__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .editor__nav { display: flex; align-items: center; gap: 10px; }
 .editor__count { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; min-width: 6ch; text-align: center; }
 .editor__actions { display: flex; align-items: center; gap: 8px; }
 
+.editor__zoomrow output { min-width: 4.5ch; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--ink-3); text-align: right; }
+
+input[type="range"] { appearance: none; flex: 1; height: 24px; background: transparent; cursor: pointer; }
+input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--surface-3); }
+input[type="range"]::-moz-range-track { height: 4px; border-radius: 2px; background: var(--surface-3); }
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none; width: 20px; height: 20px; margin-top: -8px;
+  border-radius: 50%; background: var(--surface);
+  border: 1px solid var(--line); box-shadow: var(--sh-1);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px; height: 20px; border: 1px solid var(--line);
+  border-radius: 50%; background: var(--surface); box-shadow: var(--sh-1);
+}
+
 /* A phone cannot hold the toggle, the title and the close on one line, nor the
-   nav and three actions. Rather than let either row scroll - a clipped primary
-   action is worse than a shorter slide - each wraps to its own line. */
+   nav and the actions. Each wraps to its own rather than clipping. */
 @media (max-width: 560px) {
   .editor__bar { flex-wrap: wrap; row-gap: 10px; }
   .editor__meta { order: 1; }
@@ -826,9 +698,8 @@ select.input { appearance: none; padding-right: 30px;
 
   .editor__row { flex-direction: column; align-items: stretch; gap: 10px; }
   .editor__nav { justify-content: center; }
-  .editor__actions { justify-content: center; flex-wrap: wrap; }
-  .editor__actions .btn { padding: 11px 15px; }
-  .editor__zoomrow { gap: 9px; }
+  .editor__actions { justify-content: center; }
+  .editor__actions .btn { flex: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {

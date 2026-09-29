@@ -32,6 +32,9 @@
     <g id="i-right" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
       <path d="m9.5 5 7 7-7 7"/>
     </g>
+    <g id="i-down" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m5 9.5 7 7 7-7"/>
+    </g>
   </defs>
 </svg>
 
@@ -45,65 +48,45 @@
 
 <main class="shell">
 
-  <!-- ── Controls ─────────────────────────────────────────────── -->
-  <div class="rail">
+  <!-- ── Draft ────────────────────────────────────────────────── -->
+  <!-- First in the source so it is first on a phone: the slides are the
+       point, and the controls sit under them in a sheet. -->
+  <div class="stage">
+    <div class="stagehead">
+      <h2 class="sec__title">Draft</h2>
+      <div class="stagehead__actions">
+        <button type="button" class="btn btn--quiet" id="btnShare" hidden>Share</button>
+        <button type="button" class="btn" id="btnDownloadAll" hidden>Download all</button>
+      </div>
+    </div>
 
-    <!-- 1. Cover -->
+    <!-- A grid on a big screen, one slide at a time on a phone. -->
+    <div class="track" id="grid">
+      <div class="empty">
+        <strong>Six slides, ready to post</strong>
+        <span>Pick a product and a cover shot. You get the cover with the
+              wordmark on it, then the five product slides in that SKU's order,
+              backgrounds cut out. Edit any of them afterwards.</span>
+      </div>
+    </div>
+    <div class="dots" id="dots" hidden aria-hidden="true"></div>
+  </div>
+
+  <!-- ── Controls ─────────────────────────────────────────────── -->
+  <div class="rail" id="rail">
+
+    <button type="button" class="sheet__grip" id="sheetToggle" aria-expanded="false" aria-controls="rail">
+      <span class="sheet__bar" aria-hidden="true"></span>
+      <span class="sheet__label" id="sheetLabel">Pick a product to start</span>
+      <span class="sheet__chev" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-down"/></svg></span>
+    </button>
+
+    <div class="more" id="more">
+
+    <!-- 1. Product -->
     <section class="sec">
       <div class="sec__head">
         <span class="sec__n">1</span>
-        <h2 class="sec__title">Cover shot</h2>
-        <span class="sec__aside">
-          <button type="button" class="btn btn--quiet btn--tiny" id="btnRecrop" hidden>Recentre</button>
-        </span>
-      </div>
-
-      <label class="picker" id="picker" tabindex="0">
-        <input type="file" id="coverFile" accept="image/*" hidden>
-        <span class="picker__inner">
-          <span class="picker__icon"><svg viewBox="0 0 24 24"><use href="#i-upload"/></svg></span>
-          <span class="picker__text">Choose a cover shot</span>
-          <span class="picker__hint">Any size or shape. You frame it to 3:4 next.</span>
-        </span>
-      </label>
-
-      <div id="cropWrap" hidden>
-        <div class="crop" id="crop" tabindex="0" role="application"
-             aria-label="Cover framing. Drag to move, pinch or scroll to zoom, arrow keys to nudge.">
-          <img alt="">
-          <span class="crop__thirds" aria-hidden="true"></span>
-          <span class="crop__logo" id="cropLogo" aria-hidden="true"></span>
-          <span class="crop__guides" aria-hidden="true">
-            <i class="crop__guide" data-axis="v" data-guide="vs"></i>
-            <i class="crop__guide" data-axis="v" data-guide="vc"></i>
-            <i class="crop__guide" data-axis="v" data-guide="ve"></i>
-            <i class="crop__guide" data-axis="h" data-guide="hs"></i>
-            <i class="crop__guide" data-axis="h" data-guide="hc"></i>
-            <i class="crop__guide" data-axis="h" data-guide="he"></i>
-          </span>
-        </div>
-
-        <div class="zoomrow" style="margin-top:12px">
-          <span class="row__label">Size</span>
-          <input type="range" id="zoom" min="1" max="5" step="0.01" value="1" aria-label="Cover zoom">
-          <output id="zoomOut">100%</output>
-        </div>
-        <p class="note" style="margin-top:8px">Drag to move. It clicks into place at the centre and against each edge.</p>
-      </div>
-
-      <div class="row">
-        <span class="row__label">Logo colour</span>
-        <div class="seg" role="radiogroup" aria-label="Logo colour">
-          <button type="button" class="seg__btn is-on" data-logo="#ffffff" role="radio" aria-checked="true">White</button>
-          <button type="button" class="seg__btn" data-logo="#000000" role="radio" aria-checked="false">Black</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. Product -->
-    <section class="sec">
-      <div class="sec__head">
-        <span class="sec__n">2</span>
         <h2 class="sec__title">Product</h2>
       </div>
 
@@ -117,8 +100,12 @@
         </button>
       </div>
       <p class="note" id="prodNote">Loading the catalogue&hellip;</p>
+    </section>
 
-      <div id="detail" class="detail" hidden>
+      <!-- Everything below waits until there is a product to apply it to. -->
+      <div class="more" id="afterProduct" hidden>
+
+      <div id="detail" class="detail">
         <div class="row"><span class="row__label">Heading</span>
           <input type="text" id="fHeading" class="input input--sm"></div>
         <div class="row"><span class="row__label">Subheading</span>
@@ -133,64 +120,71 @@
             <option value="woman-back">Woman back</option>
           </select></div>
       </div>
-    </section>
 
-    <!-- 3. Output -->
-    <section class="sec">
-      <div class="sec__head">
-        <span class="sec__n">3</span>
-        <h2 class="sec__title">Output</h2>
-      </div>
-
-      <div class="row">
-        <span class="row__label">Width</span>
-        <div class="seg" role="radiogroup" aria-label="Export width">
-          <button type="button" class="seg__btn" data-size="1080" role="radio" aria-checked="false">1080</button>
-          <button type="button" class="seg__btn is-on" data-size="1620" role="radio" aria-checked="true">1620</button>
-          <button type="button" class="seg__btn" data-size="3000" role="radio" aria-checked="false">3000</button>
+      <!-- 2. Cover -->
+      <section class="sec">
+        <div class="sec__head">
+          <span class="sec__n">2</span>
+          <h2 class="sec__title">Cover shot</h2>
         </div>
-      </div>
 
-      <div class="row">
-        <span class="row__label">Format</span>
-        <div class="seg" role="radiogroup" aria-label="Export format">
-          <button type="button" class="seg__btn is-on" data-fmt="png" role="radio" aria-checked="true">PNG</button>
-          <button type="button" class="seg__btn" data-fmt="jpeg" role="radio" aria-checked="false">JPEG</button>
+        <label class="filerow" id="picker" tabindex="0">
+          <input type="file" id="coverFile" accept="image/*" hidden>
+          <span class="filerow__thumb" id="coverThumb">
+            <svg viewBox="0 0 24 24"><use href="#i-upload"/></svg>
+          </span>
+          <span class="filerow__text">
+            <strong id="coverName">Choose an image</strong>
+            <em>Becomes slide 1. Frame it after building.</em>
+          </span>
+          <span class="btn btn--quiet btn--tiny" aria-hidden="true">Browse</span>
+        </label>
+
+        <div class="row">
+          <span class="row__label">Logo colour</span>
+          <div class="seg" role="radiogroup" aria-label="Logo colour">
+            <button type="button" class="seg__btn is-on" data-logo="#ffffff" role="radio" aria-checked="true">White</button>
+            <button type="button" class="seg__btn" data-logo="#000000" role="radio" aria-checked="false">Black</button>
+          </div>
         </div>
+      </section>
+
+      <!-- 3. Output -->
+      <section class="sec">
+        <div class="sec__head">
+          <span class="sec__n">3</span>
+          <h2 class="sec__title">Output</h2>
+        </div>
+
+        <div class="row">
+          <span class="row__label">Width</span>
+          <div class="seg" role="radiogroup" aria-label="Export width">
+            <button type="button" class="seg__btn" data-size="1080" role="radio" aria-checked="false">1080</button>
+            <button type="button" class="seg__btn is-on" data-size="1620" role="radio" aria-checked="true">1620</button>
+            <button type="button" class="seg__btn" data-size="3000" role="radio" aria-checked="false">3000</button>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="row__label">Format</span>
+          <div class="seg" role="radiogroup" aria-label="Export format">
+            <button type="button" class="seg__btn is-on" data-fmt="png" role="radio" aria-checked="true">PNG</button>
+            <button type="button" class="seg__btn" data-fmt="jpeg" role="radio" aria-checked="false">JPEG</button>
+          </div>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" id="optCut" checked>
+          <span>Cut out backgrounds<em>Slides 2, 3, 5 and 6. The close-up stays full bleed.</em></span>
+        </label>
+
+        <p class="note" id="engineNote"></p>
+      </section>
       </div>
-
-      <label class="check">
-        <input type="checkbox" id="optCut" checked>
-        <span>Cut out backgrounds<em>Slides 2, 3, 5 and 6. The close-up stays full bleed.</em></span>
-      </label>
-
-      <p class="note" id="engineNote"></p>
-    </section>
+    </div>
 
     <button type="button" class="btn btn--primary btn--full" id="btnBuild" disabled>Build carousel</button>
     <p class="note note--status" id="status" role="status" aria-live="polite"></p>
-  </div>
-
-  <!-- ── Draft ────────────────────────────────────────────────── -->
-  <div class="stage">
-    <div class="stagehead">
-      <h2 class="sec__title">Draft</h2>
-      <div class="stagehead__actions">
-        <button type="button" class="btn btn--quiet" id="btnShare" hidden>Share</button>
-        <button type="button" class="btn" id="btnDownloadAll" hidden>Download all</button>
-      </div>
-    </div>
-
-    <!-- A grid on a big screen, a swipeable run of slides on a phone. -->
-    <div class="track" id="grid">
-      <div class="empty">
-        <strong>Six slides, ready to post</strong>
-        <span>Frame a cover shot and pick a product. You get the cover with the
-              wordmark on it, then the five product slides in that SKU's order,
-              backgrounds cut out. Tap any slide to look closely or reframe it.</span>
-      </div>
-    </div>
-    <div class="dots" id="dots" hidden aria-hidden="true"></div>
   </div>
 
 </main>
@@ -213,18 +207,21 @@
     <label class="switch" title="Locked until you turn this on">
       <input type="checkbox" data-e-lock>
       <span class="switch__track" aria-hidden="true"><span class="switch__knob"></span></span>
-      <span class="switch__text">Allow changes</span>
+      <span class="switch__text">Allow edits</span>
     </label>
 
-    <button type="button" class="round" data-e-close aria-label="Close">
+    <button type="button" class="round" data-e-close aria-label="Close without saving">
       <svg viewBox="0 0 24 24"><use href="#i-close"/></svg>
     </button>
   </header>
 
   <div class="editor__stage" data-e-stage>
+    <!-- Three layers. Only the middle one moves. -->
     <div class="editor__slide" data-e-slide role="application"
          aria-label="Slide framing. Drag to move, pinch or scroll to zoom, arrow keys to nudge.">
-      <canvas data-e-canvas width="1000" height="1333"></canvas>
+      <canvas class="layer" data-e-bg width="900" height="1200"></canvas>
+      <img class="layer layer--photo" data-e-photo alt="">
+      <canvas class="layer" data-e-fg width="900" height="1200"></canvas>
       <span class="crop__thirds" aria-hidden="true"></span>
       <span class="crop__guides" aria-hidden="true">
         <i class="crop__guide" data-axis="v" data-e-guide="vs"></i>
@@ -234,18 +231,17 @@
         <i class="crop__guide" data-axis="h" data-e-guide="hc"></i>
         <i class="crop__guide" data-axis="h" data-e-guide="he"></i>
       </span>
-      <span class="editor__busy" data-e-busy hidden>Rendering&hellip;</span>
+      <span class="editor__busy" data-e-busy hidden>Loading&hellip;</span>
     </div>
   </div>
 
   <footer class="editor__foot">
     <div class="editor__zoomrow" data-e-zoomrow hidden>
       <span class="row__label">Size</span>
-      <input type="range" data-e-zoom min="1" max="5" step="0.01" value="1" aria-label="Slide zoom">
+      <input type="range" data-e-zoom min="0.2" max="5" step="0.01" value="1" aria-label="Slide zoom">
       <output data-e-zoomout>100%</output>
-      <button type="button" class="btn btn--quiet btn--tiny" data-e-recentre>Recentre</button>
+      <button type="button" class="btn btn--quiet btn--tiny" data-e-recentre>Reset</button>
     </div>
-    <p class="note" data-e-hint hidden>This photo already fills the frame exactly. Zoom in to reposition it.</p>
 
     <div class="editor__row">
       <span class="editor__nav">
@@ -260,9 +256,8 @@
 
       <span class="editor__actions">
         <span data-e-viewtools><span class="editor__sub" data-e-viewzoom>100%</span></span>
-        <button type="button" class="btn btn--quiet" data-e-download>Download</button>
-        <button type="button" class="btn" data-e-save disabled>Save image</button>
-        <button type="button" class="btn btn--primary" data-e-saveall hidden>Save all</button>
+        <button type="button" class="btn btn--quiet" data-e-saveall hidden>Save all</button>
+        <button type="button" class="btn btn--primary" data-e-save disabled>Save changes</button>
       </span>
     </div>
   </footer>

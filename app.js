@@ -2,19 +2,17 @@
 
    The work lives in lib/: shopify.js reads the catalogue, cutout.js lifts the
    backgrounds, frame.js and framer.js are the crop arithmetic and its gestures,
-   render.js draws the slides, cropper.js is the inline cover editor and
-   editor.js the full-screen one. This file connects them to the page and holds
-   the draft.
+   render.js draws the slides and editor.js is the full-screen surface. This
+   file connects them to the page and holds the draft.
 
    The draft is the point. A built carousel is not six finished files, it is six
-   slides that can still be reframed; Save writes a new version into the draft,
-   and Download is the separate, later act of putting them on the device. */
+   slides that can still be reframed; Save changes writes a new version into the
+   draft, and Download is the separate, later act of putting them on the
+   device. */
 
 import { ORDERS, KINDS, loadCatalogue, readProduct, pickImage } from './lib/shopify.js';
 import { warm } from './lib/cutout.js';
 import { renderToFile, defaultAdjust } from './lib/render.js';
-import { IDENTITY } from './lib/frame.js';
-import { createCropper } from './lib/cropper.js';
 import { createEditor } from './lib/editor.js';
 
 const $  = (s, r = document) => r.querySelector(s);
@@ -23,6 +21,7 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const state = {
   catalogue: [],
   coverBitmap: null,
+  coverName: '',
   logo: '#ffffff',
   size: 1620,
   fmt: 'png',
@@ -31,7 +30,6 @@ const state = {
   slides: [],
 };
 
-let cropper = null;
 let editor = null;
 
 function say(msg, tone = '') {
@@ -42,17 +40,59 @@ function say(msg, tone = '') {
 
 const refreshBuild = () => { $('#btnBuild').disabled = !(state.coverBitmap && state.product); };
 
+// -- The sheet ---------------------------------------------------
+
+/* On a phone the controls are a sheet over the slides, so the slides need to
+   know how much of the screen is left. Measured rather than guessed, because
+   the collapsed height changes with the product name and the status line. */
+function measureSheet() {
+  const rail = $('#rail');
+  if (getComputedStyle(rail).position !== 'fixed') return;
+  document.documentElement.style.setProperty('--sheet-h', `${rail.offsetHeight}px`);
+  measureStage();
+}
+
+/* How wide a slide may be, so the strip and its dots sit clear of the sheet.
+   Derived from where the strip actually starts and where the sheet actually
+   begins, so it survives the heading wrapping or the sheet growing a line. */
+function measureStage() {
+  const track = $('#grid');
+  const rail = $('#rail');
+  if (getComputedStyle(rail).position !== 'fixed') {
+    track.style.removeProperty('--slide-w');
+    return;
+  }
+  const dots = $('#dots').hidden ? 0 : $('#dots').offsetHeight + 12;
+  const room = window.innerHeight - track.offsetTop - rail.offsetHeight - dots - 8;
+  const caption = 40;                       // the tile's name and buttons
+  track.style.setProperty('--slide-w', `${Math.max(170, Math.round((room - caption) * 0.75))}px`);
+}
+
+function openSheet(open) {
+  $('#rail').classList.toggle('is-open', open);
+  $('#sheetToggle').setAttribute('aria-expanded', String(open));
+  measureSheet();
+  measureStage();
+}
+
 // -- Cover -------------------------------------------------------
 
 async function setCover(file) {
   if (!file || !file.type.startsWith('image/')) return;
   state.coverBitmap = await createImageBitmap(file);
-  $('#picker').hidden = true;
-  $('#cropWrap').hidden = false;
-  $('#btnRecrop').hidden = false;
-  await cropper.setImage(file);
+  state.coverName = file.name;
+
+  const thumb = $('#coverThumb');
+  thumb.innerHTML = '';
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
+  img.alt = '';
+  thumb.appendChild(img);
+  $('#coverName').textContent = file.name;
+
   warm(onWarm).catch(() => {});
   refreshBuild();
+  measureSheet();
 }
 
 function onWarm(pct) {
@@ -73,8 +113,6 @@ function score(p, q) {
   return q.split(/\s+/).filter(Boolean).every(w => hay.includes(w)) ? 5 : 0;
 }
 
-/* A body-level element placed by script rather than an absolute child of the
-   field: the rail scrolls and clips on desktop, which would slice it in half. */
 function placeList() {
   const list = $('#prodList');
   if (list.hidden) return;
@@ -82,7 +120,7 @@ function placeList() {
   list.style.left = `${r.left}px`;
   list.style.width = `${r.width}px`;
   const below = window.innerHeight - r.bottom;
-  if (below > 240) { list.style.top = `${r.bottom + 6}px`; list.style.bottom = 'auto'; }
+  if (below > 260) { list.style.top = `${r.bottom + 6}px`; list.style.bottom = 'auto'; }
   else { list.style.top = 'auto'; list.style.bottom = `${window.innerHeight - r.top + 6}px`; }
 }
 
@@ -160,9 +198,13 @@ async function choose(handle) {
     $('#fSub').value = p.sub;
     $('#fSku').value = p.sku;
     $('#fOrder').value = p.order;
-    $('#detail').hidden = false;
     $('#prodNote').textContent =
-      `${Object.keys(p.byName).length} images on this SKU. Order tag: ${p.order}.`;
+      `${Object.keys(p.byName).length} images. Order tag: ${p.order}.`;
+    $('#sheetLabel').textContent = p.title;
+
+    /* The rest only means anything once there is a product to apply it to. */
+    $('#afterProduct').hidden = false;
+    openSheet(true);
     say('');
     refreshBuild();
   } catch (err) {
@@ -175,7 +217,7 @@ async function choose(handle) {
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const nameFor = (i, s) =>
   `${state.product.sku || state.product.handle}-${i + 1}-${slug(s.name)}.${state.fmt === 'png' ? 'png' : 'jpg'}`;
-const cutFor = s => state.cut && s.kind !== 'macro' && s.kind !== 'cover';
+const cutFor = s => state.cut && s.kind !== 'macro' && s.kind !== 'cover' && !!s.url;
 
 async function build() {
   const p = state.product;
@@ -195,17 +237,16 @@ async function build() {
   const swapped = [];
   const used = new Set();
 
-  /* Each slide carries its own adjustment and its own committed copy of it, so
-     "changed but not saved" is a fact about the slide rather than a flag held
-     somewhere else that could get out of step with it. */
+  /* The cover is simply slide one. It is picked in the sheet and framed in the
+     same editor as everything else, rather than having a stage of its own. */
+  const coverStart = defaultAdjust('cover', state.coverBitmap.width, state.coverBitmap.height);
   const slides = [{
     kind: 'cover',
     name: 'Cover',
     bitmap: state.coverBitmap,
-    natural: { w: state.coverBitmap.width, h: state.coverBitmap.height },
     logo: state.logo,
-    adjust: cropper.adjust,
-    committed: cropper.adjust,
+    adjust: { ...coverStart },
+    committed: { ...coverStart },
     editable: false,
     dirty: false,
   }];
@@ -220,7 +261,6 @@ async function build() {
       kind: KINDS[i],
       name: hit.name,
       url: hit.url,
-      natural: { w: hit.width, h: hit.height },
       adjust: { ...start },
       committed: { ...start },
       editable: false,
@@ -230,6 +270,7 @@ async function build() {
 
   state.slides = slides;
   skeleton(slides);
+  openSheet(false);                    // get out of the way of the result
 
   for (let i = 0; i < slides.length; i++) {
     const s = slides[i];
@@ -245,6 +286,8 @@ async function build() {
   btn.disabled = false;
   btn.textContent = 'Build carousel';
   refreshDraftActions();
+  measureSheet();
+  measureStage();
   say(swapped.length
       ? `Done. Substituted ${swapped.join(', ')}.`
       : `Done. ${state.slides.filter(s => s.file).length} slides.`,
@@ -261,7 +304,6 @@ async function commit(s) {
   s.file = await renderToFile(s, state.product, cutFor(s), state.size, state.fmt, nameFor(i, s));
   s.committed = { ...s.adjust };
   s.dirty = false;
-  if (s.kind === 'cover') cropper.adjust = s.adjust;   // keep a rebuild in step
   fillTile(i);
   refreshDraftActions();
 }
@@ -290,7 +332,8 @@ function skeleton(slides) {
       <div class="tile__frame is-busy"><span class="tile__n">${i + 1}</span></div>
       <div class="tile__foot">
         <span class="tile__name"></span>
-        <button type="button" class="btn btn--quiet btn--tiny" hidden>Download</button>
+        <button type="button" class="btn btn--quiet btn--tiny" data-act="edit" hidden>Edit</button>
+        <button type="button" class="btn btn--quiet btn--tiny" data-act="dl" hidden>Download</button>
       </div>`;
     $('.tile__name', tile).textContent = s.name;
     grid.appendChild(tile);
@@ -312,21 +355,18 @@ function fillTile(i) {
   img.alt = `Slide ${i + 1}, ${s.name}`;
   frame.prepend(img);
 
-  if (!$('.tile__open', frame)) {
-    const open = document.createElement('button');
-    open.type = 'button';
-    open.className = 'tile__open';
-    open.setAttribute('aria-label', `Open slide ${i + 1}`);
-    open.innerHTML = '<svg viewBox="0 0 24 24"><use href="#i-edit"/></svg>';
-    frame.appendChild(open);
-    open.addEventListener('click', e => { e.stopPropagation(); openEditor(i); });
+  if (!frame.dataset.wired) {
+    frame.dataset.wired = '1';
     frame.addEventListener('click', () => openEditor(i));
   }
 
   markTile(i);
-  const dl = $('.tile__foot button', tile);
+  const edit = $('[data-act="edit"]', tile);
+  const dl = $('[data-act="dl"]', tile);
+  edit.hidden = false;
   dl.hidden = false;
-  dl.onclick = () => saveOne(s.file);
+  edit.onclick = e => { e.stopPropagation(); openEditor(i); };
+  dl.onclick = e => { e.stopPropagation(); saveOne(s.file); };
 }
 
 function markTile(i) {
@@ -352,9 +392,7 @@ function failTile(i, msg) {
 }
 
 function openEditor(i) {
-  editor.open(state.slides, i, {
-    product: state.product, cut: state.cut, width: state.size, fmt: state.fmt,
-  });
+  editor.open(state.slides, i, { product: state.product, cut: state.cut });
 }
 
 // -- Dots --------------------------------------------------------
@@ -367,12 +405,26 @@ function buildDots(n) {
   syncDots();
 }
 
+/* Whichever slide is nearest the middle of the strip. Dividing the scroll
+   offset by an average slide width, which is what this replaced, drifts once
+   the gaps and the end padding are counted and never quite reaches the last
+   dot. */
 function syncDots() {
   const track = $('#grid');
   const dots = [...$('#dots').children];
   if (!dots.length) return;
-  const at = Math.round(track.scrollLeft / (track.scrollWidth / dots.length));
-  dots.forEach((d, i) => d.classList.toggle('is-on', i === Math.min(at, dots.length - 1)));
+  /* Viewport coordinates throughout. `offsetLeft` is measured from the
+     offsetParent while `scrollLeft` is measured inside the track, and mixing
+     the two puts the marker one slide out. */
+  const box = track.getBoundingClientRect();
+  const mid = box.left + box.width / 2;
+  let best = 0, bestGap = Infinity;
+  [...track.children].forEach((tile, i) => {
+    const r = tile.getBoundingClientRect();
+    const gap = Math.abs(r.left + r.width / 2 - mid);
+    if (gap < bestGap) { bestGap = gap; best = i; }
+  });
+  dots.forEach((d, i) => d.classList.toggle('is-on', i === best));
 }
 
 // -- Saving to the device ----------------------------------------
@@ -430,21 +482,18 @@ function init() {
     ? 'The cut-out model loads once you pick a cover or a product.'
     : 'Helvetica Neue is not on this device, so the slide copy falls back to Arial.';
 
-  cropper = createCropper($('#crop'), {
-    onChange: ({ scale }) => {
-      $('#zoom').value = scale.toFixed(2);
-      $('#zoomOut').textContent = `${Math.round(scale * 100)}%`;
-    },
-  });
-
   editor = createEditor($('#editor'), {
     onSave: commit,
     onSaveAll: commitAll,
-    onDownload: saveOne,
     onDirty: () => state.slides.forEach((_, i) => markTile(i)),
   });
 
-  // Cover input
+  // Sheet
+  $('#sheetToggle').addEventListener('click', () => openSheet(!$('#rail').classList.contains('is-open')));
+  new ResizeObserver(() => { if (!$('#rail').classList.contains('is-open')) measureSheet(); }).observe($('#rail'));
+  window.addEventListener('resize', () => { measureSheet(); measureStage(); });
+
+  // Cover
   const picker = $('#picker');
   picker.addEventListener('click', () => $('#coverFile').click());
   picker.addEventListener('keydown', e => {
@@ -461,11 +510,8 @@ function init() {
     if (item) setCover(item.getAsFile());
   });
 
-  $('#zoom').addEventListener('input', e => cropper.setZoom(+e.target.value));
-  $('#btnRecrop').addEventListener('click', () => cropper.reset());
-
   // Options
-  segGroup('logo', v => { state.logo = v; $('#cropLogo').style.setProperty('--logo-ink', v); });
+  segGroup('logo', v => { state.logo = v; });
   segGroup('size', v => { state.size = +v; });
   segGroup('fmt',  v => { state.fmt = v; });
   $('#optCut').addEventListener('change', e => { state.cut = e.target.checked; });
@@ -492,8 +538,10 @@ function init() {
     input.value = '';
     $('#prodClear').hidden = true;
     state.product = null;
-    $('#detail').hidden = true;
+    $('#afterProduct').hidden = true;
+    $('#sheetLabel').textContent = 'Pick a product to start';
     refreshBuild();
+    measureSheet();
     input.focus();
   });
   window.addEventListener('resize', placeList);
@@ -506,9 +554,15 @@ function init() {
   $('#btnShare').addEventListener('click', shareAll);
   $('#btnReset').addEventListener('click', () => location.reload());
 
+  /* Open to begin with, because the first thing to do is in there. It closes
+     itself once there is a carousel to look at. */
+  openSheet(true);
+  measureSheet();
+
   loadCatalogue().then(list => {
     state.catalogue = list;
     $('#prodNote').textContent = `${list.length} products. Search, paste a link, or type a SKU.`;
+    measureSheet();
   }).catch(err => {
     $('#prodNote').textContent = `Could not load the catalogue: ${err.message}`;
     $('#prodNote').className = 'note note--err';
