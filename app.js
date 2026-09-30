@@ -103,7 +103,13 @@ async function setCover(file) {
   img.src = URL.createObjectURL(file);
   img.alt = '';
   thumb.appendChild(img);
+  thumb.classList.add('has-art');
+  /* The file name is the one piece of text here that earns its place - it is
+     how you tell two shots apart - but a camera roll name is long, so the tile
+     clips it rather than wrapping to three lines. */
   $('#coverName').textContent = file.name;
+  $('#picker').classList.add('is-set');
+  $('.cover__hint').textContent = 'Slide 1 · tap to replace';
 
   warm(onWarm).catch(() => {});
   refreshBuild();
@@ -113,8 +119,11 @@ async function setCover(file) {
 function clearCover() {
   state.coverBitmap = null;
   const thumb = $('#coverThumb');
-  thumb.innerHTML = '<svg viewBox="0 0 24 24"><use href="#i-upload"/></svg>';
-  $('#coverName').textContent = 'Choose an image';
+  thumb.innerHTML = '<svg class="cover__glyph" viewBox="0 0 24 24"><use href="#i-upload"/></svg>';
+  thumb.classList.remove('has-art');
+  $('#coverName').textContent = 'Add a cover';
+  $('#picker').classList.remove('is-set');
+  $('.cover__hint').textContent = 'Slide 1';
   $('#coverFile').value = '';
 }
 
@@ -221,7 +230,10 @@ async function choose(handle) {
     $('#fSub').value = p.sub;
     $('#fSku').value = p.sku;
     $('#fOrder').value = p.order;
-    $('#prodNote').textContent = `${Object.keys(p.byName).length} images. Order tag: ${p.order}.`;
+    $('#prodNote').textContent = `${Object.keys(p.byName).length} photos found`;
+    /* The fold is shut by default, so its hint has to say what is inside it. */
+    const hint = $('#detailHint');
+    if (hint) hint.textContent = p.heading || 'From the catalogue';
     $('#sheetLabel').textContent = p.title;
     $('#afterProduct').hidden = false;
     openSheet(true);
@@ -734,10 +746,10 @@ function init() {
   window.addEventListener('scroll', placeList, true);
 
   const picker = $('#picker');
-  picker.addEventListener('click', () => $('#coverFile').click());
-  picker.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('#coverFile').click(); }
-  });
+  picker.addEventListener('click', () => $('#coverFile').click());   // the only activation
+  /* No keydown handler: the picker is a <button> now, so Enter and Space
+     already activate it. The old one existed because a <label> does not, and
+     keeping it would fire the file input a second time. */
   $('#coverFile').addEventListener('change', e => setCover(e.target.files[0]));
   ['dragenter', 'dragover'].forEach(t =>
     picker.addEventListener(t, e => { e.preventDefault(); picker.classList.add('is-over'); }));
@@ -750,8 +762,13 @@ function init() {
   });
 
   segGroup('logo', v => { state.logo = v; });
-  segGroup('size', v => { state.size = +v; });
-  segGroup('fmt',  v => { state.fmt = v; });
+  const outHint = () => {
+    const el = $('#outHint');
+    if (el) el.textContent = `${state.size} · ${state.fmt.toUpperCase()}`;
+  };
+  segGroup('size', v => { state.size = +v; outHint(); });
+  segGroup('fmt',  v => { state.fmt = v; outHint(); });
+  outHint();
   $('#optCut').addEventListener('change', e => { state.cut = e.target.checked; });
 
   const input = $('#prodInput');

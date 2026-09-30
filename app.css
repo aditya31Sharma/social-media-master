@@ -204,6 +204,8 @@ button, input, select { font: inherit; color: inherit; letter-spacing: inherit; 
 
 .sec { display: flex; flex-direction: column; gap: 10px; }
 
+.sec__head { display: flex; align-items: center; gap: 8px; }
+
 .sec__title {
   margin: 0;
   font-size: 13px;
@@ -905,6 +907,161 @@ input[type="range"]::-moz-range-thumb {
   /* 16px needs the room, or the taller text crowds these two. */
   .input--sm { min-height: 36px; }
   .chip--add { width: 90px; height: 30px; }
+}
+
+
+/* ─── The cover tile ──────────────────────────────────────────────
+   Was a compact row with a 44px thumb, a two-line explanation and a
+   "Browse" pill. It is the one thing you must supply, so it is now a tile
+   that shows the shot you picked. Shared by both layouts; the phone block
+   below gives it more room. */
+.cover {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px;
+  border: 1px dashed var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color var(--fast) var(--ease), background var(--fast) var(--ease);
+}
+.cover:hover { border-color: var(--ink-3); }
+.cover:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.cover.is-set { border-style: solid; }
+
+.cover__art {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 56px; aspect-ratio: 3 / 4;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  overflow: hidden;
+  color: var(--ink-3);
+}
+.cover__art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cover__glyph { width: 20px; height: 20px; }
+
+/* A column flex container sizes each line to its own content, so the name
+   needs an explicit width to have something to clip against. */
+.cover__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
+.cover__text strong {
+  font-size: 14px; font-weight: 500;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;
+}
+.cover__text em { font-style: normal; font-size: 12px; color: var(--ink-3); }
+
+/* ─── The overrides, folded ───────────────────────────────────────
+   Heading, subheading, SKU and order all arrive filled from the catalogue.
+   Folding them keeps the common path to three things: product, cover, build. */
+.fold { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); }
+.fold__head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 13px; cursor: pointer; list-style: none;
+}
+.fold__head::-webkit-details-marker { display: none; }
+.fold__head:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; border-radius: var(--r-lg); }
+.fold__icon { width: 17px; height: 17px; flex: none; color: var(--ink-3); }
+.fold__title { font-size: 14px; font-weight: 500; }
+.fold__hint {
+  margin-left: auto; font-size: 12px; color: var(--ink-3);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 45%;
+}
+.fold__chev { width: 16px; height: 16px; flex: none; color: var(--ink-3); transition: transform var(--fast) var(--ease); }
+.fold[open] .fold__chev { transform: rotate(180deg); }
+.fold__body { display: flex; flex-direction: column; gap: 12px; padding: 2px 13px 14px; }
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field__label { font-size: 12px; color: var(--ink-2); }
+
+.sec__icon { width: 17px; height: 17px; flex: none; color: var(--ink-3); }
+
+@media (prefers-reduced-motion: reduce) {
+  .fold__chev { transition: none; }
+}
+
+
+/* ═══ Phone ══════════════════════════════════════════════════════
+   The rail was a desktop settings panel scaled down: label on the left,
+   a half-width field on the right, 29px segment buttons, and a paragraph
+   under most controls. On a phone that reads as a web form, not an app.
+
+   Everything below is scoped to `max-width: 899px` so the desktop sidebar
+   is untouched - the min-width:900px block after this one never has to
+   fight it.
+
+   The rules: one decision per row, full width; nothing you tap smaller
+   than 48px; a label is not a sentence. */
+@media (max-width: 899px) {
+
+  /* A control the width of the sheet beats a control squeezed into 58% of
+     it, and right-aligned text in a field you are typing into is hostile. */
+  .row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 14px 0;
+  }
+  .row__label { font-size: 14px; color: var(--ink); font-weight: 500; }
+  .input--sm { max-width: none; text-align: left; min-height: 48px; }
+
+  .sec__head { gap: 9px; }
+  .sec__title { font-size: 13px; }
+  .sec__icon { width: 18px; height: 18px; }
+
+  /* Segments become a real full-width switch. 29px was the single worst
+     target on the screen and there were seven of them. */
+  .seg { width: 100%; padding: 4px; border-radius: var(--r-lg); }
+  .seg__btn {
+    flex: 1 1 0;
+    min-height: 44px;
+    font-size: 15px;
+    border-radius: calc(var(--r-lg) - 4px);
+  }
+
+  .input { min-height: 52px; padding: 13px 15px; border-radius: var(--r-lg); }
+  .combo__clear { width: 40px; height: 40px; right: 7px; }
+  .combo__clear svg { width: 15px; height: 15px; }
+
+  /* The cover is the one thing you must supply and the one control that was
+     failing, so on a phone it gets real size and shows the shot. */
+  .cover { gap: 14px; padding: 12px; border-radius: var(--r-xl, 18px); }
+  .cover__art { width: 76px; border-radius: var(--r-lg); }
+  .cover__glyph { width: 26px; height: 26px; }
+  .cover__text strong { font-size: 16px; }
+  .cover__text em { font-size: 13px; }
+
+  .fold__head { padding: 15px 14px; min-height: 56px; }
+  .fold__title { font-size: 15px; }
+  .fold__body { gap: 14px; padding: 2px 14px 16px; }
+  .field__label { font-size: 13px; }
+
+  .check { align-items: center; gap: 12px; padding: 14px 0; }
+  .check span { font-size: 15px; }
+  .check span em { font-size: 13px; }
+
+  /* The action bar sits on the home indicator otherwise. */
+  .rail__actions { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+  .btn--full { min-height: 56px; font-size: 16px; border-radius: var(--r-xl, 18px); }
+
+  .sheet__grip { min-height: 56px; }
+  .sheet__label { font-size: 15px; }
+
+  /* The action bar is sticky INSIDE the scroller, so without this the last
+     control sits underneath it and cannot be reached. The gradient only fades
+     the first 14px, so the clearance has to cover the whole bar. */
+  .rail.is-open .more { padding-bottom: 8px; }
+  .rail.is-open { scroll-padding-bottom: 80px; }
+
+  /* The last three targets under 44px. The checkbox's own 18px box is fine -
+     the whole label is the target and it is 48px - but these three were not. */
+  #btnReset { min-height: 44px; padding-inline: 14px; }
+  .combo__clear { width: 44px; height: 44px; right: 5px; }
 }
 
 @media (min-width: 900px) {

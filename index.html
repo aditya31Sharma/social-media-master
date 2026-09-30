@@ -21,6 +21,18 @@
     <g id="i-upload" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 16V4M12 4 7.5 8.5M12 4l4.5 4.5M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16"/>
     </g>
+    <g id="i-image" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="m4 17 4.5-4.5 3 3L15 12l5 5"/>
+    </g>
+    <g id="i-tag" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 11V5a2 2 0 0 1 2-2h6l9 9-8 8-9-9Z"/><circle cx="7.5" cy="7.5" r="1.3"/>
+    </g>
+    <g id="i-tune" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/>
+    </g>
+    <g id="i-export" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 15V8M12 8 9.5 10.5M12 8l2.5 2.5"/>
+    </g>
     <g id="i-edit" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
       <path d="M4 20h4l10-10a2.1 2.1 0 0 0-3-3L5 17v3Z"/>
     </g>
@@ -106,6 +118,7 @@
 
       <section class="sec">
         <div class="sec__head">
+          <svg class="sec__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tune"/></svg>
           <h2 class="sec__title">Product</h2>
         </div>
 
@@ -124,38 +137,49 @@
       <!-- Everything below waits until there is a product to apply it to. -->
       <div class="more" id="afterProduct" hidden>
 
-        <div id="detail" class="detail">
-          <div class="row"><span class="row__label">Heading</span>
-            <input type="text" id="fHeading" class="input input--sm"></div>
-          <div class="row"><span class="row__label">Subheading</span>
-            <input type="text" id="fSub" class="input input--sm"></div>
-          <div class="row"><span class="row__label">SKU code</span>
-            <input type="text" id="fSku" class="input input--sm"></div>
-          <div class="row"><span class="row__label">Order</span>
-            <select id="fOrder" class="input input--sm">
-              <option value="man-front">Man front</option>
-              <option value="man-back">Man back</option>
-              <option value="woman-front">Woman front</option>
-              <option value="woman-back">Woman back</option>
-            </select></div>
-        </div>
+        <!-- All four are filled from the catalogue. They are overrides, not
+             questions, so they fold away rather than sitting in the path of
+             every build. -->
+        <details id="detail" class="fold">
+          <summary class="fold__head">
+            <svg class="fold__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tag"/></svg>
+            <span class="fold__title">Slide text</span>
+            <span class="fold__hint" id="detailHint">From the catalogue</span>
+            <svg class="fold__chev" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-down"/></svg>
+          </summary>
+          <div class="fold__body">
+            <label class="field"><span class="field__label">Heading</span>
+              <input type="text" id="fHeading" class="input"></label>
+            <label class="field"><span class="field__label">Subheading</span>
+              <input type="text" id="fSub" class="input"></label>
+            <label class="field"><span class="field__label">SKU code</span>
+              <input type="text" id="fSku" class="input"></label>
+            <label class="field"><span class="field__label">Image order</span>
+              <select id="fOrder" class="input">
+                <option value="man-front">Man front</option>
+                <option value="man-back">Man back</option>
+                <option value="woman-front">Woman front</option>
+                <option value="woman-back">Woman back</option>
+              </select></label>
+          </div>
+        </details>
 
         <section class="sec">
           <div class="sec__head">
+            <svg class="sec__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-image"/></svg>
             <h2 class="sec__title">Cover shot</h2>
           </div>
 
-          <label class="filerow" id="picker" tabindex="0">
-            <input type="file" id="coverFile" accept="image/*" hidden>
-            <span class="filerow__thumb" id="coverThumb">
-              <svg viewBox="0 0 24 24"><use href="#i-upload"/></svg>
+          <input type="file" id="coverFile" accept="image/*" hidden>
+          <button type="button" class="cover" id="picker" aria-label="Choose a cover image">
+            <span class="cover__art" id="coverThumb">
+              <svg class="cover__glyph" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-upload"/></svg>
             </span>
-            <span class="filerow__text">
-              <strong id="coverName">Choose an image</strong>
-              <em>Becomes slide 1. Frame it after building.</em>
+            <span class="cover__text">
+              <strong id="coverName">Add a cover</strong>
+              <em class="cover__hint">Slide 1</em>
             </span>
-            <span class="btn btn--quiet btn--tiny" aria-hidden="true">Browse</span>
-          </label>
+          </button>
 
           <div class="row">
             <span class="row__label">Logo colour</span>
@@ -166,10 +190,17 @@
           </div>
         </section>
 
-        <section class="sec">
-          <div class="sec__head">
-            <h2 class="sec__title">Output</h2>
-          </div>
+        <!-- Width, format and the cut-out are set once and then left alone,
+             so they fold too. What is left in the path is the product, the
+             cover and the button. -->
+        <details class="fold">
+          <summary class="fold__head">
+            <svg class="fold__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-export"/></svg>
+            <span class="fold__title">Output</span>
+            <span class="fold__hint" id="outHint">1620 · PNG</span>
+            <svg class="fold__chev" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-down"/></svg>
+          </summary>
+          <div class="fold__body">
 
           <div class="row">
             <span class="row__label">Width</span>
@@ -190,11 +221,12 @@
 
           <label class="check">
             <input type="checkbox" id="optCut" checked>
-            <span>Cut out backgrounds<em>The flats and the model shots. The close-up stays full bleed.</em></span>
+            <span>Cut out backgrounds<em>Not the close-up</em></span>
           </label>
 
           <p class="note" id="engineNote"></p>
-        </section>
+          </div>
+        </details>
       </div>
     </div>
 
