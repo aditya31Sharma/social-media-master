@@ -753,8 +753,23 @@ select.input {
   isolation: isolate;
 }
 
-/* Three layers. Only the photograph moves, and it moves on the compositor. */
+/* Four layers. Only the photograph and the wordmark move, and both move on
+   the compositor. */
 .editor__slide .layer { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.editor__slide .layer[hidden] { display: none; }
+
+/* The wordmark on a cover. Inert until edits are allowed, so a locked cover
+   still swipes and pinches through it the way every other slide does. */
+.layer--logo {
+  inset: auto; left: 0; top: 0;
+  width: auto; height: auto;
+  transform-origin: 0 0;
+  will-change: transform;
+  pointer-events: none;
+  touch-action: none;
+}
+.editor.is-editing .layer--logo { pointer-events: auto; cursor: grab; }
+.editor.is-editing .layer--logo.is-dragging { cursor: grabbing; }
 
 .layer--photo {
   inset: auto; left: 0; top: 0;

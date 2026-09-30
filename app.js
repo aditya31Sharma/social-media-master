@@ -268,6 +268,10 @@ async function build() {
     kind: 'cover', name: 'Cover',
     bitmap: state.coverBitmap,
     logo: state.logo,
+    /* The wordmark's offset from the board's placement, draggable in the
+       editor. Its own committed copy, because a cover can be dirty from the
+       logo having moved while the photograph has not. */
+    logoPos: { x: 0, y: 0 }, committedLogo: { x: 0, y: 0 },
     adjust: { ...coverStart }, committed: { ...coverStart },
     editable: false, dirty: false,
   }];
@@ -326,6 +330,7 @@ async function commit(s) {
   s.file = await renderToFile(s, c.product, cutFor(s), state.size, state.fmt, fileName(c, i, s));
   s.thumb = await renderThumb(s, c.product, cutFor(s));
   s.committed = { ...s.adjust };
+  if (s.logoPos) s.committedLogo = { ...s.logoPos };
   s.dirty = false;
   fillTile(c, i);
   refreshDraftActions();
