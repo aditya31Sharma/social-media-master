@@ -13,6 +13,8 @@ import { ORDERS, KINDS, loadCatalogue, readProduct, pickImage } from './lib/shop
 import { warm } from './lib/cutout.js';
 import { renderToFile, renderThumb, defaultAdjust, isBottoms } from './lib/render.js';
 import { createEditor } from './lib/editor.js';
+import { createReelUI } from './lib/reel-ui.js';
+import { createPhotoPicker, createPhotoAdjust } from './lib/reel-picker.js';
 import { SHAPES, FIXED_TAGS, buildCaption, captionStats, copyText,
          suggestTags, suggestHook } from './lib/caption.js';
 
@@ -851,3 +853,121 @@ function init() {
 }
 
 init();
+
+
+/* ── The reel template ────────────────────────────────────────────
+   Kept in one place and wired at boot. It borrows the catalogue and the
+   scoring, and owns everything else - its own two pickers, its own sheets,
+   its own output - because the two templates have almost nothing in common
+   past "which product". */
+
+let reelUI = null;
+
+/* A small combobox of its own. The carousel's is bound to one input and
+   rewriting it to take two would risk the template that already works. */
+function miniCombo(input, rows, onPick) {
+  const list = document.createElement('ul');
+  list.className = 'combo__list';
+  list.hidden = true;
+  document.body.appendChild(list);
+
+  const place = () => {
+    const r = input.getBoundingClientRect();
+    list.style.left = `${r.left}px`;
+    list.style.width = `${r.width}px`;
+    const below = window.innerHeight - r.bottom;
+    if (below > 260) { list.style.top = `${r.bottom + 6}px`; list.style.bottom = 'auto'; }
+    else { list.style.top = 'auto'; list.style.bottom = `${window.innerHeight - r.top + 6}px`; }
+  };
+
+  const paint = async q => {
+    const all = await rows();
+    const hits = all.map(p => ({ p, s: score(p, q) })).filter(x => x.s > 0)
+      .sort((a, b) => b.s - a.s).slice(0, 40);
+    list.innerHTML = '';
+    if (!hits.length) {
+      const li = document.createElement('li');
+      li.className = 'combo__empty';
+      li.textContent = all.length ? `Nothing matches "${q}".` : 'Catalogue still loading.';
+      list.appendChild(li);
+    } else {
+      for (const { p } of hits) {
+        const li = document.createElement('li');
+        li.dataset.handle = p.handle;
+        const b = document.createElement('b'); b.textContent = p.title;
+        const c = document.createElement('code'); c.textContent = p.sku;
+        li.append(b, c);
+        li.addEventListener('mousedown', e => {
+          e.preventDefault();
+          input.value = p.title;
+          list.hidden = true;
+          onPick(p);
+        });
+        list.appendChild(li);
+      }
+    }
+    list.hidden = false;
+    place();
+  };
+
+  const q = () => input.value.trim().toLowerCase();
+  input.addEventListener('focus', () => paint(q()));
+  input.addEventListener('input', () => paint(q()));
+  input.addEventListener('blur', () => setTimeout(() => { list.hidden = true; }, 120));
+  window.addEventListener('scroll', place, true);
+  window.addEventListener('resize', place);
+}
+
+function showVideo(blob, name) {
+  const fig = $('#reelOut');
+  const video = fig.querySelector('[data-reel-video]');
+  const save = fig.querySelector('[data-reel-save]');
+  if (video.src) URL.revokeObjectURL(video.src);
+  const url = URL.createObjectURL(blob);
+  video.src = url;
+  save.href = url;
+  save.download = name;
+  fig.querySelector('[data-reel-meta]').textContent =
+    `${(blob.size / 1048576).toFixed(1)} MB · 15s · MP4`;
+  fig.hidden = false;
+  $('#emptyState').hidden = true;
+  fig.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function wireReel() {
+  const picker = createPhotoPicker($('#photoPicker'));
+  const adjust = createPhotoAdjust($('#photoAdjust'));
+
+  reelUI = createReelUI({
+    catalogue: () => state.catalogue,
+    onStatus: m => { $('#status').textContent = m; },
+    onVideo: showVideo,
+    /* Straight through: reel-ui already built the adjust callback with the
+       right corner and somewhere to keep the framing. */
+    openPicker: opts => picker.open(opts),
+    openAdjust: o => adjust.open(o),
+  });
+
+  miniCombo($('#topInput'), () => reelUI.wearable(), p => reelUI.pick('top', p));
+  miniCombo($('#botInput'), () => reelUI.wearable(), p => reelUI.pick('bottom', p));
+
+  /* The switch swaps the whole panel and the button under it. */
+  for (const tab of $$('[data-tpl]')) {
+    tab.addEventListener('click', () => {
+      const which = tab.dataset.tpl;
+      for (const t of $$('[data-tpl]')) {
+        const on = t === tab;
+        t.classList.toggle('is-on', on);
+        t.setAttribute('aria-selected', String(on));
+      }
+      for (const panel of $$('[data-panel]')) panel.hidden = panel.dataset.panel !== which;
+      $('#btnBuild').hidden = which !== 'carousel';
+      $('#btnReel').hidden = which !== 'reel';
+      $('#sheetLabel').textContent = which === 'reel'
+        ? 'Pick a top and a bottom' : (state.carousels.length ? 'Add another SKU' : 'Pick a product to start');
+      relayout();
+    });
+  }
+}
+
+wireReel();
