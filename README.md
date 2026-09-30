@@ -1,5 +1,7 @@
 # Social Media Master
 
+**Live: https://aditya31sharma.github.io/social-media-master/**
+
 Builds a Tenzen Instagram carousel from one cover shot and one product link.
 
 Give it a cover image and a product, and it returns six 3:4 slides, ready to
