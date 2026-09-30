@@ -11,7 +11,7 @@
 
 import { ORDERS, KINDS, loadCatalogue, readProduct, pickImage } from './lib/shopify.js';
 import { warm } from './lib/cutout.js';
-import { renderToFile, renderThumb, defaultAdjust } from './lib/render.js';
+import { renderToFile, renderThumb, defaultAdjust, isBottoms } from './lib/render.js';
 import { createEditor } from './lib/editor.js';
 import { SHAPES, FIXED_TAGS, buildCaption, captionStats, copyText,
          suggestTags, suggestHook } from './lib/caption.js';
@@ -47,7 +47,12 @@ function refreshBuild() {
   btn.hidden = !state.product;
   btn.disabled = !(state.coverBitmap && state.product);
 }
-const cutFor = s => state.cut && s.kind !== 'macro' && s.kind !== 'cover' && !!s.url;
+/* The close-up is never cut out: it is the one slide that bleeds to all four
+   edges, and lifting its background would leave a hole. Excluded by KIND, and
+   also by NAME - pickImage's last resort can hand a Macro file to a flat or
+   model slot on a sparsely shot SKU, and that slot would otherwise cut it. */
+const isMacro = s => s.kind === 'macro' || /^Macro/i.test(s.name || '');
+const cutFor = s => state.cut && !isMacro(s) && s.kind !== 'cover' && !!s.url;
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const fileName = (c, i, s) =>
   `${c.product.sku || c.product.handle}-${i + 1}-${slug(s.name)}.${state.fmt === 'png' ? 'png' : 'jpg'}`;
@@ -284,6 +289,9 @@ async function build() {
        editor. Its own committed copy, because a cover can be dirty from the
        logo having moved while the photograph has not. */
     logoPos: { x: 0, y: 0 }, committedLogo: { x: 0, y: 0 },
+    logoScale: 1, committedLogoScale: 1,
+    committedLogoColour: state.logo,
+    start: { ...coverStart },
     adjust: { ...coverStart }, committed: { ...coverStart },
     editable: false, dirty: false,
   }];
@@ -293,9 +301,12 @@ async function build() {
     if (!hit) return;
     used.add(hit.name);
     if (hit.name !== want) swapped.push(`${want} -> ${hit.name}`);
-    const start = defaultAdjust(KINDS[i], hit.width, hit.height);
+    const start = defaultAdjust(KINDS[i], hit.width, hit.height, { bottoms: isBottoms(p.type) });
     slides.push({
       kind: KINDS[i], name: hit.name, url: hit.url,
+      /* Kept so Reset returns to THIS slide's starting frame, which for a
+         sweatpant flat is not the same as the generic default. */
+      start: { ...start },
       adjust: { ...start }, committed: { ...start },
       editable: false, dirty: false,
     });
@@ -343,6 +354,8 @@ async function commit(s) {
   s.thumb = await renderThumb(s, c.product, cutFor(s));
   s.committed = { ...s.adjust };
   if (s.logoPos) s.committedLogo = { ...s.logoPos };
+  if (s.logoScale) s.committedLogoScale = s.logoScale;
+  if (s.kind === 'cover') s.committedLogoColour = s.logo;
   s.dirty = false;
   fillTile(c, i);
   refreshDraftActions();
@@ -761,7 +774,26 @@ function init() {
     if (item) setCover(item.getAsFile());
   });
 
-  segGroup('logo', v => { state.logo = v; });
+  /* Three swatches: white, black, and whatever the native picker returns.
+     Whichever was last touched is the one that is on. */
+  const swatches = [...document.querySelectorAll('.sw[data-logo]')];
+  const custom = $('#logoCustom');
+  const customWrap = $('#logoCustomWrap');
+
+  function pickLogo(colour, fromCustom) {
+    state.logo = colour;
+    for (const b of swatches) {
+      const on = !fromCustom && b.dataset.logo.toLowerCase() === colour.toLowerCase();
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-pressed', String(on));
+    }
+    customWrap.classList.toggle('is-on', !!fromCustom);
+    customWrap.style.setProperty('--sw', colour);
+  }
+  for (const b of swatches) b.addEventListener('click', () => pickLogo(b.dataset.logo, false));
+  custom.addEventListener('input', () => pickLogo(custom.value, true));
+  customWrap.style.setProperty('--sw', custom.value);
+  pickLogo('#ffffff', false);
   const outHint = () => {
     const el = $('#outHint');
     if (el) el.textContent = `${state.size} · ${state.fmt.toUpperCase()}`;

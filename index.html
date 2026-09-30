@@ -182,10 +182,15 @@
           </button>
 
           <div class="row">
-            <span class="row__label">Logo colour</span>
-            <div class="seg" role="radiogroup" aria-label="Logo colour">
-              <button type="button" class="seg__btn is-on" data-logo="#ffffff" role="radio" aria-checked="true">White</button>
-              <button type="button" class="seg__btn" data-logo="#000000" role="radio" aria-checked="false">Black</button>
+            <span class="row__label">Wordmark colour</span>
+            <div class="swatches">
+              <button type="button" class="sw sw--white is-on" data-logo="#ffffff" aria-label="White wordmark" aria-pressed="true"></button>
+              <button type="button" class="sw sw--black" data-logo="#000000" aria-label="Black wordmark" aria-pressed="false"></button>
+              <!-- Any other colour. The swatch shows what is picked, and the
+                   native picker is the control, so there is nothing to learn. -->
+              <label class="sw sw--custom" id="logoCustomWrap" title="Pick a colour">
+                <input type="color" id="logoCustom" value="#db3737" aria-label="Custom wordmark colour">
+              </label>
             </div>
           </div>
         </section>
@@ -271,6 +276,10 @@
       <img class="layer layer--photo" data-e-photo alt="" draggable="false">
       <canvas class="layer" data-e-fg width="900" height="1200"></canvas>
       <img class="layer layer--logo" data-e-logo alt="" draggable="false" hidden>
+      <div class="xform" data-e-xform hidden aria-hidden="true">
+        <i class="xform__h" data-h="nw"></i><i class="xform__h" data-h="ne"></i>
+        <i class="xform__h" data-h="sw"></i><i class="xform__h" data-h="se"></i>
+      </div>
       <span class="crop__thirds" aria-hidden="true"></span>
       <span class="crop__guides" aria-hidden="true">
         <i class="crop__guide" data-axis="v" data-e-guide="vs"></i>
@@ -297,6 +306,17 @@
       <div class="seg seg--sm target" data-e-target role="radiogroup" aria-label="What the controls below move" hidden>
         <button type="button" class="seg__btn is-on" data-target="photo" role="radio" aria-checked="true">Photo</button>
         <button type="button" class="seg__btn" data-target="logo" role="radio" aria-checked="false">Wordmark</button>
+      </div>
+
+      <div class="editor__colour" data-e-colourrow hidden>
+        <span class="row__label">Colour</span>
+        <div class="swatches">
+          <button type="button" class="sw sw--white is-on" data-elogo="#ffffff" aria-label="White wordmark" aria-pressed="true"></button>
+          <button type="button" class="sw sw--black" data-elogo="#000000" aria-label="Black wordmark" aria-pressed="false"></button>
+          <label class="sw sw--custom" data-e-colourwrap title="Pick a colour">
+            <input type="color" data-e-colour value="#db3737" aria-label="Custom wordmark colour">
+          </label>
+        </div>
       </div>
 
       <div class="aligns" role="group" aria-label="Align to the frame">

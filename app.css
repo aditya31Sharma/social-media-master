@@ -785,6 +785,48 @@ select.input {
 .target { align-self: stretch; }
 .target[hidden] { display: none; }
 
+/* ─── The transform box ───────────────────────────────────────────
+   Sits exactly on the wordmark, so the handles are on the real corners of
+   what gets exported. The box itself is draggable: the glyphs can be almost
+   invisible on a pale cover, and a rectangle is a far bigger target. */
+.xform {
+  position: absolute;
+  left: 0; top: 0;
+  transform-origin: 0 0;
+  z-index: 3;
+  outline: 1px solid var(--accent);
+  touch-action: none;
+  cursor: grab;
+}
+.xform[hidden] { display: none; }
+.xform.is-sizing { cursor: nwse-resize; }
+
+.xform__h {
+  position: absolute;
+  width: 14px; height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1.5px solid var(--accent);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  touch-action: none;
+}
+.xform__h[data-h="nw"] { left: 0;    top: 0; cursor: nwse-resize; }
+.xform__h[data-h="ne"] { left: 100%; top: 0; cursor: nesw-resize; }
+.xform__h[data-h="sw"] { left: 0;    top: 100%; cursor: nesw-resize; }
+.xform__h[data-h="se"] { left: 100%; top: 100%; cursor: nwse-resize; }
+
+/* A finger needs more than 14px. The dot stays the same size; its hit area
+   grows around it. */
+@media (pointer: coarse) {
+  .xform__h::after {
+    content: ""; position: absolute; inset: -11px;
+  }
+}
+
+.editor__colour { display: flex; align-items: center; gap: 12px; }
+.editor__colour[hidden] { display: none; }
+
 .layer--photo {
   inset: auto; left: 0; top: 0;
   width: auto; height: auto;
@@ -967,6 +1009,35 @@ input[type="range"]::-moz-range-thumb {
 }
 .cover__text em { font-style: normal; font-size: 12px; color: var(--ink-3); }
 
+/* ─── Colour swatches ─────────────────────────────────────────────
+   Two fixed choices and a native picker for anything else. The picker's own
+   input is the whole third swatch, so there is no extra affordance to learn;
+   it just shows the colour it holds. */
+.swatches { display: flex; align-items: center; gap: 8px; }
+.sw {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  display: grid; place-items: center;
+  transition: box-shadow var(--fast) var(--ease), transform var(--fast) var(--ease);
+}
+.sw--white  { background: #fff; }
+.sw--black  { background: #000; border-color: #000; }
+.sw--custom { background: var(--sw, #db3737); overflow: hidden; }
+.sw--custom input {
+  /* The colour input IS the swatch: scaled up so any hit inside the circle
+     opens the picker, and clipped by the circle's overflow. */
+  position: absolute; inset: -30%;
+  width: 160%; height: 160%;
+  border: 0; padding: 0; background: none;
+  opacity: 0; cursor: pointer;
+}
+.sw.is-on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ink); }
+.sw:focus-within, .sw:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
 /* ─── The overrides, folded ───────────────────────────────────────
    Heading, subheading, SKU and order all arrive filled from the catalogue.
    Folding them keeps the common path to three things: product, cover, build. */
@@ -1072,6 +1143,9 @@ input[type="range"]::-moz-range-thumb {
 
   /* The last three targets under 44px. The checkbox's own 18px box is fine -
      the whole label is the target and it is 48px - but these three were not. */
+  .swatches { gap: 12px; }
+  .sw { width: 44px; height: 44px; }
+
   #btnReset { min-height: 44px; padding-inline: 14px; }
   .combo__clear { width: 44px; height: 44px; right: 5px; }
 }
