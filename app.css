@@ -773,6 +773,18 @@ select.input {
 .editor.is-editing .layer--logo { pointer-events: auto; cursor: grab; }
 .editor.is-editing .layer--logo.is-dragging { cursor: grabbing; }
 
+/* Selected as the alignment target: a hairline so you can see WHICH of the two
+   things the row below is about to move. Outline, not border, so it costs the
+   wordmark no layout and cannot shift what is being aligned. */
+.editor.is-editing .layer--logo.is-target {
+  outline: 1px solid var(--accent, #db3737);
+  outline-offset: 3px;
+}
+
+/* The switch sits above the alignment row and only on the cover. */
+.target { align-self: stretch; }
+.target[hidden] { display: none; }
+
 .layer--photo {
   inset: auto; left: 0; top: 0;
   width: auto; height: auto;

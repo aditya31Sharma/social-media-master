@@ -293,7 +293,13 @@
         <button type="button" class="btn btn--quiet btn--tiny" data-e-recentre>Reset</button>
       </div>
 
-      <div class="aligns" role="group" aria-label="Align the photograph to the frame">
+      <!-- Only the cover has two things to move, so this only appears there. -->
+      <div class="seg seg--sm target" data-e-target role="radiogroup" aria-label="What the controls below move" hidden>
+        <button type="button" class="seg__btn is-on" data-target="photo" role="radio" aria-checked="true">Photo</button>
+        <button type="button" class="seg__btn" data-target="logo" role="radio" aria-checked="false">Wordmark</button>
+      </div>
+
+      <div class="aligns" role="group" aria-label="Align to the frame">
         <button type="button" class="aligns__btn" data-align="x:start"  aria-label="Flush left"><svg viewBox="0 0 24 24"><use href="#i-al"/></svg></button>
         <button type="button" class="aligns__btn" data-align="x:centre" aria-label="Centre horizontally"><svg viewBox="0 0 24 24"><use href="#i-ac"/></svg></button>
         <button type="button" class="aligns__btn" data-align="x:end"    aria-label="Flush right"><svg viewBox="0 0 24 24"><use href="#i-ar"/></svg></button>
