@@ -885,6 +885,28 @@ input[type="range"]::-moz-range-thumb {
    specificity means the last one wins, so there is only one place to put them.
    ------------------------------------------------------------------------ */
 
+/* iOS zooms the whole page in the moment a field is focused if that field's
+   text is under 16px. The only other way to decline it is `maximum-scale=1`
+   on the viewport, which takes pinch zoom away from everyone, so instead every
+   control that accepts TYPED text gets 16px on touch devices. Desktop keeps
+   the compact sizes.
+
+   The gate is `pointer: coarse`, not a width breakpoint: the zoom is a
+   property of the input method, and a narrow desktop window has no business
+   getting phone-sized fields. Checkboxes and the range slider are left alone -
+   they take no text, so they never trigger it. */
+@media (pointer: coarse) {
+  .input,
+  .input--sm,
+  .cap__text,
+  .chip--add {
+    font-size: 16px;
+  }
+  /* 16px needs the room, or the taller text crowds these two. */
+  .input--sm { min-height: 36px; }
+  .chip--add { width: 90px; height: 30px; }
+}
+
 @media (min-width: 900px) {
   .shell {
     grid-template-columns: 324px minmax(0, 1fr);
