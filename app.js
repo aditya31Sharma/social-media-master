@@ -925,6 +925,10 @@ function showVideo(blob, name) {
   if (video.src) URL.revokeObjectURL(video.src);
   const url = URL.createObjectURL(blob);
   video.src = url;
+  /* The clip opens on white by design, so a paused first frame looks like a
+     failure. It plays itself, muted and looping, the way a reel does. */
+  video.autoplay = true;
+  video.play?.().catch(() => { video.currentTime = 3; });
   save.href = url;
   save.download = name;
   fig.querySelector('[data-reel-meta]').textContent =
@@ -946,10 +950,24 @@ function wireReel() {
        right corner and somewhere to keep the framing. */
     openPicker: opts => picker.open(opts),
     openAdjust: o => adjust.open(o),
+    /* Collapse the sheet so the stage - and the clip - is what is on screen. */
+    onStage: () => {
+      const rail = $('#rail');
+      if (rail.classList.contains('is-open')) $('#sheetToggle').click();
+    },
   });
 
-  miniCombo($('#topInput'), () => reelUI.wearable(), p => reelUI.pick('top', p));
-  miniCombo($('#botInput'), () => reelUI.wearable(), p => reelUI.pick('bottom', p));
+  /* A button beside the input, not a label wrapping it: a label forwards the
+     tap to the input natively and the handler would fire it a second time,
+     which is what stopped the cover picker opening on iOS. */
+  /* Back into the settings from the finished clip. */
+  $('#btnReelEdit')?.addEventListener('click', () => reelUI?.openSetup());
+
+  $('#reelSfxBtn').addEventListener('click', () => $('#reelSfx').click());
+  $('#reelMusicBtn').addEventListener('click', () => $('#reelMusic').click());
+
+  miniCombo($('#topInput'), () => reelUI.wearable('top'), p => reelUI.pick('top', p));
+  miniCombo($('#botInput'), () => reelUI.wearable('bottom'), p => reelUI.pick('bottom', p));
 
   /* The switch swaps the whole panel and the button under it. */
   for (const tab of $$('[data-tpl]')) {
@@ -962,7 +980,6 @@ function wireReel() {
       }
       for (const panel of $$('[data-panel]')) panel.hidden = panel.dataset.panel !== which;
       $('#btnBuild').hidden = which !== 'carousel';
-      $('#btnReel').hidden = which !== 'reel';
       $('#sheetLabel').textContent = which === 'reel'
         ? 'Pick a top and a bottom' : (state.carousels.length ? 'Add another SKU' : 'Pick a product to start');
       relayout();

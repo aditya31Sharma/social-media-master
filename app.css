@@ -824,6 +824,43 @@ select.input {
   }
 }
 
+/* The shuffle switch sits in the picker's header area, so it reads as a mode
+   for the grid below rather than another thing to tick at the end. */
+/* The badge reads "Opens", not a number: there is no queue to number. */
+.pk__num { border-radius: 999px; padding: 0 8px; width: auto; }
+
+/* The fit preview: the two garments alone, white, so the gap between them is
+   the only thing to look at. */
+.fitprev {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: #fff;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 6px;
+}
+.fitprev canvas { width: 100%; max-width: 230px; height: auto; display: block; }
+
+/* The music trimmer. The whole track is drawn once; the lit band is the
+   fifteen seconds that go in. */
+.trim { display: flex; flex-direction: column; gap: 8px; position: relative; }
+.trim[hidden] { display: none; }
+.trim canvas {
+  width: 100%; height: 64px; display: block;
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.trim__win {
+  position: absolute; top: 0; height: 64px;
+  border: 2px solid var(--ink);
+  border-radius: var(--r-md);
+  background: rgba(16, 17, 19, 0.08);
+  pointer-events: none;
+}
+.trim__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.trim__row output { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
 .editor__colour { display: flex; align-items: center; gap: 12px; }
 .editor__colour[hidden] { display: none; }
 
@@ -1155,14 +1192,24 @@ input[type="range"]::-moz-range-thumb {
   min-height: 0;
   padding-bottom: 4px;
 }
+/* `display: block` matters: a button is inline-block by default and its
+   content then drives the height, which is why these came out ragged - some
+   cells tall, some short, instead of a grid. Block plus an absolutely placed
+   image makes every cell the same shape whatever is in it. */
 .pk__cell {
   position: relative;
+  display: block;
+  width: 100%;
   aspect-ratio: 3 / 4;
   border: 1px solid var(--line); border-radius: var(--r-md);
   background: var(--surface-2);
   padding: 0; overflow: hidden; cursor: pointer;
 }
-.pk__cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pk__cell img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
 .pk__cell.is-on { border-color: var(--ink); box-shadow: 0 0 0 2px var(--ink); }
 .pk__name {
   position: absolute; left: 0; right: 0; bottom: 0;
@@ -1209,17 +1256,98 @@ input[type="range"]::-moz-range-thumb {
   user-select: none;
 }
 
+/* ─── The setup surface ──────────────────────────────────────────
+   One task, one screen. The sheet keeps only the choice that has to be made
+   first - which two garments - and everything that follows happens here, with
+   a way back at the top and the action pinned to the bottom where a thumb
+   reaches. A bottom sheet was the wrong container for this: it competes with
+   the draft behind it and leaves the primary action floating mid-screen. */
+.setup {
+  position: fixed; inset: 0;
+  z-index: var(--z-modal, 60);
+  background: var(--bg);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  /* Not 100vh: the browser chrome on a phone would push the footer under it. */
+  height: 100dvh;
+}
+.setup[hidden] { display: none; }
+
+.setup__head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px var(--pad);
+  padding-top: max(10px, env(safe-area-inset-top));
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.setup__title { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.setup__title strong { font-size: 16px; font-weight: 500; }
+.setup__title em {
+  font-style: normal; font-size: 12px; color: var(--ink-3);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.setup__body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  min-height: 0;                       /* or the body has nothing to scroll */
+  padding: 18px var(--pad) 24px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+.setup__foot {
+  padding: 12px var(--pad);
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.setup__foot .note { text-align: center; }
+
+/* Scrolling the page behind a full surface is the classic phone bug. */
+body.is-locked { overflow: hidden; }
+
+/* ─── While it renders ───────────────────────────────────────────
+   In the stage, where the clip will appear, rather than on a status line
+   behind a sheet. Nothing plays here; this is just the wait made legible. */
+.working {
+  display: flex; flex-direction: column; gap: 10px;
+  align-items: center; justify-content: center;
+  width: 100%; max-width: 420px;
+  aspect-ratio: 9 / 16;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  padding: 24px;
+}
+.working[hidden] { display: none; }
+.working__bar {
+  width: 100%; height: 6px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.working__bar i {
+  display: block; height: 100%; width: 0%;
+  background: var(--ink);
+  border-radius: 999px;
+  transition: width 120ms linear;
+}
+.working__note { margin: 0; font-size: 13px; color: var(--ink-2); }
+
 /* ─── The finished clip ──────────────────────────────────────────
    Nothing plays while it renders. This is only here once there is a file. */
 .reelout { margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .reelout[hidden] { display: none; }
 .reelout video {
   width: 100%; max-width: 420px;
+  aspect-ratio: 9 / 16;
   border-radius: var(--r-lg);
   background: #000;
   display: block;
 }
-.reelout figcaption { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.reelout figcaption { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.reelout figcaption .btn { flex: 0 0 auto; }
 
 /* ═══ Phone ══════════════════════════════════════════════════════
    The rail was a desktop settings panel scaled down: label on the left,
@@ -1299,6 +1427,10 @@ input[type="range"]::-moz-range-thumb {
   .swatches { gap: 12px; }
   .sw { width: 44px; height: 44px; }
 
+  .setup__body { gap: 22px; }
+  .setup__title strong { font-size: 17px; }
+  .setup__foot .btn--full { min-height: 56px; }
+
   .tab { min-height: 50px; font-size: 15px; }
   .slot { padding: 12px 14px; }
   .slot__art { width: 62px; height: 62px; }
@@ -1346,6 +1478,22 @@ input[type="range"]::-moz-range-thumb {
   }
 
   .dots { display: none; }
+
+  /* A panel rather than the whole screen: one centred column whose middle row
+     takes the slack, so the header and the action stay put while the settings
+     scroll between them. */
+  .setup {
+    background: rgba(16, 17, 19, 0.45);
+    grid-template-columns: min(720px, 92vw);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    justify-content: center;
+    align-content: center;
+    padding: 5vh 0;
+  }
+  .setup__head, .setup__body, .setup__foot { background: var(--surface); }
+  .setup__head { border-radius: var(--r-xl, 18px) var(--r-xl, 18px) 0 0; }
+  .setup__foot { border-radius: 0 0 var(--r-xl, 18px) var(--r-xl, 18px); }
+  .setup__body { padding: 22px 24px 26px; }
 
   .sheetover { align-items: center; }
   .sheetover__panel {

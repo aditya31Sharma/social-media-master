@@ -1,0 +1,27 @@
+<!doctype html><meta charset="utf-8"><body style="margin:0;background:#222">
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/" } }
+</script>
+<script type="module">
+import { readProduct, splitTitle, sized } from '../lib/shopify.js';
+import { createReel } from '../lib/reel.js';
+window.__err=null; window.__done=false;
+const q=new URLSearchParams(location.search);
+try{
+  const [t,b]=await Promise.all([readProduct(q.get('top')),readProduct(q.get('bot'))]);
+  const grab=async(p,n)=>{const h=p.byName[n]||Object.values(p.byName)[0];
+    const r=await fetch(sized(h.url,1400),{mode:'cors'});
+    return {url:h.url,bitmap:await createImageBitmap(await r.blob())};};
+  const slots={tl:[await grab(t,'Macro-Front')],tr:[await grab(t,'Model-Man-Front')],
+               bl:[await grab(b,'Model-Man-Front')],br:[await grab(b,'Macro-Front')]};
+  const info=p=>{const[h,s]=splitTitle(p.title,p.productType);return{heading:h,sub:s,glb:p.glb,type:p.productType};};
+  const reel=await createReel({width:1080,top:info(t),bottom:info(b),slots,adjusts:{},
+    logoUrl:URL.createObjectURL(new Blob([(await (await fetch('../assets/logo.svg')).text()).replace(/currentColor/g,'#9aa3ab')],{type:'image/svg+xml'}))});
+  const c=document.createElement('canvas'); c.width=reel.width; c.height=reel.height;
+  c.style.cssText='width:min(100vw,'+reel.width+'px);display:block';
+  c.getContext('2d').drawImage(reel.drawFrame(+(q.get('f')||0)),0,0);
+  document.body.appendChild(c);
+  window.__done=true;
+}catch(e){window.__err=e&&(e.stack||String(e));document.body.textContent=window.__err;}
+</script>

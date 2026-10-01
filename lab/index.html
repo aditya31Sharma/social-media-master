@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D lab</title>
+<style>
+:root{--ink:#101113;--ink-2:#41464d;--ink-3:#5e656d;--line:#e3e5e8;--surface:#fff;--bg:#f6f7f8;--accent:#db3737}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.45 "Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);
+  display:grid;grid-template-columns:340px 1fr;height:100vh;overflow:hidden}
+.panel{background:var(--surface);border-right:1px solid var(--line);padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.view{display:grid;place-items:center;padding:16px;overflow:auto;background:#eceef0}
+canvas{background:#fff;box-shadow:0 8px 30px rgba(0,0,0,.14);border-radius:6px;max-height:calc(100vh - 32px);width:auto}
+h1{font-size:15px;margin:0}
+h2{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 0}
+label{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2)}
+label span{flex:0 0 118px}
+label output{flex:0 0 48px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+input[type=range]{flex:1 1 auto;min-width:0}
+select,input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px}
+button{padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--surface);font:inherit;font-size:13px;cursor:pointer}
+button.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+.row{display:flex;gap:8px}
+.row>*{flex:1 1 0}
+.note{font-size:11px;color:var(--ink-3);margin:0}
+code{font-size:11px;background:#f1f2f4;padding:1px 5px;border-radius:4px}
+#out{white-space:pre-wrap;font:11px/1.5 ui-monospace,monospace;background:#f1f2f4;padding:9px;border-radius:8px;color:var(--ink-2)}
+</style></head>
+<body>
+<div class="panel">
+  <h1>3D lab</h1>
+  <p class="note">Local only. Tune the two garments until they read as one outfit, then the numbers go into the reel.</p>
+
+  <h2>The outfit</h2>
+  <select id="top"></select>
+  <select id="bot"></select>
+
+  <h2>Proportion</h2>
+  <p class="note">The GLBs are not on a shared scale, so size comes from real garment lengths.</p>
+  <label><span>Top length</span><input type="range" id="topCm" min="30" max="110" step="1"><output id="topCmO"></output></label>
+  <label><span>Bottom length</span><input type="range" id="botCm" min="60" max="130" step="1"><output id="botCmO"></output></label>
+  <label><span>Overlap</span><input type="range" id="overlap" min="-10" max="45" step="1"><output id="overlapO"></output></label>
+  <label><span>Outfit height</span><input type="range" id="fitCm" min="120" max="260" step="1"><output id="fitCmO"></output></label>
+  <label><span>Nudge Y</span><input type="range" id="nudge" min="-30" max="30" step="1"><output id="nudgeO"></output></label>
+
+  <h2>Light</h2>
+  <label><span>Exposure</span><input type="range" id="exp" min="0.2" max="3" step="0.02"><output id="expO"></output></label>
+  <label><span>Environment</span><input type="range" id="env" min="0" max="3" step="0.02"><output id="envO"></output></label>
+  <label><span>Key</span><input type="range" id="key" min="0" max="8" step="0.05"><output id="keyO"></output></label>
+  <label><span>Key side</span><input type="range" id="keyAz" min="-180" max="180" step="1"><output id="keyAzO"></output></label>
+  <label><span>Key height</span><input type="range" id="keyEl" min="-60" max="85" step="1"><output id="keyElO"></output></label>
+  <label><span>Fill</span><input type="range" id="fill" min="0" max="4" step="0.05"><output id="fillO"></output></label>
+  <label><span>Rim</span><input type="range" id="rim" min="0" max="8" step="0.05"><output id="rimO"></output></label>
+  <label><span>Ambient</span><input type="range" id="amb" min="0" max="3" step="0.02"><output id="ambO"></output></label>
+  <label><span>Shadows</span><input type="checkbox" id="shadow" checked></label>
+  <label><span>Tone map</span><select id="tone" style="flex:1 1 auto">
+    <option value="aces">ACES filmic</option><option value="neutral">Neutral</option>
+    <option value="reinhard">Reinhard</option><option value="none">None</option></select></label>
+
+  <h2>Fabric</h2>
+  <p class="note">Most of these meshes ship near fully rough, which is what flattens them. Highlights need somewhere to sit.</p>
+  <label><span>Roughness</span><input type="range" id="rough" min="-0.6" max="0.3" step="0.01"><output id="roughO"></output></label>
+  <label><span>Sheen</span><input type="range" id="sheen" min="0" max="1" step="0.01"><output id="sheenO"></output></label>
+  <label><span>Env on fabric</span><input type="range" id="envMat" min="0" max="3" step="0.02"><output id="envMatO"></output></label>
+
+  <h2>View</h2>
+  <label><span>Turn</span><input type="range" id="turn" min="0" max="360" step="1"><output id="turnO"></output></label>
+  <div class="row"><button id="spin">Spin</button><button id="grid">Turn grid</button></div>
+  <div class="row"><button id="reset">Reset</button><button class="pri" id="copy">Copy settings</button></div>
+  <pre id="out"></pre>
+</div>
+<div class="view"><canvas id="cv"></canvas></div>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/" } }
+</script>
+<script type="module" src="./lab.js"></script>
+</body></html>

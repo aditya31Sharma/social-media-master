@@ -21,6 +21,12 @@
     <g id="i-upload" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 16V4M12 4 7.5 8.5M12 4l4.5 4.5M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16"/>
     </g>
+    <g id="i-music" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>
+    </g>
+    <g id="i-sound" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9v6h3.5L12 19V5L7.5 9H4Z"/><path d="M16 9.2a4 4 0 0 1 0 5.6M18.5 6.6a7.5 7.5 0 0 1 0 10.8"/>
+    </g>
     <g id="i-carousel" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
       <rect x="7" y="4" width="10" height="16" rx="2"/><path d="M4 7v10M20 7v10"/>
     </g>
@@ -103,10 +109,17 @@
 
     <!-- The finished reel. Nothing plays while it renders; this appears when
          there is a file. -->
+    <!-- While it renders, and then the clip itself. -->
+    <div class="working" id="reelWorking" hidden>
+      <div class="working__bar"><i id="reelBar"></i></div>
+      <p class="working__note" id="reelWorkingNote">Rendering…</p>
+    </div>
+
     <figure class="reelout" id="reelOut" hidden>
-      <video data-reel-video playsinline controls loop muted></video>
+      <video data-reel-video playsinline controls loop muted autoplay></video>
       <figcaption>
         <a class="btn btn--primary" data-reel-save download>Save the reel</a>
+        <button type="button" class="btn btn--quiet" id="btnReelEdit">Edit</button>
         <span class="note" data-reel-meta></span>
       </figcaption>
     </figure>
@@ -280,9 +293,77 @@
                    placeholder="Bottomwear" aria-label="Bottomwear" role="combobox" aria-autocomplete="list">
           </div>
           <p class="note" id="reelNote">Both turn together for 15 seconds.</p>
+
+          <!-- One short effect, played on every photograph change. Optional:
+               without it the clip is silent, which is still a clip. -->
         </section>
 
         <div id="reelAfter" hidden>
+          <button type="button" class="btn btn--primary btn--full" id="btnSetup">Proceed</button>
+          <p class="note">Shots, fit, text and sound come next.</p>
+        </div>
+        </div>
+      </div><!-- /reel panel -->
+    </div>
+
+    <div class="rail__actions">
+      <button type="button" class="btn btn--primary btn--full" id="btnBuild" disabled>Build carousel</button>
+      <p class="note note--status" id="status" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+
+</main>
+
+<ul class="combo__list" id="prodList" role="listbox" aria-label="Products" hidden></ul>
+
+
+<!-- ── Reel setup ─────────────────────────────────────────────────
+     Everything fiddly lives here rather than in the sheet: one surface, one
+     task, a way back, and the action that starts the render pinned to the
+     bottom where a thumb is. -->
+<div class="setup" id="reelSetup" hidden>
+  <header class="setup__head">
+    <button type="button" class="round" id="reelSetupBack" aria-label="Back">
+      <svg viewBox="0 0 24 24"><use href="#i-left"/></svg>
+    </button>
+    <span class="setup__title">
+      <strong id="reelSetupTitle">Set up the reel</strong>
+      <em id="reelSetupSub"></em>
+    </span>
+  </header>
+
+  <div class="setup__body">
+          <!-- Sizing the top against the bottom. The bottom is anchored to the
+               hem and is deliberately not adjustable; moving it would undo
+               that anchor. -->
+          <details class="fold">
+            <summary class="fold__head">
+              <svg class="fold__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tune"/></svg>
+              <span class="fold__title">The fit</span>
+              <span class="fold__hint" id="reelFitHint">100% &middot; 0cm</span>
+              <svg class="fold__chev" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-down"/></svg>
+            </summary>
+            <div class="fold__body">
+            <div class="fitprev"><canvas id="reelFitCv" width="520" height="924"></canvas></div>
+            <div class="row">
+              <span class="row__label">Turn</span>
+              <input type="range" id="reelFitTurn" min="0" max="359" step="1" value="0" aria-label="Turn the preview">
+              <output id="reelFitTurnOut">0&deg;</output>
+            </div>
+            <div class="row">
+              <span class="row__label">Top size</span>
+              <input type="range" id="reelTopScale" min="60" max="150" step="1" value="100" aria-label="Top size">
+              <output id="reelTopScaleOut">100%</output>
+            </div>
+            <div class="row">
+              <span class="row__label">Top height</span>
+              <input type="range" id="reelTopY" min="-30" max="30" step="1" value="0" aria-label="Top height">
+              <output id="reelTopYOut">0cm</output>
+            </div>
+            <p class="note">The bottom stays where it is; only the top moves.</p>
+            </div>
+          </details>
+
           <section class="sec">
             <div class="sec__head">
               <svg class="sec__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-image"/></svg>
@@ -293,6 +374,86 @@
             <div class="slots" id="reelSlots"></div>
           </section>
 
+          <!-- Both blocks are filled from the catalogue; these are overrides. -->
+          <details class="fold">
+            <summary class="fold__head">
+              <svg class="fold__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tag"/></svg>
+              <span class="fold__title">Slide text</span>
+              <span class="fold__hint" id="reelTextHint">From the catalogue</span>
+              <svg class="fold__chev" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-down"/></svg>
+            </summary>
+            <div class="fold__body">
+              <label class="field"><span class="field__label">Top heading</span>
+                <input type="text" id="reelTopH1" class="input"></label>
+              <label class="field"><span class="field__label">Top subheading</span>
+                <input type="text" id="reelTopH2" class="input"></label>
+              <label class="field"><span class="field__label">Bottom heading</span>
+                <input type="text" id="reelBotH1" class="input"></label>
+              <label class="field"><span class="field__label">Bottom subheading</span>
+                <input type="text" id="reelBotH2" class="input"></label>
+            </div>
+          </details>
+
+          <details class="fold">
+            <summary class="fold__head">
+              <svg class="fold__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sound"/></svg>
+              <span class="fold__title">Sound</span>
+              <span class="fold__hint" id="reelSoundHint">Switch 15% &middot; no music</span>
+              <svg class="fold__chev" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-down"/></svg>
+            </summary>
+            <div class="fold__body">
+          <input type="file" id="reelSfx" accept="audio/*" hidden>
+          <button type="button" class="cover" id="reelSfxBtn" aria-label="Choose a switch sound">
+            <span class="cover__art"><svg class="cover__glyph" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sound"/></svg></span>
+            <span class="cover__text">
+              <strong>Switch sound</strong>
+              <em class="cover__hint" id="reelSfxName">None · the reel will be silent</em>
+            </span>
+          </button>
+
+          <input type="file" id="reelMusic" accept="audio/*" hidden>
+          <button type="button" class="cover" id="reelMusicBtn" aria-label="Choose background music">
+            <span class="cover__art"><svg class="cover__glyph" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-music"/></svg></span>
+            <span class="cover__text">
+              <strong>Background music</strong>
+              <em class="cover__hint" id="reelMusicName">None</em>
+            </span>
+          </button>
+
+          <!-- A YouTube link cannot be read from a page: there is no API for
+               the audio and the request is blocked cross-origin. Pasting one
+               here saves it the local fetch command instead of pretending. -->
+          <label class="field">
+            <span class="field__label">…or a YouTube link</span>
+            <input type="url" id="reelYt" class="input" placeholder="https://youtube.com/watch?v=…"
+                   autocomplete="off" spellcheck="false">
+          </label>
+          <p class="note" id="reelYtNote" hidden></p>
+
+          <!-- Which fifteen seconds of it to use. The waveform is the whole
+               track; the lit band is what goes in. -->
+          <div class="trim" id="reelTrim" hidden>
+            <canvas id="reelWave" width="900" height="120"></canvas>
+            <div class="trim__win" id="reelTrimWin"></div>
+            <input type="range" id="reelTrimAt" min="0" max="1000" step="1" value="0" aria-label="Where the music starts">
+            <div class="trim__row">
+              <output id="reelTrimOut">0:00 – 0:15</output>
+              <button type="button" class="btn btn--quiet btn--tiny" id="reelTrimPlay">Preview</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <span class="row__label">Music level</span>
+            <input type="range" id="reelMusicVol" min="0" max="100" step="1" value="100" aria-label="Music level">
+            <output id="reelMusicVolOut">100%</output>
+          </div>
+          <div class="row">
+            <span class="row__label">Switch level</span>
+            <input type="range" id="reelSfxVol" min="0" max="100" step="1" value="15" aria-label="Switch sound level">
+            <output id="reelSfxVolOut">15%</output>
+          </div>
+            </div>
+          </details>
           <details class="fold">
             <summary class="fold__head">
               <svg class="fold__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-export"/></svg>
@@ -312,20 +473,13 @@
               <p class="note">Instagram serves reels at 1080p and re-encodes anything larger.</p>
             </div>
           </details>
-        </div>
-      </div><!-- /reel panel -->
-    </div>
-
-    <div class="rail__actions">
-      <button type="button" class="btn btn--primary btn--full" id="btnBuild" disabled>Build carousel</button>
-      <button type="button" class="btn btn--primary btn--full" id="btnReel" hidden disabled>Make the reel</button>
-      <p class="note note--status" id="status" role="status" aria-live="polite"></p>
-    </div>
   </div>
 
-</main>
-
-<ul class="combo__list" id="prodList" role="listbox" aria-label="Products" hidden></ul>
+  <div class="setup__foot">
+    <button type="button" class="btn btn--primary btn--full" id="btnReelGo" disabled>Proceed with the real generation</button>
+    <p class="note" id="reelSetupNote">Pick a shot for each of the four corners.</p>
+  </div>
+</div>
 
 <!-- ── Reel: which photographs, in what order ─────────────────── -->
 <div class="sheetover" id="photoPicker" hidden>
