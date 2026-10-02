@@ -1,5 +1,7 @@
 # Story Creator: portable recovery package
 
+**UPLOAD BLOCKED:** this package is complete locally but has not reached GitHub. Read [UPLOAD-STATUS.md](UPLOAD-STATUS.md). The restore commands below apply only after successful publication.
+
 This package supersedes the machine-local storage and uncommitted-state notes in the original handoff. The feature and all collected project data are now intended to travel with the Git repository. No file under Documents, /tmp, or a previous developer home directory is needed to run the editor.
 
 ## Restore on a fresh machine
