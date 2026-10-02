@@ -1107,11 +1107,12 @@ input[type="range"]::-moz-range-thumb {
 
 
 /* ─── Templates ───────────────────────────────────────────────────
-   Two of them now, so the switch is the first thing in the sheet. Big enough
-   to hit, quiet enough not to look like the primary action. */
+   Three of them now, so the switch is the first thing in the sheet. Big enough
+   to hit, quiet enough not to look like the primary action. Story is a link to
+   its own page, styled as the third tab. */
 .tabs {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   padding: 5px;
   background: var(--surface-2);
@@ -1126,7 +1127,9 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
   transition: background var(--fast) var(--ease), color var(--fast) var(--ease);
 }
-.tab svg { width: 18px; height: 18px; }
+a.tab { text-decoration: none; }
+a.tab:hover { color: var(--ink); }
+.tab svg { width: 18px; height: 18px; flex: none; }
 .tab.is-on { background: var(--surface); color: var(--ink); box-shadow: var(--sh-1); }
 .tab:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
