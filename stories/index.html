@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f7f8">
+  <title>Story Creator · Social Media Master</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../app.css">
+  <link rel="stylesheet" href="story.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand story-brand" href="../"><span class="brand__mark" aria-hidden="true"></span><span class="brand__name">Social Media Master</span></a>
+    <a class="btn btn--quiet" href="../">Carousel / Reel</a>
+  </header>
+  <main class="story-editor">
+    <aside class="story-controls" aria-label="Story controls">
+      <div class="story-heading"><span class="story-kicker">INSTAGRAM</span><h1>Story creator</h1><p class="story-note" id="editingStory">Story 1</p></div>
+      <section class="story-section">
+        <h2>Review photo</h2>
+        <button type="button" class="btn story-upload" id="upload">Add a photo <span>Paste, drop or upload</span></button>
+        <p class="story-note" id="photoName">⌘V / Ctrl+V to paste a photo.</p>
+      </section>
+      <section class="story-section">
+        <div class="story-row"><h2>Instagram profile</h2><button type="button" class="btn btn--quiet" id="randomProfile" disabled>Randomize user</button></div>
+        <label class="sr-only" for="profileSearch">Search usernames</label>
+        <input id="profileSearch" type="search" placeholder="Search usernames" autocomplete="off" disabled>
+        <label class="sr-only" for="profile">Instagram username</label>
+        <select id="profile" disabled><option>Loading profiles…</option></select>
+        <p class="story-note" id="profileCount" aria-live="polite"></p>
+      </section>
+      <section class="story-section">
+        <h2>Timestamp</h2>
+        <div class="story-time">
+          <label class="sr-only" for="timeValue">Time, from 1 to 60</label>
+          <input id="timeValue" type="number" min="1" max="60" step="1" value="3" required>
+          <div class="story-units" role="group" aria-label="Time unit">
+            <button type="button" data-unit="m" aria-label="Minutes" aria-pressed="true">M</button>
+            <button type="button" data-unit="h" aria-label="Hours" aria-pressed="false">H</button>
+          </div>
+          <button type="button" class="btn" id="randomTime">Randomize</button>
+        </div>
+      </section>
+      <section class="story-section">
+        <div class="story-row"><h2>Progress fill</h2><button type="button" class="btn btn--quiet" id="randomProgress" aria-label="Randomize progress" disabled>Randomize</button></div>
+        <div class="story-row">
+          <label class="sr-only" for="progress">Progress fill</label>
+          <input id="progress" type="range" min="0" max="100" step="1" value="19" disabled>
+          <label class="sr-only" for="progressValue">Progress percentage</label>
+          <input id="progressValue" type="number" min="0" max="100" step="1" value="19" required disabled><span>%</span>
+        </div>
+      </section>
+      <section class="story-section">
+        <div class="story-row"><h2>Photo position</h2><button type="button" class="btn btn--quiet" id="resetPhoto" disabled>Reset</button></div>
+        <label class="sr-only" for="photoRatio">Photo container ratio</label>
+        <select id="photoRatio"><option value="portrait">Portrait 9:16 · Figma</option><option value="landscape">Landscape 16:9</option></select>
+        <label class="story-row" for="zoom">Zoom <output id="zoomValue">100%</output></label>
+        <input id="zoom" type="range" min="1" max="5" step="0.01" value="1" disabled>
+        <p class="story-note">Drag to move. Pinch or scroll to zoom.</p>
+      </section>
+      <section class="story-section story-export">
+        <label for="format">Export size</label>
+        <select id="format"><option value="2150">Figma frame · 1080 × 2150</option><option value="1920">Story 9:16 · 1080 × 1920</option></select>
+        <button type="button" class="btn btn--primary" id="download" disabled>Download WebP</button>
+        <p class="story-note" id="status" role="status" aria-live="polite">Loading story assets…</p>
+      </section>
+    </aside>
+    <section class="story-workspace" aria-label="Story previews">
+      <div class="story-toolbar">
+        <span id="storyCount" class="story-note" aria-live="polite">1 story</span>
+        <div><button type="button" class="btn" id="addStory" disabled>Add story</button><button type="button" class="btn btn--primary" id="downloadAll" disabled>Download all WebPs</button></div>
+      </div>
+      <div id="storyTrack" class="story-track" aria-label="Stories"></div>
+    </section>
+  </main>
+  <template id="storyTemplate">
+    <article class="story-card">
+      <div class="story-preview-label"><button type="button" class="story-select" aria-pressed="false">Story</button><span class="story-dimensions">1080 × 2150</span></div>
+      <div class="story-preview">
+        <canvas class="story-canvas" width="1080" height="2150" role="img" aria-label="Instagram story preview"></canvas>
+        <div class="photo-area" tabindex="0" role="group" aria-label="Move review photo with arrow keys; plus and minus to zoom"></div>
+        <button type="button" class="empty-photo"><span>Paste a review photo</span><small>or click to upload</small></button>
+      </div>
+      <input class="story-file" type="file" accept="image/*" hidden>
+      <button type="button" class="btn story-save" disabled>Download WebP</button>
+    </article>
+  </template>
+  <script type="module" src="story.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+✔ All edges covered for 1600x900 (1.31925ms)
+✔ All edges covered for 900x1600 (0.150375ms)
+✔ All edges covered for 1000x1000 (0.339375ms)
+✔ All edges covered for 4000x300 (0.086ms)
+✔ All edges covered for 300x4000 (0.088708ms)
+✔ A valid crop stays unchanged (0.296416ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 46.925917
