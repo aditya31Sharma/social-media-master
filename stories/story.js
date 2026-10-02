@@ -3,6 +3,13 @@ import { createStory } from './card.js';
 import { downloadStories } from './download.js';
 
 const $ = selector => document.querySelector(selector);
+
+// The brand mark is drawn by ../app.css with var(--logo). A relative url()
+// inside a custom property resolves against the stylesheet that uses it, so
+// story.css's '../assets/logo.svg' pointed one level above the site and 404'd.
+// An absolute URL from this module's own location is right on every host.
+document.documentElement.style.setProperty('--logo', `url("${new URL('../assets/logo.svg', import.meta.url).href}")`);
+
 const stories = [];
 let assets = null, users = [], active = null, exporting = false;
 
