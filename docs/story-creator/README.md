@@ -1,6 +1,6 @@
 # Story Creator: portable recovery package
 
-**UPLOAD BLOCKED:** this package is complete locally but has not reached GitHub. Read [UPLOAD-STATUS.md](UPLOAD-STATUS.md). The restore commands below apply only after successful publication.
+**Published and recovery verified:** GitHub contains the complete package. A fresh GitHub clone passed file/archive verification and all six crop tests. The live story editor loaded all600 DPs and passed41 browser checks. Read [UPLOAD-STATUS.md](UPLOAD-STATUS.md). Local feature files are being removed at the user's explicit request; use this GitHub copy for future work.
 
 This package supersedes the machine-local storage and uncommitted-state notes in the original handoff. The feature and all collected project data are now intended to travel with the Git repository. No file under Documents, /tmp, or a previous developer home directory is needed to run the editor.
 
@@ -30,7 +30,7 @@ Open http://localhost:8801/stories/ . The deployed route is https://aditya31shar
 - `../STORY-CREATOR-HANDOFF.md`: detailed requirements, implementation, geometry, data provenance and integration guidance.
 - `../superpowers/plans/2026-10-02-story-creator.md`: original plan, superseded where current handoff differs.
 - `archive-manifest.json`: path, byte size and SHA-256 for every archived source file.
-- `files-manifest.json`: path, byte size and SHA-256 for all shipped feature/recovery files except the manifest itself.
+- `files-manifest.json`: path, byte size and SHA-256 for shipped feature/recovery files at publication, except the manifest itself. A later cleanup completion note may be added separately.
 - `verify.py`: standard-library-only archive, file integrity, dataset and module-reference checks.
 
 Python bytecode caches, OS metadata, browser session state, credentials and unrelated machine data are excluded. Archives store source bytes unchanged; historical content can contain old absolute paths, expired source-image URLs, or old design decisions. These are provenance records, not runtime dependencies. Collection/install scripts are archived for reference and must be reviewed/adapted before running on a different machine. Running them is unnecessary for restoration.

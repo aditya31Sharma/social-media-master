@@ -4,7 +4,7 @@ Prepared 2026-10-03 for Aditya's existing Claude session that hosts Social Media
 
 ## GitHub preservation update (2026-10-03)
 
-**Publication is blocked by repeated TLS upload failures.** Read [the upload status](story-creator/UPLOAD-STATUS.md). This repository contains the complete local package, but GitHub does not yet contain it. Do not wipe the source machine.
+**Published and verified from a fresh GitHub clone.** Read [the current upload status](story-creator/UPLOAD-STATUS.md). The user requested removal of local feature copies after verification. Use GitHub as the handoff source; machine-local paths below are historical.
 
 Read [the portable recovery guide](story-creator/README.md) first. It supersedes the historical local-only/untracked notes below. Runtime files, all600 profiles, full source datasets, collection caches, QA and session history are packaged in this repository. Use repository-relative QA paths from that guide on a new machine. Dashboard navigation integration remains the receiving Claude session's task.
 

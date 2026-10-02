@@ -1,18 +1,15 @@
-# GitHub upload blocked: 2026-10-03
+# Published and recovery verified: 2026-10-03
 
-The complete recovery package is committed locally but has NOT reached GitHub. Do not wipe the source machine until a fresh GitHub clone passes the verifier and the live story route is confirmed.
+The retry succeeded. GitHub main contains the complete Story Creator implementation and recovery package, including600 local DPs, original/supplemental source metadata,1876 archived source entries, collection scripts/snapshots, Figma assets, QA, and handoff documents.
 
-Local feature commit: f7ba7a1. Last verified GitHub main: 0abc8febd0325f9639edab5856cab4255cbd6565. The live site therefore still has its previous two-feature version.
+Published feature commit: f7ba7a1. Successful initial push included4825c67. Subsequent documentation commits supersede the earlier blocked-upload notices.
 
-Evidence:
+A fresh clone from GitHub passed the integrity verifier for643 shipped files,1876 archive entries and600 unique profile/image hashes. All six crop tests passed. The live route returned200, all600 profile photos decoded, and41 live browser checks passed: dataset7, batch22, progress12. These live checks include cover crop, per-story state, both photo ratios, individual/bulk WebP signatures/dimensions and exported progress pixels.
 
-- Local package integrity,1876 archived files,600 unique profiles and source-photo hashes passed.
--22 JavaScript syntax checks, six Node crop tests,47 browser checks passed.
-- Standard Git HTTPS push failed with LibreSSL bad record MAC.
-- HTTP/1.1 and increased request buffer failed with the same error.
-- Independent OpenSSL transport, Go-based GitHub API,1MiB API uploads and TLS1.2 also failed with bad record MAC.
-- Small GitHub API blob creation succeeded. That isolated diagnostic object does not constitute a repository backup.
-- Existing SSH authentication failed with Permission denied (publickey). No SSH configuration or keys were modified.
-- Original full ZIPs and complete source remain in this local repository. An alternative temporary staging clone with numbered archive pieces was also prepared, but its first push failed. Do not treat that staging clone as published.
+Live editor: https://aditya31sharma.github.io/social-media-master/stories/
 
-After fixing the network/upload connection, retry publishing the original local main branch using the established GitHub workflow. Do not force-push. Check GitHub main first for intervening changes. After publication, clone into a new directory, run python3 docs/story-creator/verify.py and node --test docs/story-creator/qa/crop.test.mjs, then verify the GitHub Pages story route and600 assets. Dashboard navigation integration remains delegated to the receiving Claude session.
+The user explicitly requested removal of all local feature material after remote recovery verification. Source/data/temp QA/progress copies and temporary clones will be removed. The existing Social Media Master local checkout will retain its pre-feature Carousel/Reel version and clean pre-feature Git objects. No feature deletion will be pushed to GitHub. A cleanup completion record will be added remotely after deletion.
+
+For future work, clone GitHub afresh and read docs/story-creator/README.md followed by docs/STORY-CREATOR-HANDOFF.md. Dashboard third-feature navigation remains the receiving Claude session's task. The story editor already runs directly on the existing hosted tool's /stories/ route.
+
+Historical upload failures were TLS bad record MAC across HTTPS clients; existing SSH authentication also failed. No credential or SSH configuration changes were made. A normal HTTPS push succeeded on retry. Numbered-archive staging was unnecessary; the published package contains the original complete ZIP archives.
