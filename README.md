@@ -34,7 +34,7 @@ outlines. The source SVG is preserved in `assets/icons/`.
 
 Changed workspace resources share the release key `20261004-reel2` in the
 root HTML/import map and Story markup fetch. The cover renderer overrides its
-module key with `20261004-cover3` to remove product labels. Update that key together when
+module key with `20261004-gradient1`; the Reel UI uses the same key. Update that key together when
 changing those resources so returning sessions cannot mix old and new layouts.
 
 See [the implementation and feature checklist](docs/WORKSPACE-REVAMP.md).
@@ -46,7 +46,9 @@ last frame (frame 899 of 900) at the selected resolution, keeping the final garm
 pose and logo while omitting all four background photos and product labels. Cover
 computation runs after video encoding and never replaces a video frame. The
 original garment entrance/blur, photo arrival, rotation, logo/text fades and
-15-second timing are preserved.
+15-second timing are preserved. Reel, cover and fit preview share the Figma
+225-degree gradient from `#F2F2F2` to `#C6C9CC`. The Reel/cover Tenzen logo is
+`#AAAAAA`. These colours are independent of the workspace theme.
 
 ## Story Creator and review folders
 

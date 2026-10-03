@@ -127,3 +127,14 @@ The historical first-frame cover verification above describes the superseded
 implementation. docs/qa/reel-animation.test.mjs compares all900 renderer-command
 sequences against831e322^ and checks cover separation, final pose and absence of product labels.
 The comparison test needs Git history containing831e322^.
+
+## Reel background update, 2026-10-04
+
+[Figma node4990:13948](https://www.figma.com/design/H8vihtRHHXMz32hzHMQ09s/Q2-Designs-FY26-27?node-id=4990-13948)
+specifies a225-degree linear gradient from#F2F2F2 to#C6C9CC. Shared
+lib/reel-background.js paints this in the Reel, separate cover and fit preview.
+Canvas endpoints reproduce the CSS gradient axis projection on the portrait
+rectangle. The exported logo uses#AAAAAA. Foreground animation/layout remain
+unchanged;900-frame parity normalizes only gradient versus prior white fill.
+Cover still omits photos and product labels. Module keys:20261004-gradient1 for
+reel.js and reel-ui.js; the rest retain their preceding release keys.

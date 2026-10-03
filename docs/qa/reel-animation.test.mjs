@@ -5,6 +5,7 @@ import { execFileSync } from 'node:child_process';
 import vm from 'node:vm';
 import * as G from '../../lib/reel-geom.js';
 import * as F from '../../lib/frame.js';
+import { paintReelBackground, REEL_LOGO_COLOR } from '../../lib/reel-background.js';
 
 // Compare actual renderer commands against the version before cover support.
 const root = new URL('../../', import.meta.url);
@@ -16,7 +17,7 @@ async function renderer(source) {
   class Canvas {
     constructor(width, height) { this.width = width; this.height = height; this.tag = `canvas:${width}x${height}`; }
     getContext() {
-      return new Proxy({ filter: 'none', measureText: text => ({ width: text.length * 10 }) }, {
+      return new Proxy({ createLinearGradient: (...args) => { record('gradient', args); return { tag: 'background-gradient', addColorStop: (...stop) => record('stop', stop) }; }, filter: 'none', measureText: text => ({ width: text.length * 10 }) }, {
         get: (target, name) => name in target ? target[name] : (...args) => record(name, args),
         set: (target, name, value) => { record(`set:${name}`, [value]); target[name] = value; return true; },
       });
@@ -28,7 +29,7 @@ async function renderer(source) {
     render(turn) { record('turn', [turn]); return { tag: 'garments' }; }
   }
   class Image { tag = 'logo'; async decode() {} }
-  const context = vm.createContext({ G, F, OutfitStage: Stage, OffscreenCanvas: Canvas, Image, Math });
+  const context = vm.createContext({ G, F, paintReelBackground, OutfitStage: Stage, OffscreenCanvas: Canvas, Image, Math });
   vm.runInContext(source.replace(/^import .*;$/gm, '').replace(/^export /gm, '') + '\nglobalThis.build = createReel;', context);
   const photo = { url: 'photo', bitmap: { width: 100, height: 100, tag: 'photo' } };
   const slots = Object.fromEntries(G.PHOTOS.map(p => [p.slot, [photo]]));
@@ -36,12 +37,14 @@ async function renderer(source) {
   return { reel, reset: () => { trace = []; }, commands: () => JSON.parse(JSON.stringify(trace)) };
 }
 
+const withoutBackground = commands => commands.filter(op => !['gradient', 'stop'].includes(op[0])).map(op => op[0] === 'set:fillStyle' && op[1] === 'background-gradient' ? ['set:fillStyle', '#ffffff'] : op);
+
 test('all 900 video frames match the original animation commands', async () => {
   const before = await renderer(historical), after = await renderer(current);
   for (let i = 0; i < G.FRAMES; i++) {
     before.reset(); after.reset();
     before.reel.drawFrame(i); after.reel.drawFrame(i);
-    assert.deepEqual(after.commands(), before.commands(), `Frame ${i}`);
+    assert.deepEqual(withoutBackground(after.commands()), before.commands(), `Frame ${i}`);
   }
 });
 
@@ -53,6 +56,8 @@ test('cover uses final pose without photos or product labels, and does not alter
   const commands = cover.commands();
   const layers = list => list.filter(op => ['entry', 'turn'].includes(op[0]));
   assert.deepEqual(layers(commands), layers(last));
+  const backgrounds = list => list.filter(op => ['gradient', 'stop'].includes(op[0]));
+  assert.deepEqual(backgrounds(commands), backgrounds(last), 'cover and video share the gradient');
   assert.ok(commands.some(op => op[0] === 'drawImage' && op[1] === 'logo'));
   assert.ok(commands.some(op => op[0] === 'drawImage' && op[1] === 'garments'));
   assert.ok(!commands.some(op => op.includes('photo')));
@@ -62,5 +67,18 @@ test('cover uses final pose without photos or product labels, and does not alter
   assert.notEqual(coverSurface, cover.reel.drawFrame(0));
   const baseline = await renderer(historical);
   baseline.reset(); cover.reset(); baseline.reel.drawFrame(0); cover.reel.drawFrame(0);
-  assert.deepEqual(cover.commands(), baseline.commands());
+  assert.deepEqual(withoutBackground(cover.commands()), baseline.commands());
+});
+
+
+test('background matches Figma 225-degree projection at every export size', () => {
+  for (const width of [1080, 1440, 2160]) {
+    const height = width * 16 / 9, calls = [];
+    const ctx = { createLinearGradient: (...points) => { calls.push(points); return { addColorStop: (...stop) => calls.push(stop) }; }, fillRect: (...rect) => calls.push(rect) };
+    paintReelBackground(ctx, width, height);
+    const scale = width / 1080;
+    assert.deepEqual(calls[0], [1290, 210, -210, 1710].map(x => x * scale));
+    assert.deepEqual(calls.slice(1), [[0, '#f2f2f2'], [1, '#c6c9cc'], [0, 0, width, height]]);
+  }
+  assert.equal(REEL_LOGO_COLOR, '#aaaaaa');
 });
