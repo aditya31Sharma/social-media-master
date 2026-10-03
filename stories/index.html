@@ -64,7 +64,7 @@
         <label for="format">Export size</label>
         <select id="format"><option value="2150">Figma frame · 1080 × 2150</option><option value="1920">Story 9:16 · 1080 × 1920</option></select>
         <button type="button" class="btn btn--primary" id="download" disabled>Download WebP</button>
-        <p class="story-note" id="status" role="status" aria-live="polite">Loading story assets…</p>
+        <p class="story-note" id="storyStatus" role="status" aria-live="polite">Loading story assets…</p>
       </section>
       <section class="story-section story-drive" aria-label="Save stories to Google Drive">
         <div class="story-row"><h2>Save to Drive</h2><button type="button" class="btn btn--quiet" id="driveRefresh">Refresh products</button></div>
@@ -99,6 +99,6 @@
     </article>
   </template>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script type="module" src="story.js"></script>
+  <script type="module" src="entry.js"></script>
 </body>
 </html>

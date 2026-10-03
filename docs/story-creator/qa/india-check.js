@@ -1,14 +1,14 @@
 (async()=>{
- const $=s=>document.querySelector(s),checks=[];
+ const $=s=>document.querySelector('#storyWorkspace').querySelector(s),checks=[];
  const check=(name,pass)=>{if(!pass)throw Error(name);checks.push(name);};
  const wait=async fn=>{for(let i=0;i<150;i++){if(fn())return;await new Promise(r=>setTimeout(r,20));}throw Error('Timed out');};
  await wait(()=>!$('#randomProfile').disabled);
- const users=await(await fetch('profiles/users.json')).json();
+ const users=await(await fetch('stories/profiles/users.json')).json();
  check('600 profiles in data and picker',users.length===600&&$('#profile').options.length===600);
  check('600 unique usernames',new Set(users.map(u=>u.username.toLowerCase())).size===600);
  let next=0,decoded=0;const failures=[];
  await Promise.all(Array.from({length:12},async()=>{
-  while(next<users.length){const user=users[next++],img=new Image();img.src=`profiles/${user.photo}`;
+  while(next<users.length){const user=users[next++],img=new Image();img.src=`stories/profiles/${user.photo}`;
    try{await img.decode();if(img.naturalWidth<32||img.naturalHeight<32||Math.max(img.naturalWidth,img.naturalHeight)>96)throw Error('Unexpected dimensions');decoded++;}catch{failures.push(user.username);}
   }
  }));

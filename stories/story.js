@@ -5,18 +5,18 @@ import { setupDrive } from './drive-ui.js';
 import { isReviewPhoto } from './heic.js';
 import { normalizeUsername } from './saved-users.js';
 
-const $ = selector => document.querySelector(selector);
-
-// The brand mark is drawn by ../app.css with var(--logo). A relative url()
-// inside a custom property resolves against the stylesheet that uses it, so
-// story.css's '../assets/logo.svg' pointed one level above the site and 404'd.
-// An absolute URL from this module's own location is right on every host.
-document.documentElement.style.setProperty('--logo', `url("${new URL('../assets/logo.svg', import.meta.url).href}")`);
+export async function mountStory(root, { isActive = () => true } = {}) {
+const $ = selector => root.querySelector(selector);
 
 const stories = [];
 let assets = null, users = [], active = null, exporting = false;
 let savedUsers = null;
 let driveUI;
+// Load before wiring listeners so a failed mount can be retried cleanly.
+const response = await fetch(new URL('profiles/users.json', import.meta.url), { signal: AbortSignal.timeout(15000) });
+if (!response.ok) throw new Error('Profiles could not load.');
+users = await response.json();
+assets = await loadAssets();
 const randomChoices = () => users.filter(user => user.username !== active?.username && !savedUsers?.has(normalizeUsername(user.username)));
 function setSavedUsers(usernames) {
   savedUsers = usernames;
@@ -27,11 +27,11 @@ function setSavedUsers(usernames) {
 }
 
 function say(message, error = false) {
-  $('#status').textContent = message;
-  $('#status').dataset.error = String(error);
+  $('#storyStatus').textContent = message;
+  $('#storyStatus').dataset.error = String(error);
 }
 function refresh(story) {
-  if (story === active) {
+  if (story && story === active) {
     $('#photoName').textContent = story.photoName || '⌘V / Ctrl+V to paste a photo.';
     $('#upload').firstChild.textContent = story.photo ? 'Replace photo ' : 'Add a photo ';
     $('#zoom').disabled = $('#resetPhoto').disabled = !story.photo;
@@ -48,7 +48,7 @@ function refresh(story) {
   driveUI?.refresh();
 }
 function showUnits() {
-  document.querySelectorAll('[data-unit]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.unit === active?.unit)));
+  root.querySelectorAll('[data-unit]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.unit === active?.unit)));
 }
 function filterProfiles(selectFirst = true) {
   const query = $('#profileSearch').value.trim().toLowerCase().replace(/^@/, '');
@@ -75,9 +75,9 @@ function select(story) {
 }
 function addStory() {
   const height = Number($('#format').value);
-  const story = createStory(stories.length + 1, { assets, onSelect: select, onChange: refresh, onDownload: download, say });
+  const story = createStory(stories.length + 1, { assets, onSelect: select, onChange: refresh, onDownload: download, say, root });
   stories.push(story); story.setHeight(height); select(story); story.setProfile(users[0]);
-  story.element.scrollIntoView({ block: 'nearest', inline: 'end' });
+  if (stories.length > 1) story.element.scrollIntoView({ block: 'nearest', inline: 'end' });
   say(`Story ${story.id}: paste or upload a review photo.`);
 }
 async function download(list) {
@@ -106,14 +106,17 @@ $('#randomProfile').addEventListener('click', () => {
   $('#profileSearch').value = ''; filterProfiles(false);
 });
 window.addEventListener('paste', event => {
+  if (!isActive() || event.target.closest?.('input, textarea, [contenteditable=true]')) return;
   const item = [...(event.clipboardData?.items || [])].find(item => isReviewPhoto(item.getAsFile()));
   if (item && active) { event.preventDefault(); active.setPhoto(item.getAsFile()); }
 });
 window.addEventListener('dragover', event => {
+  if (!isActive()) return;
   if (event.dataTransfer.types.includes('Files')) { event.preventDefault(); document.body.classList.add('is-over'); }
 });
 window.addEventListener('dragleave', event => { if (!event.relatedTarget) document.body.classList.remove('is-over'); });
 window.addEventListener('drop', event => {
+  if (!isActive()) return;
   event.preventDefault(); document.body.classList.remove('is-over'); active?.setPhoto(event.dataTransfer.files[0]);
 });
 $('#timeValue').addEventListener('input', () => {
@@ -142,11 +145,11 @@ $('#progressValue').addEventListener('input', () => {
 });
 $('#progressValue').addEventListener('change', () => setProgress($('#progressValue').value));
 $('#randomProgress').addEventListener('click', () => setProgress(Math.floor(Math.random() * 101)));
-document.querySelectorAll('[data-unit]').forEach(button => button.addEventListener('click', () => {
+root.querySelectorAll('[data-unit]').forEach(button => button.addEventListener('click', () => {
   if (!active) return;
   active.unit = button.dataset.unit; showUnits(); active.paint();
 }));
-driveUI = setupDrive(() => stories, setSavedUsers);
+driveUI = setupDrive(() => stories, setSavedUsers, root);
 $('#zoom').addEventListener('input', () => active?.framer.setZoom(Number($('#zoom').value)));
 $('#resetPhoto').addEventListener('click', () => active?.framer.reset());
 $('#format').addEventListener('change', () => active?.setHeight(Number($('#format').value)));
@@ -154,10 +157,7 @@ $('#photoRatio').addEventListener('change', () => {
   if (!active) return;
   active.ratio = $('#photoRatio').value; active.setHeight(active.canvas.height);
 });
-try {
-  const response = await fetch('profiles/users.json');
-  if (!response.ok) throw new Error('Profiles could not load. Reload to retry.');
-  users = await response.json(); assets = await loadAssets();
-  $('#profileSearch').disabled = $('#addStory').disabled = false; addStory();
-  $('#progress').disabled = $('#progressValue').disabled = $('#randomProgress').disabled = false;
-} catch (error) { say(`Story setup failed: ${error.message}`, true); }
+$('#profileSearch').disabled = $('#addStory').disabled = false; addStory();
+$('#progress').disabled = $('#progressValue').disabled = $('#randomProgress').disabled = false;
+return { addStory, refresh: () => refresh(active) };
+}

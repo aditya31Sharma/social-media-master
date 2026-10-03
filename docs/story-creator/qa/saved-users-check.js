@@ -1,5 +1,5 @@
 (async () => {
-  const $ = selector => document.querySelector(selector);
+  const $ = selector => document.querySelector('#storyWorkspace').querySelector(selector);
   const wait = async test => {
     for (let i = 0; i < 100; i++) {
       if (test()) return;
@@ -7,7 +7,7 @@
     }
     throw new Error('Timed out waiting for Drive scan');
   };
-  const users = await (await fetch('profiles/users.json')).json();
+  const users = await (await fetch('stories/profiles/users.json')).json();
   const excluded = users.slice(1, 12).map(user => user.username);
   const product = $('#driveProduct');
   await wait(() => product.options.length > 1);

@@ -15,6 +15,7 @@ import { renderToFile, renderThumb, defaultAdjust, isBottoms } from './lib/rende
 import { createEditor } from './lib/editor.js';
 import { createReelUI } from './lib/reel-ui.js';
 import { createPhotoPicker, createPhotoAdjust } from './lib/reel-picker.js';
+import { createWorkspace } from './lib/workspace.js';
 import { SHAPES, FIXED_TAGS, buildCaption, captionStats, copyText,
          suggestTags, suggestHook } from './lib/caption.js';
 
@@ -46,7 +47,7 @@ function say(msg, tone = '') {
    there is to do. */
 function refreshBuild() {
   const btn = $('#btnBuild');
-  btn.hidden = !state.product;
+  btn.hidden = document.body.dataset.tool !== 'carousel' || !state.product;
   btn.disabled = !(state.coverBitmap && state.product);
 }
 /* The close-up is never cut out: it is the one slide that bleeds to all four
@@ -379,7 +380,7 @@ function refreshDraftActions() {
     $('[data-act="cdl"]', sec).disabled = !files.length;
     $('[data-act="cshare"]', sec).hidden = !(files.length && navigator.canShare?.({ files }));
     $('.cara__meta', sec).textContent =
-      `${c.product.sku || '—'} · ${files.length} of ${c.slides.length} ready`;
+      `${c.product.sku || '-'} · ${files.length} of ${c.slides.length} ready`;
   }
   editor?.refreshActions();
 }
@@ -541,7 +542,7 @@ function renderCarousel(c) {
     const { chars, overLimit } = captionStats(cap.value);
     const el = $('[data-capcount]', sec);
     el.textContent = `${chars} characters${c.cap.edited ? ' · edited' : ''}` +
-                     (overLimit ? ' — over Instagram\u2019s 2,200 limit' : '');
+                     (overLimit ? ' - over Instagram\u2019s 2,200 limit' : '');
     el.classList.toggle('is-over', overLimit);
   }
 
@@ -579,7 +580,18 @@ function renderCarousel(c) {
   return sec;
 }
 
+let pendingRemoval = null;
 function removeCarousel(c) {
+  pendingRemoval = c;
+  $('#removeCarouselMessage').textContent = `${c.product.title} and its six draft slides will be removed. Downloaded files stay saved.`;
+  $('#removeCarouselDialog').showModal();
+}
+
+function confirmRemoveCarousel() {
+  const c = pendingRemoval;
+  $('#removeCarouselDialog').close();
+  pendingRemoval = null;
+  if (!c) return;
   const at = state.carousels.indexOf(c);
   if (at < 0) return;
   state.carousels.splice(at, 1);
@@ -742,6 +754,31 @@ function segGroup(attr, onPick) {
   });
 }
 
+let catalogueRequest = 0;
+async function refreshCatalogue() {
+  const request = ++catalogueRequest;
+  $('#retryCatalogue').hidden = true;
+  $('#prodNote').className = 'note';
+  $('#prodNote').textContent = 'Loading the catalogue…';
+  const timer = setTimeout(() => {
+    if (request !== catalogueRequest) return;
+    $('#prodNote').textContent = 'Still connecting. Check your internet, or try again.';
+    $('#retryCatalogue').hidden = false;
+  }, 6000);
+  try {
+    const list = await loadCatalogue();
+    if (request !== catalogueRequest) return;
+    state.catalogue = list;
+    $('#prodNote').textContent = `${list.length} products. Search, paste a link, or type a SKU.`;
+    $('#retryCatalogue').hidden = true;
+  } catch (error) {
+    if (request !== catalogueRequest) return;
+    $('#prodNote').textContent = `Could not load the catalogue: ${error.message}`;
+    $('#prodNote').className = 'note note--err';
+    $('#retryCatalogue').hidden = false;
+  } finally { clearTimeout(timer); relayout(); }
+}
+
 function init() {
   document.documentElement.style.setProperty('--logo', 'url(assets/logo.svg)');
 
@@ -772,6 +809,7 @@ function init() {
     picker.addEventListener(t, e => { e.preventDefault(); picker.classList.remove('is-over'); }));
   picker.addEventListener('drop', e => setCover(e.dataTransfer.files[0]));
   window.addEventListener('paste', e => {
+    if (document.body.dataset.tool !== 'carousel' || e.target.closest?.('input, textarea, [contenteditable=true]')) return;
     const item = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith('image/'));
     if (item) setCover(item.getAsFile());
   });
@@ -835,21 +873,15 @@ function init() {
 
   $('#btnBuild').addEventListener('click', build);
   $('#btnDownloadEvery').addEventListener('click', downloadEverything);
-  $('#btnReset').addEventListener('click', () => location.reload());
+  $('#confirmRemoveCarousel').addEventListener('click', confirmRemoveCarousel);
 
   /* Open to begin with, because the first thing to do is in there. It closes
      itself once there is a carousel to look at. */
   openSheet(true);
   relayout();
 
-  loadCatalogue().then(list => {
-    state.catalogue = list;
-    $('#prodNote').textContent = `${list.length} products. Search, paste a link, or type a SKU.`;
-    relayout();
-  }).catch(err => {
-    $('#prodNote').textContent = `Could not load the catalogue: ${err.message}`;
-    $('#prodNote').className = 'note note--err';
-  });
+  $('#retryCatalogue').addEventListener('click', refreshCatalogue);
+  refreshCatalogue();
 }
 
 init();
@@ -868,8 +900,14 @@ let reelUI = null;
 function miniCombo(input, rows, onPick) {
   const list = document.createElement('ul');
   list.className = 'combo__list';
+  list.id = `${input.id}-options`;
+  list.setAttribute('role', 'listbox');
+  input.setAttribute('aria-controls', list.id);
+  input.setAttribute('aria-expanded', 'false');
   list.hidden = true;
   document.body.appendChild(list);
+  let active = -1, request = 0;
+  const close = () => { list.hidden = true; input.setAttribute('aria-expanded', 'false'); };
 
   const place = () => {
     const r = input.getBoundingClientRect();
@@ -881,10 +919,15 @@ function miniCombo(input, rows, onPick) {
   };
 
   const paint = async q => {
-    const all = await rows();
+    const version = ++request;
+    let all;
+    try { all = await rows(); }
+    catch (error) { $('#reelNote').textContent = `Could not load garments: ${error.message}. Search again to retry.`; return; }
+    if (version !== request || document.activeElement !== input || document.body.dataset.tool !== 'reel') return;
     const hits = all.map(p => ({ p, s: score(p, q) })).filter(x => x.s > 0)
       .sort((a, b) => b.s - a.s).slice(0, 40);
     list.innerHTML = '';
+    active = -1;
     if (!hits.length) {
       const li = document.createElement('li');
       li.className = 'combo__empty';
@@ -894,26 +937,43 @@ function miniCombo(input, rows, onPick) {
       for (const { p } of hits) {
         const li = document.createElement('li');
         li.dataset.handle = p.handle;
+        li.setAttribute('role', 'option');
         const b = document.createElement('b'); b.textContent = p.title;
         const c = document.createElement('code'); c.textContent = p.sku;
         li.append(b, c);
         li.addEventListener('mousedown', e => {
           e.preventDefault();
           input.value = p.title;
-          list.hidden = true;
+          close();
           onPick(p);
         });
         list.appendChild(li);
       }
     }
     list.hidden = false;
+    input.setAttribute('aria-expanded', 'true');
     place();
   };
 
   const q = () => input.value.trim().toLowerCase();
   input.addEventListener('focus', () => paint(q()));
   input.addEventListener('input', () => paint(q()));
-  input.addEventListener('blur', () => setTimeout(() => { list.hidden = true; }, 120));
+  input.addEventListener('blur', () => setTimeout(close, 120));
+  input.addEventListener('keydown', event => {
+    const options = [...list.querySelectorAll('[data-handle]')];
+    if (event.key === 'Escape') { close(); return; }
+    if (event.key === 'Enter' && options[active]) {
+      event.preventDefault(); options[active].dispatchEvent(new MouseEvent('mousedown', { bubbles: true })); return;
+    }
+    if (!['ArrowDown', 'ArrowUp'].includes(event.key) || !options.length || list.hidden) return;
+    event.preventDefault();
+    active = (active + (event.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length;
+    options.forEach((option, index) => {
+      option.classList.toggle('is-active', index === active);
+      option.setAttribute('aria-selected', String(index === active));
+    });
+    options[active].scrollIntoView({ block: 'nearest' });
+  });
   window.addEventListener('scroll', place, true);
   window.addEventListener('resize', place);
 }
@@ -972,22 +1032,28 @@ function wireReel() {
   miniCombo($('#topInput'), () => reelUI.wearable('top'), p => reelUI.pick('top', p));
   miniCombo($('#botInput'), () => reelUI.wearable('bottom'), p => reelUI.pick('bottom', p));
 
-  /* The switch swaps the whole panel and the button under it. */
-  for (const tab of $$('[data-tpl]')) {
-    tab.addEventListener('click', () => {
-      const which = tab.dataset.tpl;
-      for (const t of $$('[data-tpl]')) {
-        const on = t === tab;
-        t.classList.toggle('is-on', on);
-        t.setAttribute('aria-selected', String(on));
-      }
-      for (const panel of $$('[data-panel]')) panel.hidden = panel.dataset.panel !== which;
-      $('#btnBuild').hidden = which !== 'carousel';
+  createWorkspace({
+    onChange(which) {
+      refreshBuild();
       $('#sheetLabel').textContent = which === 'reel'
         ? 'Pick a top and a bottom' : (state.carousels.length ? 'Add another SKU' : 'Pick a product to start');
+      $('#emptyState').hidden = which === 'carousel' ? !!state.carousels.length
+        : which === 'reel' ? !$('#reelOut').hidden || !$('#reelWorking').hidden : true;
+      $('#emptyState strong').textContent = which === 'reel' ? 'One outfit, in motion' : 'One SKU, six slides';
+      $('#emptyState > span:last-child').textContent = which === 'reel'
+        ? 'Pick a top and a bottom, then choose your photos and sound.'
+        : 'Pick a product, add a cover shot, then build your carousel.';
       relayout();
-    });
-  }
+    },
+    onAdd(which) {
+      openSheet(true);
+      if (which === 'reel' && !$('#reelAfter').hidden) reelUI.openSetup();
+      else {
+        const input = which === 'reel' ? $('#topInput') : $('#prodInput');
+        input.scrollIntoView({ block: 'center', behavior: 'smooth' }); input.focus({ preventScroll: true });
+      }
+    },
+  });
 }
 
 wireReel();

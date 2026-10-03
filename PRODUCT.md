@@ -1,8 +1,9 @@
 # Social Media Master
 
 An internal tool for one person. It turns a cover shot and a Tenzen product
-link into the six 3:4 slides of an Instagram carousel, plus the caption, and
-saves them as individual files.
+link into six 3:4 Carousel slides and a caption, two garments into a turning
+Reel and its cover, and review photos into Instagram-style Stories. All three
+tools live in one workspace and keep their drafts when switching tabs.
 
 **Register: product.** Design serves the task. The tool should disappear into
 the job of getting a post out.
@@ -28,11 +29,15 @@ before posting. Not a designer sitting at a desk with time to read a form.
 
 - Plain HTML, CSS and ES modules. No framework, no build step.
 - Icons are a hand-rolled SVG sprite in `index.html` (`#i-*`). One set only.
-- Tokens live at the top of `app.css`. Helvetica Neue, the brand's face.
-- Every `min-width: 900px` override lives in ONE block at the end of
-  `app.css`. Three separate cascade bugs came from breaking that rule.
-- Phone-only styling goes in the `max-width: 899px` block before it, so the
-  two never fight.
+- Workspace tokens live in `styles/tokens.css`, following the Aditya Tools
+  Design System Mono preset. UI uses local Plus Jakarta Sans. Export renderers
+  retain the original brand fonts and Story Roboto.
+- `styles/workspace.css` loads after the original component styles and owns
+  the responsive shell. Keep its desktop overrides in one 900px block.
+- Phone navigation stays at the bottom with safe-area padding, touch targets
+  are at least44px, primary actions54px, and text inputs16px to avoid iOS zoom.
+- Light/Dark/System changes the UI only. Keep tool panels mounted and scope
+  paste/drop handlers to the active tool. No Story iframe or separate page.
 
 ## Voice
 

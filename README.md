@@ -2,7 +2,7 @@
 
 **Live: https://aditya31sharma.github.io/social-media-master/**
 
-Builds a Tenzen Instagram carousel from one cover shot and one product link.
+Tenzen's browser workspace for Instagram Carousels, Reels and review Stories.
 
 Give it a cover image and a product, and it returns six 3:4 slides, ready to
 save: the cover with the wordmark on it, then the five product slides in the
@@ -11,6 +11,22 @@ brand gradient.
 
 Everything runs in the browser. There is no server and no build step, which is
 what lets it sit on GitHub Pages.
+
+## Aditya Tools Design System
+
+All three tools share one page. Switch between **Carousel**, **Reel** and **Story**
+without losing selections, photos, framing or generated output. Hash links
+`./#carousel`, `./#reel` and `./#story` open each tool; old `./stories/` bookmarks
+redirect to the Story tab. Drafts remain in memory until the page is reloaded.
+
+The workspace follows the Constitution's Aditya Tools Design System, using its
+Mono preset, self-hosted Plus Jakarta Sans, 44px touch targets and 54px primary
+actions. Phones have bottom navigation and a contextual plus button. Desktop
+has a controls card beside previews. Secondary settings fold away. Settings
+offers Light, Dark and System appearance; Light is the initial default. Exported
+artwork retains its original typography, colours, geometry and resolution.
+
+See [the implementation and feature checklist](docs/WORKSPACE-REVAMP.md).
 
 ## Reel cover
 
@@ -71,8 +87,9 @@ The same GitHub Pages files are also served inside Tenzen HQ at
    **Download 6**, and **Download everything** writes every carousel in order.
    Always separate images, never a zip.
 
-On a phone the slides take the screen, one at a time with dots underneath, and
-the composer is a sheet at the bottom that collapses to a single line.
+On a phone the slides scroll horizontally, with dots underneath. The composer
+sits above the preview and expands inline. Story previews sit above their
+controls. The bottom navigation remains available throughout the workspace.
 
 ## What it decides for you
 
@@ -110,7 +127,9 @@ at *Oversized Hoodie*. Both fields are editable before you build.
 | Piece | What it does |
 |---|---|
 | `index.html` | markup |
-| `app.css` | the tool's chrome; all wide-screen overrides in one block at the end |
+| `app.css` | original editor/component layout, overridden by the shared design system |
+| `styles/tokens.css`, `styles/workspace.css`, `styles/fonts.css` | Aditya Tools theme, responsive workspace and self-hosted UI type |
+| `lib/workspace.js`, `lib/theme.js` | persistent panels, hash navigation, lazy Story mount and appearance preference |
 | `app.js` | wiring only |
 | `lib/shopify.js` | catalogue, product, carousel orders, image fallbacks |
 | `lib/cutout.js` | the matting model and its IndexedDB cache |
@@ -118,7 +137,8 @@ at *Oversized Hoodie*. Both fields are editable before you build.
 | `lib/frame.js` | where a photo sits in a frame: clamping, snapping, zoom |
 | `lib/framer.js` | the gestures that move it - drag, pinch, wheel, keys |
 | `lib/editor.js` | the full-screen slide surface, locked and unlocked |
-| `coi-serviceworker.js` | adds COOP/COEP for Carousel WebAssembly; excludes Story Creator so Google sign-in can open |
+| `coi-serviceworker.js` | keeps the shared workspace compatible with Google sign-in; retains isolation for the Reel lab |
+| `stories/entry.js`, `stories/story.js` | old URL compatibility and native in-page Story editor |
 | `assets/logo.svg` | the wordmark, drawn with `currentColor` so it recolours |
 
 **Catalogue** comes from Shopify's Storefront API. The token in `app.js` is the
@@ -132,10 +152,12 @@ WebAssembly). The weights are about 88MB, fetched from a CDN the first time you
 pick a cover or a product and cached by the browser thereafter. Computed mattes
 are cached in IndexedDB per image, so rebuilding a carousel is close to instant.
 
-**Threads.** The service worker makes the page cross-origin isolated so the
-model can use every core. Safari does not support COEP `credentialless`, so it
-stays single-threaded, which is slower but correct. Add `?nocoi` to the URL to
-turn the worker off.
+**Threads and Drive.** Google's sign-in popup needs the shared document to remain
+non-isolated. Background removal uses its supported single-thread WebAssembly
+fallback, which can be slower on an uncached image. The Reel lab retains
+COOP/COEP isolation. An older controlling worker is updated automatically; an
+isolated document reloads once when the replacement takes control. Add `?nocoi`
+to skip worker registration.
 
 **Rendering.** Slides are drawn once at their final size. All geometry is held
 in Figma's 3000x4000 design space and multiplied by a single scale factor, so
@@ -150,7 +172,7 @@ localhost) or the service worker and the cut-out model will not load.
 Local:
 
 ```sh
-python3 -m http.server 8801
+python3 -m http.server 8088
 ```
 
 ## Known edges
@@ -187,3 +209,16 @@ python3 -m http.server 8801
 - PNG is the default for fidelity, which makes a photographic cover slide large.
   Switch to JPEG when the file size matters more than the last bit of gradient.
 - The static outro slide is not generated here, by design.
+
+
+## Verification
+
+```sh
+python3 docs/story-creator/verify.py
+node --test docs/story-creator/qa/*.test.mjs docs/qa/*.test.mjs
+```
+
+Use `http://localhost:8088/#story` for the current Story browser checks.
+`docs/qa/` contains workspace, paste, recovery and Reel-control integration checks.
+See [local revamp evidence and limits](docs/WORKSPACE-REVAMP.md#local-verification-2026-10-03).
+A live release requires Aditya's explicit approval before pushing main.

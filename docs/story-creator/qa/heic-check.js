@@ -1,5 +1,5 @@
 (async () => {
-  const response = await fetch('../docs/story-creator/qa/heic-sample.heic');
+  const response = await fetch('./docs/story-creator/qa/heic-sample.heic');
   if (!response.ok) throw new Error('HEIC test image could not load.');
   const photo = new File([await response.blob()], 'iPhone.HEIC', { type: '' });
   const transfer = new DataTransfer();
@@ -9,7 +9,7 @@
   input.dispatchEvent(new Event('change', { bubbles: true }));
   for (let i = 0; i < 150; i++) {
     if (document.querySelector('#photoName').textContent === photo.name) break;
-    if (document.querySelector('#status').dataset.error === 'true') throw new Error(document.querySelector('#status').textContent);
+    if (document.querySelector('#storyStatus').dataset.error === 'true') throw new Error(document.querySelector('#storyStatus').textContent);
     await new Promise(resolve => setTimeout(resolve, 100));
   }
   const canvas = document.querySelector('.story-canvas');

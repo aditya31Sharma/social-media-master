@@ -2,10 +2,11 @@ import { loadCatalogue } from '../lib/shopify.js';
 import { storyWebP } from './download.js';
 import { connectDrive } from './drive-auth.js';
 
-export function setupDrive(getStories, onSavedUsers) {
-  const $ = selector => document.querySelector(selector);
+export function setupDrive(getStories, onSavedUsers, root = document) {
+  const $ = selector => root.querySelector(selector);
   let products = [], selected = null, drive = null, busy = false, loadingProducts = false, scanVersion = 0;
   let savedUsers = null;
+  let productsRequest = 0;
   const status = (text, error = false) => { $('#driveStatus').textContent = text; $('#driveStatus').dataset.error = String(error); };
   function resetSavedUsers() { scanVersion++; savedUsers = null; onSavedUsers(null); }
   async function scanSavedUsers() {
@@ -46,21 +47,31 @@ export function setupDrive(getStories, onSavedUsers) {
     refresh();
   }
   async function loadProducts() {
+    const request = ++productsRequest;
     loadingProducts = true; refresh();
     status('Loading products…');
+    const timer = setTimeout(() => {
+      if (request !== productsRequest) return;
+      loadingProducts = false; refresh();
+      status('Still connecting. Check your internet, or refresh products.');
+    }, 6000);
     try {
-      products = await loadCatalogue();
+      const loaded = await loadCatalogue();
+      if (request !== productsRequest) return;
+      clearTimeout(timer);
+      products = loaded;
       products.sort((a, b) => a.title.localeCompare(b.title));
       $('#driveSearch').disabled = false;
       filter();
       if (selected && drive) await scanSavedUsers();
       else status(`${products.length} products. Choose a folder before saving.`);
     } catch (error) {
+      if (request !== productsRequest) return;
       products = []; selected = null; $('#driveSearch').disabled = true;
       $('#driveFolderLink').hidden = true; filter();
       status(`Products could not load: ${error.message}`, true);
     }
-    finally { loadingProducts = false; refresh(); }
+    finally { clearTimeout(timer); if (request === productsRequest) { loadingProducts = false; refresh(); } }
   }
   $('#driveSearch').addEventListener('input', filter);
   $('#driveProduct').addEventListener('change', () => {

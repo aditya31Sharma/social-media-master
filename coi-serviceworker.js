@@ -6,10 +6,10 @@
    worker adds them to its own responses instead and the page reloads once under
    its control. Chrome then runs the model on every core rather than one.
 
-   This is strictly an optimisation. Safari does not support COEP credentialless,
-   so it stays un-isolated and the model falls back to a single thread, which is
-   slower but correct. Nothing here is required for the tool to work, and
-   ?nocoi on the URL turns it off entirely. */
+   The shared workspace now includes Google's Drive sign-in popup, so its
+   document must remain non-isolated. The Reel lab keeps isolation. Background
+   removal in the workspace uses the same single-thread path as Safari.
+   ?nocoi on the URL skips worker registration. */
 
 if (typeof window === 'undefined') {
   self.addEventListener('install', () => self.skipWaiting());
@@ -21,6 +21,7 @@ if (typeof window === 'undefined') {
     if (req.cache === 'only-if-cached' && req.mode !== 'same-origin') return;
     // Story Creator uses Google's OAuth popup, which COOP same-origin would isolate.
     if (req.url.startsWith(new URL('stories/', self.registration.scope).href)) return;
+    const workspace = req.mode === 'navigate' && !req.url.startsWith(new URL('lab/', self.registration.scope).href);
 
     event.respondWith(
       fetch(req)
@@ -30,8 +31,13 @@ if (typeof window === 'undefined') {
           // `credentialless` rather than `require-corp`: Shopify's CDN does not
           // send Cross-Origin-Resource-Policy, and require-corp would block
           // every product photo the tool exists to read.
-          headers.set('Cross-Origin-Embedder-Policy', 'credentialless');
-          headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+          if (workspace) {
+            headers.delete('Cross-Origin-Embedder-Policy');
+            headers.delete('Cross-Origin-Opener-Policy');
+          } else {
+            headers.set('Cross-Origin-Embedder-Policy', 'credentialless');
+            headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+          }
           return new Response(res.body, {
             status: res.status,
             statusText: res.statusText,
@@ -51,19 +57,15 @@ if (typeof window === 'undefined') {
 
   (async () => {
     if (new URL(location).searchParams.has('nocoi')) return;
-    if (window.crossOriginIsolated !== false) return;      // already isolated, or unsupported
     if (!window.isSecureContext || !navigator.serviceWorker) return;
-
-    // One reload, ever. Without this guard a worker that cannot isolate the
-    // page turns it into a refresh loop.
-    if (sessionStorage.getItem('coi-tried')) return;
-
+    // An older worker may have isolated this document. Reload only when its
+    // replacement takes control, before the user starts editing.
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (window.crossOriginIsolated) location.reload();
+    });
     try {
       const reg = await navigator.serviceWorker.register(selfSrc);
-      if (reg && !navigator.serviceWorker.controller) {
-        sessionStorage.setItem('coi-tried', '1');
-        location.reload();
-      }
+      await reg.update();
     } catch (err) {
       console.warn('[coi] not enabled:', err.message);
     }

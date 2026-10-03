@@ -1,5 +1,5 @@
 (async () => {
-  const $ = s => document.querySelector(s), checks = [];
+  const $ = s => document.querySelector('#storyWorkspace').querySelector(s), checks = [];
   const assert = (name, ok) => { checks.push({name, pass:!!ok}); if (!ok) throw new Error(name); };
   const wait = async predicate => {
     for (let i = 0; i < 150; i++) { if (predicate()) return; await new Promise(r => setTimeout(r, 20)); }
@@ -62,7 +62,7 @@
     }
     $('#addStory').click();exports.length=0;$('#downloadAll').click();
     await wait(()=>exports.length===2 && !$('#downloadAll').disabled);
-    assert('Bulk export reports unfinished story',$('#status').textContent.includes('1 unfinished story skipped'));
+    assert('Bulk export reports unfinished story',$('#storyStatus').textContent.includes('1 unfinished story skipped'));
   } finally {HTMLAnchorElement.prototype.click=original;}
   return {passed:checks.length,checks};
 })()

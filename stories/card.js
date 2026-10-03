@@ -3,8 +3,8 @@ import { clampCrop } from './crop.js';
 import { drawStory, loadImage, photoFrame } from './render.js';
 import { decodeReviewPhoto, isReviewPhoto } from './heic.js';
 
-export function createStory(id, { assets, onSelect, onChange, onDownload, say }) {
-  const element = document.querySelector('#storyTemplate').content.firstElementChild.cloneNode(true);
+export function createStory(id, { assets, onSelect, onChange, onDownload, say, root = document }) {
+  const element = root.querySelector('#storyTemplate').content.firstElementChild.cloneNode(true);
   const $ = selector => element.querySelector(selector);
   const canvas = $('.story-canvas'), area = $('.photo-area'), fileInput = $('.story-file');
   const story = {
@@ -15,7 +15,7 @@ export function createStory(id, { assets, onSelect, onChange, onDownload, say })
   let photoRequest = 0, avatarRequest = 0;
   $('.story-select').textContent = `Story ${id}`;
   element.dataset.storyId = id;
-  document.querySelector('#storyTrack').append(element);
+  root.querySelector('#storyTrack').append(element);
   const framer = createFramer(area, {
     natural: () => story.photo && ({ nw: story.photo.width, nh: story.photo.height }),
     frame: () => ({ fw: area.clientWidth, fh: area.clientHeight }),
@@ -55,7 +55,7 @@ export function createStory(id, { assets, onSelect, onChange, onDownload, say })
     const request = ++avatarRequest;
     story.username = user.username; story.avatar = null; paint();
     try {
-      const avatar = await loadImage(`profiles/${user.photo}`);
+      const avatar = await loadImage(new URL(`profiles/${user.photo}`, import.meta.url));
       if (request !== avatarRequest) return;
       story.avatar = avatar; paint();
     } catch {

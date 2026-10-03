@@ -10,7 +10,7 @@ export async function loadImage(url) {
 }
 
 export async function loadAssets() {
-  const [more, share] = await Promise.all(['more', 'share'].map(name => loadImage(`assets/${name}.svg`)));
+  const [more, share] = await Promise.all(['more', 'share'].map(name => loadImage(new URL(`assets/${name}.svg`, import.meta.url))));
   await Promise.all([document.fonts.load('400 42px StoryRoboto'), document.fonts.load('700 42px StoryRoboto')]);
   return { more, share };
 }

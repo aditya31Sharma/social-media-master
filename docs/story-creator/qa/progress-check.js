@@ -1,5 +1,5 @@
 (async()=>{
- const $=s=>document.querySelector(s),checks=[];
+ const $=s=>document.querySelector('#storyWorkspace').querySelector(s),checks=[];
  const check=(name,pass)=>{if(!pass)throw Error(name);checks.push(name);};
  const wait=async fn=>{for(let i=0;i<100;i++){if(fn())return;await new Promise(r=>setTimeout(r,20));}throw Error('Timed out');};
  const input=(selector,value,event='input')=>{$(selector).value=value;$(selector).dispatchEvent(new Event(event,{bubbles:true}));};

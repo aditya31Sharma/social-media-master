@@ -2,6 +2,26 @@
 
 Prepared 2026-10-03 for Aditya's existing Claude session that hosts Social Media Master.
 
+## Current workspace integration (2026-10-03)
+
+The new shared workspace supersedes the separate-page integration advice below.
+Carousel, Reel and Story now switch in place at the root using hash navigation.
+`lib/workspace.js` lazily imports `mountStory(root, {isActive})` and the editor
+markup/template from `stories/index.html`. `stories/entry.js` redirects old
+`./stories/` bookmarks to `../#story`. Panels remain mounted to retain drafts.
+Scoped selectors, `#storyStatus`, module-relative profile/icon URLs and active-tool
+paste/drop ownership prevent collisions. No iframe is used.
+
+The UI follows the Aditya Tools Design System Mono preset, with local Plus
+Jakarta Sans and Light/Dark/System settings. Export artwork remains unchanged.
+Google OAuth requires the root document to remain non-isolated; the worker
+retains isolation only for the Reel lab. See [the current recovery guide](story-creator/README.md)
+and [feature-preservation plan](WORKSPACE-REVAMP.md). The original handoff below
+is historical where it discusses uncommitted files or navigation still pending.
+
+Randomize user now requires a successful Drive folder scan and excludes usernames
+already saved for that product. All600 profiles remain manually selectable.
+
 ## GitHub preservation update (2026-10-03)
 
 **Published and verified from a fresh GitHub clone.** Read [the current upload status](story-creator/UPLOAD-STATUS.md). The user requested removal of local feature copies after verification. Use GitHub as the handoff source; machine-local paths below are historical.

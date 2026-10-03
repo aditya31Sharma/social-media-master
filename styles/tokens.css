@@ -1,0 +1,165 @@
+/* Aditya Tools Design System: Mono preset from Brainboard, Constitution 2026-10-03. */
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #FFFFFF;
+  --card: #FFFFFF;
+  --card-2: #F3F3F3;
+  --line: #E4E4E4;
+  --ink: #111111;
+  --ink-2: #6A6A6A;
+  --ink-3: #9C9C9C;
+  --inverse: #111111;
+  --on-inverse: #FFFFFF;
+
+  --accent: #111111;
+  --accent-ink: #111111;
+  --accent-2: #444444;
+  --accent-soft: #EFEFEF;
+  --on-accent: #FFFFFF;
+  --hero: #FFFFFF;
+  --hero-ink: #111111;
+  --hero-amount: #111111;
+  --hero-glow: none;
+  --hero-chip: #F3F3F3;
+  --on-strip: #FFFFFF;
+
+  --pos: #111111;
+  --pos-soft: #EFEFEF;
+  --neg: #111111;
+  --neg-soft: #EFEFEF;
+  --warn: #111111;
+  --warn-soft: #EFEFEF;
+  --info: #111111;
+  --info-soft: #EFEFEF;
+
+  --font-ui: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --fs-11: 11px;
+  --fs-12: 12px;
+  --fs-13: 13px;
+  --fs-14: 14px;
+  --fs-15: 15px;
+  --fs-17: 17px;
+  --fs-20: 20px;
+  --fs-24: 24px;
+  --fs-30: 30px;
+  --fs-40: 40px;
+
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-pill: 999px;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-float: 0 10px 30px rgba(0, 0, 0, 0.16);
+  --shadow-fab: 0 8px 20px rgba(0, 0, 0, 0.25);
+  --shadow-seg: 0 1px 3px rgba(0, 0, 0, 0.12);
+
+  --tab-h: 64px;
+  --gutter: 16px;
+  --col: 760px;
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --dur: 180ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --focus: 0 0 0 3px rgba(17, 17, 17, 0.25);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0E0E0E;
+  --card: #171717;
+  --card-2: #222222;
+  --line: #2C2C2C;
+  --ink: #F2F2F2;
+  --ink-2: #A6A6A6;
+  --ink-3: #6E6E6E;
+  --inverse: #F2F2F2;
+  --on-inverse: #111111;
+  --accent: #F2F2F2;
+  --accent-ink: #F2F2F2;
+  --accent-2: #BBBBBB;
+  --accent-soft: #262626;
+  --on-accent: #111111;
+  --hero: #0E0E0E;
+  --hero-ink: #F2F2F2;
+  --hero-amount: #F2F2F2;
+  --hero-chip: #222222;
+  --on-strip: #111111;
+  --pos: #F2F2F2;
+  --pos-soft: #262626;
+  --neg: #F2F2F2;
+  --neg-soft: #262626;
+  --warn: #F2F2F2;
+  --warn-soft: #262626;
+  --info: #F2F2F2;
+  --info-soft: #262626;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-float: 0 10px 30px rgba(0, 0, 0, 0.6);
+  --shadow-fab: 0 8px 20px rgba(0, 0, 0, 0.5);
+  --shadow-seg: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --focus: 0 0 0 3px rgba(242, 242, 242, 0.3);
+}
+
+/* Workspace dimensions and aliases for the existing editing controls. */
+:root {
+  --font: var(--font-ui);
+  --surface: var(--card);
+  --surface-2: var(--card-2);
+  --surface-3: var(--line);
+  --line-2: var(--line);
+  --accent-sub: var(--accent-soft);
+  --danger-ink: var(--neg);
+  --warn-ink: var(--warn);
+  --ok-ink: var(--pos);
+  --sh-1: var(--shadow-card);
+  --sh-2: var(--shadow-card);
+  --sh-3: var(--shadow-float);
+  --fast: var(--dur);
+  --med: var(--dur);
+  --bar-h: 76px;
+  --pad: var(--gutter);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --control-h: 44px;
+  --primary-h: 54px;
+  --input-font: 16px;
+  --weight-body: 500;
+  --weight-label: 600;
+  --weight-button: 700;
+  --weight-title: 800;
+  --hairline: 1px;
+  --focus-line: 2px;
+  --round: 50%;
+  --icon-sm: 18px;
+  --icon-md: 22px;
+  --icon-lg: 28px;
+  --app-max: 1440px;
+  --rail-width: 352px;
+  --preview-min: 420px;
+  --preview-width: 340px;
+  --dialog-width: 560px;
+  --stage-label-h: 56px;
+  --fab-size: 60px;
+  --brand-width: 62px;
+  --brand-height: 24px;
+  --story-preview-bg: #222222;
+  --story-preview-ink: #FFFFFF;
+  --story-preview-muted: #B5B5B5;
+  --scrim: rgba(17,18,20,.45);
+  --press-scale: .98;
+  --z-sticky: 20;
+  --z-dropdown: 45;
+  --z-guide: 30;
+  --z-modal: 50;
+}

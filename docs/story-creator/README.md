@@ -1,6 +1,6 @@
 # Story Creator: portable recovery package
 
-**Published and recovery verified:** GitHub contains the complete package. A fresh GitHub clone passed file/archive verification and all six crop tests. The live story editor loaded all600 DPs and passed41 browser checks. Read [UPLOAD-STATUS.md](UPLOAD-STATUS.md). Local feature files are being removed at the user's explicit request; use this GitHub copy for future work.
+**Recovery archive published and verified:** GitHub contains the complete package. A fresh GitHub clone passed file/archive verification and all six crop tests. The live story editor loaded all600 DPs and passed41 browser checks. Read [UPLOAD-STATUS.md](UPLOAD-STATUS.md). Historical cleanup applied to the original standalone working copies; the maintained repository is the current source.
 
 This package supersedes the machine-local storage and uncommitted-state notes in the original handoff. The feature and all collected project data are now intended to travel with the Git repository. No file under Documents, /tmp, or a previous developer home directory is needed to run the editor.
 
@@ -14,7 +14,7 @@ node --test docs/story-creator/qa/crop.test.mjs
 python3 -m http.server 8801 --bind 127.0.0.1
 ```
 
-Open http://localhost:8801/stories/ . The deployed route is https://aditya31sharma.github.io/social-media-master/stories/ . GitHub Pages is configured to publish the root of main. The editor requires no npm install, API key, remote profile API, or backend. The existing dashboard navigation still needs the third feature entry, delegated to the receiving Claude session. Carousel and Reel files are unchanged.
+Open http://localhost:8801/stories/ . The deployed route is https://aditya31sharma.github.io/social-media-master/stories/ . GitHub Pages is configured to publish the root of main. The editor requires no npm install, API key, remote profile API, or backend. Carousel, Reel and Story now share the root workspace. The old /stories/ URL redirects to ./#story. No separate Story page or iframe is used.
 
 ## Drive save integration
 
@@ -48,17 +48,25 @@ Archives are below GitHub's ordinary per-file limit and committed directly; no G
 
 Run the verifier after cloning. It checks600 unique usernames/photos, metadata-to-photo hashes, all archive members, shipped-file hashes, safe paths and local JS module dependencies. It does not replace browser tests.
 
-Browser tests in `qa/` run in a fresh `/stories/` page using the receiving session's approved browser tool. Run batch-check.js on a blank editor. Random-user and India checks require a connected Drive account and selected product before Randomize becomes available. Upload qa/figma-sample.png via .story-file before random-user-check.js or progress-check.js. Reload between scripts. These tests mutate the page; some intercept download clicks to inspect actual WebP bytes. The preserved old result files are historical evidence, not proof of a new deployment.
+Browser tests in `qa/` run after the Story tab loads on a fresh `./#story` page using the receiving session's approved browser tool. Run batch-check.js on a blank editor. Random-user and India checks require a connected Drive account and selected product before Randomize becomes available. Upload qa/figma-sample.png via .story-file before random-user-check.js or progress-check.js. Reload between scripts. These tests mutate the page; some intercept download clicks to inspect actual WebP bytes. The preserved old result files are historical evidence, not proof of a new deployment.
 For a repeatable no-login check of saved-user exclusion, run `qa/saved-users-check.js` on a fresh editor page. It simulates 11 older WebPs in one product folder, verifies manual selection and 25 random clicks, then simulates a new upload and verifies that user is excluded in 25 more clicks.
 
-For dashboard integration, prefer a relative link to `./stories/`. Existing app.js assumes only Carousel/Reel in its template switch and has a global paste listener. Do not simply add an unsupported data-tpl value or load both page scripts into one DOM. Preserve both photo-ratio options and all600 profiles. Follow the detailed handoff acceptance checklist, then verify the deployed route and all assets.
+The shared workspace owns navigation in `lib/workspace.js` and mounts the existing
+Story markup through `mountStory(root, {isActive})`. Story selectors are scoped,
+profile/icon URLs are module-relative, and paste/drop handlers act only while
+Story is active. Both photo ratios and all600 profiles are retained. The
+workspace uses the Aditya Tools Design System in `styles/`, while Story canvas
+artwork keeps its original font and geometry. See [the workspace plan](../WORKSPACE-REVAMP.md).
 
-## Paste into the existing Claude hosting session
+The shared root document must remain non-isolated for the Google sign-in popup;
+only the Reel lab retains COOP/COEP. Background removal uses its supported
+single-thread fallback. Keep all paths relative for the deployed subpath.
 
-```text
-Continue in your existing Social Media Master hosting context. Fetch the latest repository state using your established workflow, preserving unrelated work. Read docs/story-creator/README.md first, then docs/STORY-CREATOR-HANDOFF.md.
+Additional verification:
 
-The completed editor,600 profiles, source data, assets, collection snapshots and QA are in GitHub. No files from the previous machine are required. Reuse stories/ and add Story Creator as the third dashboard feature beside Carousel and Reel. Do not rebuild the editor or refactor unrelated features.
-
-Run the recovery verifier and relevant browser checks, integrate navigation, and use your established deployment workflow. Report the tested live URL and any remaining issues. Only make changes needed for this integration.
+```sh
+node --test docs/story-creator/qa/*.test.mjs docs/qa/*.test.mjs
 ```
+
+Run `docs/qa/workspace-check.js` with the approved browser tool for in-page
+navigation, draft preservation, shared IDs, theme and confirmation checks.

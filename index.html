@@ -1,20 +1,26 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f2f3f5">
 <title>Social Media Master</title>
-<meta name="description" content="Build Tenzen Instagram carousels from a cover shot and a product link.">
+<meta name="description" content="Create Tenzen Instagram carousels, reels and review stories in one workspace.">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="alternate icon" href="assets/favicon-96.png" sizes="96x96">
 <link rel="apple-touch-icon" href="assets/favicon-512.png">
 <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preload" href="./assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="./stories/story.css">
+<link rel="stylesheet" href="./styles/fonts.css">
+<link rel="stylesheet" href="./styles/tokens.css">
+<link rel="stylesheet" href="./styles/workspace.css">
+<script src="./lib/theme.js"></script>
 <script src="coi-serviceworker.js"></script>
 </head>
-<body>
+<body data-tool="carousel">
 
 <svg hidden aria-hidden="true">
   <defs>
@@ -94,20 +100,35 @@
 <header class="topbar">
   <div class="brand">
     <span class="brand__mark" role="img" aria-label="Tenzen"></span>
-    <span class="brand__name">Social Media Master</span>
+    <span class="brand__name"><strong>Social Media Master</strong><small>Tenzen</small></span>
   </div>
   <div class="topbar__actions">
     <button type="button" class="btn btn--quiet" id="btnDownloadEvery" hidden>Download everything</button>
-    <button type="button" class="btn btn--quiet" id="btnReset">Start over</button>
+    <button type="button" class="round" data-open-settings aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tune"/></svg></button>
   </div>
 </header>
 
-<main class="shell">
+<div class="workspace-heading">
+  <div><p class="workspace-kicker">CREATE FOR INSTAGRAM</p><h1 id="workspaceTitle">Carousel</h1><p id="workspaceDescription">One SKU, six slides.</p></div>
+  <span class="workspace-badge" id="workspaceMeta">6 slides · 3:4</span>
+</div>
+<nav class="workspace-nav" aria-label="Creation tools">
+  <div class="tabs" role="tablist" aria-label="Template">
+    <button type="button" class="tab is-on" id="tabCarousel" data-tpl="carousel" role="tab" aria-selected="true" aria-controls="toolWorkspace"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-carousel"/></svg><span>Carousel</span></button>
+    <button type="button" class="tab" id="tabReel" data-tpl="reel" role="tab" aria-selected="false" aria-controls="toolWorkspace" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-reel"/></svg><span>Reel</span></button>
+    <button type="button" class="workspace-add" id="workspaceAdd" aria-label="Add carousel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button type="button" class="tab" id="tabStory" data-tpl="story" role="tab" aria-selected="false" aria-controls="storyWorkspace" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-story"/></svg><span>Story</span></button>
+    <button type="button" class="tab tab-settings" data-open-settings aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tune"/></svg><span>Settings</span></button>
+  </div>
+</nav>
+
+<main class="shell" id="toolWorkspace">
 
   <!-- ── Draft ────────────────────────────────────────────────── -->
   <!-- First in the source so it is first on a phone: the slides are the
        point, and the controls sit under them in a sheet. -->
   <div class="stage">
+    <header class="stage-head"><h2>Preview</h2><span id="previewMeta">6 slides · 3:4</span></header>
     <div id="carousels" class="carousels"></div>
 
     <!-- The finished reel. Nothing plays while it renders; this appears when
@@ -131,10 +152,7 @@
     <div class="empty" id="emptyState">
       <span class="empty__mark" aria-hidden="true"></span>
       <strong>One SKU, six slides</strong>
-      <span>Pick a product and a cover shot below. You get the cover with the
-            wordmark on it, then the five product slides in that SKU's order,
-            backgrounds cut out. Add as many SKUs as you like; each one keeps
-            its own set.</span>
+      <span>Pick a product, add a cover shot, then build your carousel.</span>
     </div>
   </div>
 
@@ -148,23 +166,6 @@
     </button>
 
     <div class="more" id="more">
-
-      <!-- Three templates. The carousel is six stills from one SKU; the reel is
-           one outfit, two SKUs, turning. They share the catalogue and nothing
-           else, so the switch swaps the whole panel rather than hiding rows.
-           Story is its own page (stories/): it has no data-tpl, so the switch
-           in app.js never touches it, and its scripts never share this DOM. -->
-      <div class="tabs" role="tablist" aria-label="Template">
-        <button type="button" class="tab is-on" data-tpl="carousel" role="tab" aria-selected="true">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-carousel"/></svg><span>Carousel</span>
-        </button>
-        <button type="button" class="tab" data-tpl="reel" role="tab" aria-selected="false">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-reel"/></svg><span>Reel</span>
-        </button>
-        <a class="tab" href="./stories/" role="tab" aria-selected="false" title="Story Creator">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-story"/></svg><span>Story</span>
-        </a>
-      </div>
 
       <div data-panel="carousel">
 
@@ -184,6 +185,7 @@
           </button>
         </div>
         <p class="note" id="prodNote">Loading the catalogue&hellip;</p>
+        <button type="button" class="btn btn--quiet" id="retryCatalogue" hidden>Retry</button>
       </section>
 
       <!-- Everything below waits until there is a product to apply it to. -->
@@ -308,9 +310,8 @@
         </section>
 
         <div id="reelAfter" hidden>
-          <button type="button" class="btn btn--primary btn--full" id="btnSetup">Proceed</button>
+          <button type="button" class="btn btn--primary btn--full" id="btnSetup">Set up reel</button>
           <p class="note">Shots, fit, text and sound come next.</p>
-        </div>
         </div>
       </div><!-- /reel panel -->
     </div>
@@ -322,6 +323,17 @@
   </div>
 
 </main>
+<section id="storyWorkspace" aria-labelledby="tabStory" hidden>
+  <div class="workspace-loading" role="status"><span class="workspace-spinner" aria-hidden="true"></span><h2>Opening Story creator</h2><p>Loading your editing tools.</p><button type="button" class="btn" id="retryStory" hidden>Retry</button></div>
+</section>
+<dialog class="workspace-dialog" id="settingsDialog" aria-labelledby="settingsTitle">
+  <header><h2 id="settingsTitle">Settings</h2><button type="button" class="round" data-close-dialog aria-label="Close settings"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></button></header>
+  <section><h3>Appearance</h3><div class="seg theme-options" role="group" aria-label="Appearance"><button type="button" class="seg__btn" data-theme-choice="system" aria-pressed="false">System</button><button type="button" class="seg__btn" data-theme-choice="light" aria-pressed="true">Light</button><button type="button" class="seg__btn" data-theme-choice="dark" aria-pressed="false">Dark</button></div></section>
+  <section class="theme-preview"><span class="workspace-kicker">ADITYA TOOLS DESIGN SYSTEM</span><strong>Mono</strong><p>Your photos bring the colour.</p></section>
+  <button type="button" class="btn btn--full" id="btnReset">Start over</button>
+</dialog>
+<dialog class="workspace-dialog" id="resetDialog" aria-labelledby="resetTitle"><header><h2 id="resetTitle">Start over?</h2><button type="button" class="round" data-close-dialog aria-label="Keep editing"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></button></header><p>This clears the current drafts in all three tools. Your downloaded files and Drive stories stay saved.</p><footer><button type="button" class="btn" data-close-dialog>Keep editing</button><button type="button" class="btn btn--primary" id="confirmReset">Start over</button></footer></dialog>
+<dialog class="workspace-dialog" id="removeCarouselDialog" aria-labelledby="removeCarouselTitle"><header><h2 id="removeCarouselTitle">Remove this carousel?</h2><button type="button" class="round" data-close-dialog aria-label="Keep carousel"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></button></header><p id="removeCarouselMessage"></p><footer><button type="button" class="btn" data-close-dialog>Keep carousel</button><button type="button" class="btn btn--primary" id="confirmRemoveCarousel">Remove carousel</button></footer></dialog>
 
 <ul class="combo__list" id="prodList" role="listbox" aria-label="Products" hidden></ul>
 
@@ -330,7 +342,7 @@
      Everything fiddly lives here rather than in the sheet: one surface, one
      task, a way back, and the action that starts the render pinned to the
      bottom where a thumb is. -->
-<div class="setup" id="reelSetup" hidden>
+<div class="setup" id="reelSetup" role="dialog" aria-modal="true" aria-label="Set up the reel" hidden>
   <header class="setup__head">
     <button type="button" class="round" id="reelSetupBack" aria-label="Back">
       <svg viewBox="0 0 24 24"><use href="#i-left"/></svg>
@@ -485,7 +497,7 @@
   </div>
 
   <div class="setup__foot">
-    <button type="button" class="btn btn--primary btn--full" id="btnReelGo" disabled>Proceed with the real generation</button>
+    <button type="button" class="btn btn--primary btn--full" id="btnReelGo" disabled>Generate reel</button>
     <p class="note" id="reelSetupNote">Pick a shot for each of the four corners.</p>
   </div>
 </div>
