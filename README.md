@@ -26,6 +26,11 @@ profile pictures, independent frames, and separate downloads. A product search b
 name or SKU can save all ready WebPs to `Tenzen Reviews/<product title>` in the
 `team@tenzen.in` Google Drive. If a published Shopify product has no folder yet, the
 first save creates it. Refresh products to see newly published SKUs.
+After connecting Drive and choosing a product, Story Creator scans that folder's
+saved WebPs. Randomize user skips usernames found in earlier story filenames or
+new upload metadata, including prior saves. The profile picker still shows all
+600 accounts. Randomize stays disabled until the folder scan succeeds; saving a
+new story excludes that user immediately for the selected product.
 HEIC and HEIF iPhone photos are accepted. A pinned browser decoder loads only when
 the browser cannot open one natively; conversion stays in the browser.
 

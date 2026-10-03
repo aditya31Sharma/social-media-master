@@ -1,9 +1,7 @@
 @font-face { font-family: StoryRoboto; src: url('assets/Roboto.ttf') format('truetype'); font-weight: 100 900; font-display: block; }
-/* First paint only: app.css consumes --logo, and browsers disagree on what a
-   relative url() in a custom property is relative to. Both hosts serve the
-   site under /social-media-master/, so this resolves the same everywhere;
-   story.js then sets the exact absolute URL. */
-:root { --logo: url('/social-media-master/assets/logo.svg'); }
+/* First paint: app.css consumes this property from the site root;
+   story.js replaces it with the module-resolved URL after loading. */
+:root { --logo: url('./assets/logo.svg'); }
 .story-brand { color: inherit; text-decoration: none; }
 .story-editor { max-width: 1440px; margin: auto; }
 .story-controls { padding: 28px 24px; background: var(--surface); }

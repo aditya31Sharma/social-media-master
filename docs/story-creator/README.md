@@ -19,6 +19,7 @@ Open http://localhost:8801/stories/ . The deployed route is https://aditya31shar
 ## Drive save integration
 
 Story Creator can search the current published Shopify catalogue by product title or SKU and save all ready WebPs to an app-created `Tenzen Reviews/<product title>` folder in the `team@tenzen.in` Drive. Folders are created when first needed, keyed by Shopify product ID in Drive properties. Google OAuth is configured for both hosted origins and localhost:8088; see [DRIVE-SETUP.md](DRIVE-SETUP.md).
+After connection and product selection, the editor reads the saved WebPs in that product folder and excludes their Instagram usernames from **Randomize user**. Earlier saves are identified by their `story-<number>-<username>-<time><m|h>.webp` filenames; new saves also store the username in Drive properties. The full 600-account profile picker remains available for manual selection. Randomize is disabled if Drive is disconnected or the folder scan fails, and the Drive status reports the saved WebP and excluded-user counts. Each new successful upload updates the exclusion immediately.
 
 HEIC and HEIF review photos are decoded in the browser through a pinned `heic-to@1.6.5` script when native decoding fails. The converter loads only for those photos. Run `qa/heic-check.js` on a fresh Story page to check actual HEIC input and WebP export; its fixture is `qa/heic-sample.heic`.
 
@@ -47,7 +48,8 @@ Archives are below GitHub's ordinary per-file limit and committed directly; no G
 
 Run the verifier after cloning. It checks600 unique usernames/photos, metadata-to-photo hashes, all archive members, shipped-file hashes, safe paths and local JS module dependencies. It does not replace browser tests.
 
-Browser tests in `qa/` run in a fresh `/stories/` page using the receiving session's approved browser tool. Run batch-check.js on a blank editor. india-check.js requires no upload. Upload qa/figma-sample.png via .story-file before random-user-check.js or progress-check.js. Reload between scripts. These tests mutate the page; some intercept download clicks to inspect actual WebP bytes. The preserved old result files are historical evidence, not proof of a new deployment.
+Browser tests in `qa/` run in a fresh `/stories/` page using the receiving session's approved browser tool. Run batch-check.js on a blank editor. Random-user and India checks require a connected Drive account and selected product before Randomize becomes available. Upload qa/figma-sample.png via .story-file before random-user-check.js or progress-check.js. Reload between scripts. These tests mutate the page; some intercept download clicks to inspect actual WebP bytes. The preserved old result files are historical evidence, not proof of a new deployment.
+For a repeatable no-login check of saved-user exclusion, run `qa/saved-users-check.js` on a fresh editor page. It simulates 11 older WebPs in one product folder, verifies manual selection and 25 random clicks, then simulates a new upload and verifies that user is excluded in 25 more clicks.
 
 For dashboard integration, prefer a relative link to `./stories/`. Existing app.js assumes only Carousel/Reel in its template switch and has a global paste listener. Do not simply add an unsupported data-tpl value or load both page scripts into one DOM. Preserve both photo-ratio options and all600 profiles. Follow the detailed handoff acceptance checklist, then verify the deployed route and all assets.
 

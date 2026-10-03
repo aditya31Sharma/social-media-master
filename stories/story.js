@@ -3,6 +3,7 @@ import { createStory } from './card.js';
 import { downloadStories } from './download.js';
 import { setupDrive } from './drive-ui.js';
 import { isReviewPhoto } from './heic.js';
+import { normalizeUsername } from './saved-users.js';
 
 const $ = selector => document.querySelector(selector);
 
@@ -14,7 +15,16 @@ document.documentElement.style.setProperty('--logo', `url("${new URL('../assets/
 
 const stories = [];
 let assets = null, users = [], active = null, exporting = false;
+let savedUsers = null;
 let driveUI;
+const randomChoices = () => users.filter(user => user.username !== active?.username && !savedUsers?.has(normalizeUsername(user.username)));
+function setSavedUsers(usernames) {
+  savedUsers = usernames;
+  $('#randomProfileNote').textContent = usernames
+    ? `${usernames.size} saved ${usernames.size === 1 ? 'user' : 'users'} excluded from Randomize for this product.`
+    : 'Connect Google Drive and choose a product to randomize unused users.';
+  refresh(active);
+}
 
 function say(message, error = false) {
   $('#status').textContent = message;
@@ -30,7 +40,7 @@ function refresh(story) {
   }
   const valid = $('#timeValue').checkValidity() && $('#progressValue').checkValidity();
   $('#download').disabled = exporting || !active?.ready || !valid;
-  $('#randomProfile').disabled = !active || users.length < 2;
+  $('#randomProfile').disabled = !active || !savedUsers || !randomChoices().length;
   $('#downloadAll').disabled = exporting || !stories.some(story => story.ready) || !valid;
   stories.forEach(story => { story.element.querySelector('.story-save').disabled = exporting || !story.ready; });
   const ready = stories.filter(story => story.ready).length;
@@ -89,7 +99,7 @@ $('#profileSearch').addEventListener('input', () => filterProfiles());
 $('#profile').addEventListener('change', () => active?.setProfile(users.find(user => user.username === $('#profile').value)));
 $('#randomProfile').addEventListener('click', () => {
   if (!active) return;
-  const choices = users.filter(user => user.username !== active.username);
+  const choices = savedUsers ? randomChoices() : [];
   if (!choices.length) return;
   const user = choices[Math.floor(Math.random() * choices.length)];
   active.setProfile(user);
@@ -136,7 +146,7 @@ document.querySelectorAll('[data-unit]').forEach(button => button.addEventListen
   if (!active) return;
   active.unit = button.dataset.unit; showUnits(); active.paint();
 }));
-driveUI = setupDrive(() => stories);
+driveUI = setupDrive(() => stories, setSavedUsers);
 $('#zoom').addEventListener('input', () => active?.framer.setZoom(Number($('#zoom').value)));
 $('#resetPhoto').addEventListener('click', () => active?.framer.reset());
 $('#format').addEventListener('change', () => active?.setHeight(Number($('#format').value)));

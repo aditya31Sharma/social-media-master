@@ -1,3 +1,5 @@
+import { savedUsername } from './saved-users.js';
+
 const API = 'https://www.googleapis.com/drive/v3';
 const FOLDER = 'application/vnd.google-apps.folder';
 export const ROOT_NAME = 'Tenzen Reviews';
@@ -45,24 +47,50 @@ export function createDriveApi(token, send = fetch) {
     });
   }
 
-  async function productFolder(product) {
+  async function productFolder(product, create = true) {
     const roots = await folders('root', ROOT_NAME);
+    if (!roots.length && !create) return null;
     const root = roots[0] || await createFolder(ROOT_NAME, 'root');
     const children = await folders(root.id);
     const match = children.find(folder => folder.properties?.shopifyProductId === product.id);
     if (match) {
-      if (match.name !== product.title) await request(`${API}/files/${encodeURIComponent(match.id)}?fields=id,name`, {
+      if (create && match.name !== product.title) await request(`${API}/files/${encodeURIComponent(match.id)}?fields=id,name`, {
         method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: product.title }),
       });
       return match.id;
     }
+    if (!create) return null;
     return (await createFolder(product.title, root.id, product.id)).id;
+  }
+
+  async function savedUsernames(product) {
+    const folderId = await productFolder(product, false);
+    if (!folderId) return { folderId: null, fileCount: 0, usernames: new Set() };
+    const usernames = new Set();
+    let fileCount = 0, pageToken = '';
+    do {
+      const params = new URLSearchParams({
+        q: `'${queryValue(folderId)}' in parents and trashed = false`,
+        fields: 'nextPageToken,files(id,name,mimeType,properties)', pageSize: '1000',
+      });
+      if (pageToken) params.set('pageToken', pageToken);
+      const page = await request(`${API}/files?${params}`);
+      for (const file of page.files || []) {
+        if (file.mimeType !== 'image/webp' && !/\.webp$/i.test(file.name || '')) continue;
+        fileCount++;
+        const username = savedUsername(file);
+        if (username) usernames.add(username);
+      }
+      pageToken = page.nextPageToken || '';
+    } while (pageToken);
+    return { folderId, fileCount, usernames };
   }
 
   async function upload(folderId, file, product) {
     const boundary = `story-${crypto.randomUUID()}`;
     const metadata = { name: file.name, mimeType: 'image/webp', parents: [folderId],
-      properties: { shopifyProductId: product.id, sku: product.sku || '' } };
+      properties: { shopifyProductId: product.id, sku: product.sku || '',
+        ...(file.username ? { instagramUsername: file.username } : {}) } };
     const payload = new Blob([
       `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`,
       `--${boundary}\r\nContent-Type: image/webp\r\n\r\n`, file.blob, `\r\n--${boundary}--\r\n`,
@@ -72,5 +100,5 @@ export function createDriveApi(token, send = fetch) {
     });
   }
 
-  return { account, productFolder, upload };
+  return { account, productFolder, savedUsernames, upload };
 }
