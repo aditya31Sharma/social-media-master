@@ -54,39 +54,49 @@ test('different Google account is rejected before any folder write', async () =>
   await assert.rejects(drive.account(), /Choose team@tenzen\.in/);
 });
 
-test('existing product folder excludes 11 saved usernames across Drive pages', async () => {
-  const names = Array.from({ length: 11 }, (_, index) => `reviewer_${index + 1}`);
+test('global scan excludes 25 usernames across five SKUs, nested folders and pages', async () => {
+  const names = Array.from({ length: 25 }, (_, i) => `reviewer_${i + 1}`);
+  const folder = id => ({ id, name: id, mimeType: 'application/vnd.google-apps.folder' });
+  const oldFile = name => ({ name: `story-1-${name}-12m.webp`, mimeType: 'image/webp' });
   const calls = [];
   const send = async (url, options) => {
-    calls.push({ url: String(url), method: options.method });
-    assert.notEqual(options.method, 'POST');
-    assert.notEqual(options.method, 'PATCH');
-    const params = new URL(url).searchParams;
-    const q = params.get('q');
-    if (q.includes("'root' in parents")) return Response.json({ files: [{ id: 'root1', name: ROOT_NAME }] });
-    if (q.includes("'root1' in parents")) return Response.json({ files: [{ id: 'product1', name: product.title, properties: { shopifyProductId: product.id } }] });
-    assert.match(q, /'product1' in parents/);
-    if (!params.get('pageToken')) return Response.json({ nextPageToken: 'second', files: [
-      ...names.slice(0, 6).map((name, index) => ({ id: `old${index}`, name: `story-${index + 1}-${name}-12m.webp`, mimeType: 'image/webp' })),
-      { id: 'other', name: 'notes.txt', mimeType: 'text/plain' },
-    ] });
-    return Response.json({ files: names.slice(6).map((name, index) => ({ id: `new${index}`, name: 'uploaded.webp', mimeType: 'image/webp', properties: { instagramUsername: name } })) });
+    assert.equal(options.method, undefined, 'scan must not write');
+    const p = new URL(url).searchParams, q = p.get('q');
+    calls.push(q);
+    assert.match(q, /trashed = false/);
+    if (q.includes("'root' in parents")) return Response.json({ files: [folder('reviews')] });
+    if (q.includes("'reviews' in parents")) return Response.json(p.get('pageToken')
+      ? { files: [folder('sku4'), folder('sku5')] }
+      : { files: [folder('sku1'), folder('sku2'), folder('sku3')], nextPageToken: 'more-folders' });
+    if (q.includes("'nested' in parents")) return Response.json({ files: [oldFile(names[0]), { name: 'notes.txt' }] });
+    const i = Number(/'sku(\d)'/.exec(q)?.[1]);
+    assert.ok(i >= 1 && i <= 5);
+    const group = names.slice((i - 1) * 5, i * 5);
+    if (p.get('pageToken')) return Response.json({ files: group.slice(3).map(name => ({ name: 'review.webp', mimeType: 'image/webp', properties: { instagramUsername: name.toUpperCase() } })) });
+    return Response.json({ files: [...group.slice(0, 3).map(oldFile), ...(i === 1 ? [folder('nested')] : [])], nextPageToken: 'more-files' });
   };
-  const result = await createDriveApi('token', send).savedUsernames(product);
-  assert.equal(result.folderId, 'product1');
-  assert.equal(result.fileCount, 11);
-  assert.deepEqual([...result.usernames], names);
-  assert.equal(calls.length, 4);
+  const result = await createDriveApi('token', send).savedUsernames();
+  assert.equal(result.fileCount, 26);
+  assert.deepEqual([...result.usernames].sort(), names.sort());
+  assert.equal(calls.length, 14);
 });
 
-test('missing product folder returns no saved users without creating folders', async () => {
+test('missing review root returns no saved users without creating folders', async () => {
   const calls = [];
-  const send = async (url, options) => {
-    calls.push({ url: String(url), method: options.method });
-    return Response.json({ files: [] });
+  const result = await createDriveApi('token', async (url, options) => {
+    calls.push(options.method); return Response.json({ files: [] });
+  }).savedUsernames();
+  assert.equal(result.fileCount, 0);
+  assert.deepEqual(result.usernames, new Set());
+  assert.deepEqual(calls, [undefined]);
+});
+
+test('failure in any SKU rejects the entire global scan', async () => {
+  const send = async url => {
+    const q = new URL(url).searchParams.get('q');
+    if (q.includes("'root' in parents")) return Response.json({ files: [{ id: 'reviews' }] });
+    if (q.includes("'reviews' in parents")) return Response.json({ files: [{ id: 'sku', mimeType: 'application/vnd.google-apps.folder' }] });
+    return Response.json({ error: { message: 'Folder unavailable' } }, { status: 403 });
   };
-  const result = await createDriveApi('token', send).savedUsernames(product);
-  assert.deepEqual(result, { folderId: null, fileCount: 0, usernames: new Set() });
-  assert.equal(calls.length, 1);
-  assert.equal(calls[0].method, undefined);
+  await assert.rejects(createDriveApi('token', send).savedUsernames(), /Folder unavailable/);
 });

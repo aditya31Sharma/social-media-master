@@ -63,27 +63,33 @@ export function createDriveApi(token, send = fetch) {
     return (await createFolder(product.title, root.id, product.id)).id;
   }
 
-  async function savedUsernames(product) {
-    const folderId = await productFolder(product, false);
-    if (!folderId) return { folderId: null, fileCount: 0, usernames: new Set() };
-    const usernames = new Set();
-    let fileCount = 0, pageToken = '';
-    do {
-      const params = new URLSearchParams({
-        q: `'${queryValue(folderId)}' in parents and trashed = false`,
-        fields: 'nextPageToken,files(id,name,mimeType,properties)', pageSize: '1000',
-      });
-      if (pageToken) params.set('pageToken', pageToken);
-      const page = await request(`${API}/files?${params}`);
-      for (const file of page.files || []) {
-        if (file.mimeType !== 'image/webp' && !/\.webp$/i.test(file.name || '')) continue;
-        fileCount++;
-        const username = savedUsername(file);
-        if (username) usernames.add(username);
-      }
-      pageToken = page.nextPageToken || '';
-    } while (pageToken);
-    return { folderId, fileCount, usernames };
+  async function savedUsernames() {
+    const pending = (await folders('root', ROOT_NAME)).map(folder => folder.id);
+    const visited = new Set(), usernames = new Set();
+    let fileCount = 0;
+    for (let index = 0; index < pending.length; index++) {
+      const folderId = pending[index];
+      if (visited.has(folderId)) continue;
+      visited.add(folderId);
+      let pageToken = '';
+      do {
+        const params = new URLSearchParams({
+          q: `'${queryValue(folderId)}' in parents and trashed = false`,
+          fields: 'nextPageToken,files(id,name,mimeType,properties)', pageSize: '1000',
+        });
+        if (pageToken) params.set('pageToken', pageToken);
+        const page = await request(`${API}/files?${params}`);
+        for (const file of page.files || []) {
+          if (file.mimeType === FOLDER) { pending.push(file.id); continue; }
+          if (file.mimeType !== 'image/webp' && !/\.webp$/i.test(file.name || '')) continue;
+          fileCount++;
+          const username = savedUsername(file);
+          if (username) usernames.add(username);
+        }
+        pageToken = page.nextPageToken || '';
+      } while (pageToken);
+    }
+    return { fileCount, usernames };
   }
 
   async function upload(folderId, file, product) {

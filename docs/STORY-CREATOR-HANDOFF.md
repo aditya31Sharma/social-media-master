@@ -12,15 +12,16 @@ markup/template from `stories/index.html`. `stories/entry.js` redirects old
 Scoped selectors, `#storyStatus`, module-relative profile/icon URLs and active-tool
 paste/drop ownership prevent collisions. No iframe is used.
 
-The UI follows the Aditya Tools Design System Mono preset, with local Plus
+The UI follows the Aditya Tools Design System with the supplied favicon palette, with local Plus
 Jakarta Sans and Light/Dark/System settings. Export artwork remains unchanged.
 Google OAuth requires the root document to remain non-isolated; the worker
 retains isolation only for the Reel lab. See [the current recovery guide](story-creator/README.md)
 and [feature-preservation plan](WORKSPACE-REVAMP.md). The original handoff below
 is historical where it discusses uncommitted files or navigation still pending.
 
-Randomize user now requires a successful Drive folder scan and excludes usernames
-already saved for that product. All600 profiles remain manually selectable.
+Randomize user requires a complete scan of Tenzen Reviews and excludes usernames
+already saved across all product folders. Product selection chooses only the save
+destination. All600 profiles remain manually selectable.
 
 ## GitHub preservation update (2026-10-03)
 

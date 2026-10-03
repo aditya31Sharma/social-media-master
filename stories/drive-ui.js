@@ -6,7 +6,7 @@ import { DRIVE_ACCOUNT } from './drive-api.js';
 export function setupDrive(getStories, onSavedUsers, root = document) {
   const $ = selector => root.querySelector(selector);
   let products = [], selected = null, drive = null, busy = false, loadingProducts = false, scanVersion = 0;
-  let savedUsers = null;
+  let savedUsers = null, savedFileCount = 0;
   let productsRequest = 0;
   const status = (text, error = false) => { $('#driveStatus').textContent = text; $('#driveStatus').dataset.error = String(error); };
   function connection(state, note) {
@@ -18,26 +18,35 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
     $('#driveConnect').classList.toggle('btn--primary', state !== 'connected');
   }
   function resetSavedUsers() { scanVersion++; savedUsers = null; onSavedUsers(null); }
+  function globalSummary() {
+    $('#driveConnectionNote').textContent = `${savedFileCount} saved WebPs across Tenzen Reviews. ${savedUsers.size} users excluded from Randomize across all products.`;
+  }
   async function scanSavedUsers() {
     const version = ++scanVersion;
     savedUsers = null; onSavedUsers(null);
-    if (!selected) { status('Select a product folder to check saved users.'); return; }
-    if (!drive) { status(`Connect Google Drive above to check saved users for ${selected.title}.`); return; }
-    const product = selected;
-    status(`Checking saved stories in ${product.title}…`);
+    $('#driveConnectionNote').textContent = 'Checking saved stories across all product folders…';
     try {
-      const result = await drive.savedUsernames(product);
-      if (version !== scanVersion || selected?.id !== product.id) return;
+      const result = await drive.savedUsernames();
+      if (version !== scanVersion) return;
       savedUsers = result.usernames;
+      savedFileCount = result.fileCount;
       onSavedUsers(new Set(savedUsers));
-      if (result.folderId) {
-        $('#driveFolderLink').href = `https://drive.google.com/drive/u/0/folders/${encodeURIComponent(result.folderId)}`;
-        $('#driveFolderLink').hidden = false;
-      }
-      status(`${result.fileCount} saved WebPs in ${product.title}. ${savedUsers.size} users excluded from Randomize.`);
+      globalSummary();
     } catch (error) {
       if (version !== scanVersion) return;
-      status(`Could not check saved stories: ${error.message}`, true);
+      $('#driveConnectionNote').textContent = `Could not check all saved stories: ${error.message}. Reconnect Google Drive to retry.`;
+    }
+  }
+  async function showProductFolder() {
+    const product = selected, client = drive;
+    if (!product || !client) return;
+    try {
+      const folderId = await client.productFolder(product, false);
+      if (selected?.id !== product.id || drive !== client || !folderId) return;
+      $('#driveFolderLink').href = `https://drive.google.com/drive/u/0/folders/${encodeURIComponent(folderId)}`;
+      $('#driveFolderLink').hidden = false;
+    } catch (error) {
+      if (selected?.id === product.id && drive === client) status(`Could not open product folder: ${error.message}`, true);
     }
   }
   function refresh() {
@@ -54,8 +63,8 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
     $('#driveProduct').value = matches.some(product => product.id === selected?.id) ? selected.id : '';
     $('#driveProduct').disabled = !matches.length;
     if (!$('#driveProduct').value) {
-      selected = null; $('#driveFolderLink').hidden = true; resetSavedUsers();
-      status('Select a product folder to check saved users.');
+      selected = null; $('#driveFolderLink').hidden = true;
+      status('Select a product folder before saving.');
     }
     refresh();
   }
@@ -76,8 +85,7 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
       products.sort((a, b) => a.title.localeCompare(b.title));
       $('#driveSearch').disabled = false;
       filter();
-      if (selected && drive) await scanSavedUsers();
-      else status(`${products.length} products. Choose a folder before saving.`);
+      status(selected ? `Stories will save to ${selected.title}.` : `${products.length} products. Choose a folder before saving.`);
     } catch (error) {
       if (request !== productsRequest) return;
       products = []; selected = null; $('#driveSearch').disabled = true;
@@ -90,7 +98,8 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
   $('#driveProduct').addEventListener('change', () => {
     selected = products.find(product => product.id === $('#driveProduct').value) || null;
     $('#driveFolderLink').hidden = true;
-    scanSavedUsers(); refresh();
+    status(selected ? `Stories will save to ${selected.title}.` : 'Select a product folder before saving.');
+    showProductFolder(); refresh();
   });
   $('#driveRefresh').addEventListener('click', loadProducts);
   $('#driveConnect').addEventListener('click', async () => {
@@ -98,9 +107,10 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
     connection('connecting', `Choose ${DRIVE_ACCOUNT} in the Google account picker.`);
     try {
       drive = await connectDrive();
-      connection('connected', 'Saved users are checked for the product you select below.');
-      if (selected) await scanSavedUsers();
-      else status('Connected to team@tenzen.in. Choose a product folder.');
+      connection('connected', 'Checking saved users across Tenzen Reviews.');
+      await scanSavedUsers();
+      showProductFolder();
+      status(selected ? `Stories will save to ${selected.title}.` : 'Choose a product folder before saving.');
     } catch (error) {
       drive = null; resetSavedUsers(); status(error.message, true);
       connection('error', error.message);
@@ -122,6 +132,8 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
       for (const file of files) {
         await drive.upload(folder, file, selected);
         savedUsers.add(file.username.toLowerCase());
+        savedFileCount++;
+        globalSummary();
         onSavedUsers(new Set(savedUsers));
         saved++; status(`Saved ${saved} of ${files.length} to ${selected.title}.`);
       }

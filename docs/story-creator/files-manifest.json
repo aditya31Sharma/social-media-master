@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 14181,
-    "sha256": "cd848ea1b1a663147e4fb4af6965a2e98ba3f9ecee1591bf787bce67acc3f31a"
+    "bytes": 14495,
+    "sha256": "29087ae95d29c6b5f2d8a2f0d0ced70e5013a0f4304e951383188864af31cb78"
   },
   {
     "path": "app.css",
@@ -96,8 +96,8 @@
   },
   {
     "path": "docs/STORY-CREATOR-HANDOFF.md",
-    "bytes": 20374,
-    "sha256": "8c1f48cde14ea202602993e15d2a619e0fe7a051c107962979f46779686a6823"
+    "bytes": 20458,
+    "sha256": "44d2afdaba78b01c6da32088dd1f70544f4d82ee05cadf16aa3306a2cfab6567"
   },
   {
     "path": "docs/WORKSPACE-REVAMP.md",
@@ -141,13 +141,13 @@
   },
   {
     "path": "docs/story-creator/DRIVE-SETUP.md",
-    "bytes": 3398,
-    "sha256": "ad6d9346c13ef3ccca8f72bd95487b1f0b7813ce091ecfbee75f1bc81f7bb593"
+    "bytes": 3656,
+    "sha256": "48894a0603c666674544b82251065a16cf8250908bebd836e19cd27b2f8c190f"
   },
   {
     "path": "docs/story-creator/README.md",
-    "bytes": 7927,
-    "sha256": "f301c056bd892aa07c1b7e555285f60c2666cd33ca55d8bf42759ff8e677fadc"
+    "bytes": 8025,
+    "sha256": "a115c28b84c8fa7f4f04bcc83ed63a7ba993c2726b568c507f4b451f0b9e722e"
   },
   {
     "path": "docs/story-creator/UPLOAD-STATUS.md",
@@ -241,8 +241,8 @@
   },
   {
     "path": "docs/story-creator/qa/drive-api.test.mjs",
-    "bytes": 5342,
-    "sha256": "7e11338ed72c7e3ed15a839cf97e3be76afd586a9c2aa18eb70e4a4f919a1574"
+    "bytes": 6025,
+    "sha256": "d74f088e2993145f367422e80f786a2b1abd096ab8176c044acd6a565a1323e6"
   },
   {
     "path": "docs/story-creator/qa/figma-sample.png",
@@ -286,8 +286,8 @@
   },
   {
     "path": "docs/story-creator/qa/saved-users-check.js",
-    "bytes": 3969,
-    "sha256": "43383ed414340418edd8b9205e867b02813c63031c24bd325313a5aba47ed6db"
+    "bytes": 5592,
+    "sha256": "33c7541fcc3254cb8fd2434e9c143bcab739eb281d089db931e29ff456b462ee"
   },
   {
     "path": "docs/story-creator/qa/saved-users.test.mjs",
@@ -315,9 +315,14 @@
     "sha256": "7bd8688cb5273159c9481adb0d986703cae7f75b9e19243797180740bf1cf434"
   },
   {
+    "path": "docs/superpowers/plans/2026-10-04-global-story-users.md",
+    "bytes": 1419,
+    "sha256": "8e504f8e4c9746a292d4874eb33846e6f9a8b556e417155e77447ac52ec2425c"
+  },
+  {
     "path": "index.html",
-    "bytes": 40626,
-    "sha256": "b1388614b6a445c26ad9c4db2ae3b3fee096652cbd4477343cd3a4918c98a654"
+    "bytes": 40701,
+    "sha256": "d9b1d8241e6654f51cade9a81ac3ac9aa1d8ea5128727ce12c38e4a0210e4cba"
   },
   {
     "path": "lab/frame.html",
@@ -417,7 +422,7 @@
   {
     "path": "lib/workspace.js",
     "bytes": 6497,
-    "sha256": "b870871f3057047cbee357033b9746c2732096c449f19bdbd6a9a195c67518e0"
+    "sha256": "5911240ead4826300e0dcfad47bac4e2445170b5b48466e296770632fd296b8d"
   },
   {
     "path": "site.webmanifest",
@@ -466,8 +471,8 @@
   },
   {
     "path": "stories/drive-api.js",
-    "bytes": 4716,
-    "sha256": "ed14dbdadad38688fb09a0084c48e2cd62712c3b9010ef113c28f9a5938ffb02"
+    "bytes": 4954,
+    "sha256": "34cbcede2e05a93ba7e1b48a84358f4a76ad298f71fca79f1366b3b5139693c0"
   },
   {
     "path": "stories/drive-auth.js",
@@ -481,8 +486,8 @@
   },
   {
     "path": "stories/drive-ui.js",
-    "bytes": 7261,
-    "sha256": "0f8fa81d2bb5398d0f511d0c3623b9a7c7a07dffe73d8d715e1ec535687ddf99"
+    "bytes": 7820,
+    "sha256": "196f75bf7e2fb212360f95f99a1778580ccc91a7084482b4c4e053abd3b94489"
   },
   {
     "path": "stories/entry.js",
@@ -496,8 +501,8 @@
   },
   {
     "path": "stories/index.html",
-    "bytes": 8362,
-    "sha256": "a918d4028d6960add97140c8108fda339912edb8b329ccf99f38e555d4a3a54c"
+    "bytes": 8375,
+    "sha256": "575b85102a8c9696db0607421b12f7c864484f99e030194f0f206c2848c03e36"
   },
   {
     "path": "stories/profiles/10sbiswas.jpg",
@@ -3526,8 +3531,8 @@
   },
   {
     "path": "stories/story.js",
-    "bytes": 8851,
-    "sha256": "3badfd5ca671bc1d3dfe981b8b8bd1d4ede691ea759aaf8ce4905b6dbfc7213f"
+    "bytes": 8863,
+    "sha256": "d548a0030fbf524243fc4ea363fee5107363fb7c9adf58d5ddbfc7d759d156ef"
   },
   {
     "path": "styles/fonts.css",

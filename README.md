@@ -32,7 +32,7 @@ its artwork; exported Tenzen logos remain unchanged. The Reel navigation uses
 Google Material Symbols `movie` at weight 300, normalized to the adjacent 1.6px
 outlines. The source SVG is preserved in `assets/icons/`.
 
-Changed workspace resources share the release key `20261004-polish1` in the
+Changed workspace resources share the release key `20261004-global1` in the
 root HTML/import map and Story markup fetch. Update that key together when
 changing those resources so returning sessions cannot mix old and new layouts.
 
@@ -56,11 +56,15 @@ The Drive connection strip sits above the Story workspace and keeps connection
 and account status visible. Product search and selection are first in the left
 controls. On phones the order is connection, product, previews, then editing.
 Save to Drive sits beside the preview download actions.
-After connecting Drive and choosing a product, Story Creator scans that folder's
-saved WebPs. Randomize user skips usernames found in earlier story filenames or
-new upload metadata, including prior saves. The profile picker still shows all
-600 accounts. Randomize stays disabled until the folder scan succeeds; saving a
-new story excludes that user immediately for the selected product.
+Connecting Drive scans saved WebPs across every product folder in `Tenzen Reviews`,
+including nested folders and paginated results. Randomize excludes usernames found
+in earlier filenames or upload metadata across all SKUs. It works without a
+selected product after the complete scan succeeds. Selecting, filtering or
+refreshing products does not reset exclusions; the product only chooses the save
+destination. Each successful upload immediately extends the global exclusion list.
+The connection strip shows total saved WebPs and excluded users. Reconnect to pick
+up saves from another session. Randomize stays disabled if any folder scan fails.
+All 600 accounts remain in the manual profile picker.
 HEIC and HEIF iPhone photos are accepted. A pinned browser decoder loads only when
 the browser cannot open one natively; conversion stays in the browser.
 

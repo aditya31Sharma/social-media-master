@@ -21,8 +21,8 @@ const randomChoices = () => users.filter(user => user.username !== active?.usern
 function setSavedUsers(usernames) {
   savedUsers = usernames;
   $('#randomProfileNote').textContent = usernames
-    ? `${usernames.size} saved ${usernames.size === 1 ? 'user' : 'users'} excluded from Randomize for this product.`
-    : 'Connect Google Drive and choose a product to randomize unused users.';
+    ? `${usernames.size} saved ${usernames.size === 1 ? 'user' : 'users'} excluded from Randomize across all products.`
+    : 'Connect Google Drive and complete the global check to randomize unused users.';
   refresh(active);
 }
 
