@@ -222,3 +222,18 @@ Use `http://localhost:8088/#story` for the current Story browser checks.
 `docs/qa/` contains workspace, paste, recovery and Reel-control integration checks.
 See [local revamp evidence and limits](docs/WORKSPACE-REVAMP.md#local-verification-2026-10-03).
 A live release requires Aditya's explicit approval before pushing main.
+
+
+## Website and Home Screen icons
+
+The browser favicons and iOS Home Screen icon use Aditya's `social-m-m.png`,
+with the original preserved at `assets/social-m-m.png`. Browser sizes are16,32
+and96px, Apple touch icon180px, and manifest icons192/512px. All four HTML entry
+pages reference these assets using relative URLs and a new icon cache key.
+`site.webmanifest` launches the shared root workspace in standalone mode, scoped
+within the current `/social-media-master/` deployment. No offline cache is added.
+In iPhone Safari, use Share > Add to Home Screen. Replace an older saved shortcut
+if iOS keeps its cached icon. Physical-device installation has not been tested.
+
+Implementation follows [Apple's Web Clip icon guidance](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html)
+and [WebKit's Home Screen manifest guidance](https://webkit.org/blog/13878/web-push-for-web-apps-on-ios-and-ipados/).

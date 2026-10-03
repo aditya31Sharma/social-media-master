@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 12309,
-    "sha256": "f0bf3e04684029d6968d3915eaa8a0ab4042dd01e91c266aba0cd6f9df922d76"
+    "bytes": 13320,
+    "sha256": "af85bbf512f9b01c081a9c4aeae7d16fef8729beb969b29182fb2bdba5b74523"
   },
   {
     "path": "app.css",
@@ -20,19 +20,44 @@
     "sha256": "dcdb93df51099757ad3f4c7591d2a3bf3c880b222fa9ab4855491d1d91673b0d"
   },
   {
+    "path": "assets/apple-touch-icon.png",
+    "bytes": 30088,
+    "sha256": "b7de0be1d6b797c30f9770cfb4175c90e1ffd523c5c00e5e1b0b41b9572bda5a"
+  },
+  {
+    "path": "assets/favicon-16.png",
+    "bytes": 1644,
+    "sha256": "019de239be8d3d7d07f33c96d69b26a14282fe65e74a122e3f8a14896ef8fb1c"
+  },
+  {
+    "path": "assets/favicon-192.png",
+    "bytes": 33460,
+    "sha256": "1d0592ff0ec30cd7380c798526c8501ab3dbf3910afef535f8c4d62b5a1a38e0"
+  },
+  {
+    "path": "assets/favicon-32.png",
+    "bytes": 2757,
+    "sha256": "a3ab260f2f95bf28d7352d5d13c463cc7b5adc3e80ba0661850cb6ab34f6ecdf"
+  },
+  {
     "path": "assets/favicon-512.png",
-    "bytes": 7145,
-    "sha256": "dd297bc2c6777ea58c659e6a38d648ab70f12522af1b36dabb358c0ef31b2cc4"
+    "bytes": 198533,
+    "sha256": "e3f9de22d958263008ffaa4b7b866fa0bd0bd6b3e618ea03e38d8f6ba7da7951"
   },
   {
     "path": "assets/favicon-96.png",
-    "bytes": 1840,
-    "sha256": "2fefc71fbd55f86e30dbd44b4a49ee8d05d1e0dceb773a6df79caf51ebb681f8"
+    "bytes": 10581,
+    "sha256": "7f21a6e652c0b1b2074562617d9e08ef47a748d7f9b4479a9b5109ccf4ed6a86"
+  },
+  {
+    "path": "assets/favicon.ico",
+    "bytes": 4414,
+    "sha256": "5caf17238ea3bcbcef5c5c9402a56b504db7175f14bc41ad158c03583ff2eca2"
   },
   {
     "path": "assets/favicon.svg",
-    "bytes": 1297,
-    "sha256": "fdfed012d5d2b87a051b16526d7b3a2c0adaa78d295cfbad5395216815378959"
+    "bytes": 141492,
+    "sha256": "f3298f3602ccea3566209ba4aa33bee3729a454544712a5fbc11b7500137d095"
   },
   {
     "path": "assets/fonts/plus-jakarta-sans-latin-ext.woff2",
@@ -48,6 +73,11 @@
     "path": "assets/logo.svg",
     "bytes": 12858,
     "sha256": "dde9a097fff8a264a981a1d1b253d75eaa6ecdc3d8e645846e1f891efb444015"
+  },
+  {
+    "path": "assets/social-m-m.png",
+    "bytes": 106018,
+    "sha256": "1a34ae910f0ef52d79222ed8f074af0daf8f819e5a60f6076fdbd7cc172ab13b"
   },
   {
     "path": "assets/switch.wav",
@@ -271,8 +301,18 @@
   },
   {
     "path": "index.html",
-    "bytes": 39232,
-    "sha256": "a6aad4dd87b10c4399064cc1ac3ae67ddd84bb443f488dade25d6d44cd621ff4"
+    "bytes": 39934,
+    "sha256": "4519e13474a18024975ce876d428188c1317a27877266b27ac984f684fee699b"
+  },
+  {
+    "path": "lab/frame.html",
+    "bytes": 2671,
+    "sha256": "30d051885ba856485c55327b82179e3fc3b34211ad17070908c14d0c56769e31"
+  },
+  {
+    "path": "lab/index.html",
+    "bytes": 6370,
+    "sha256": "549d85bc5b569c0a2320c5c2a72f56327b20960fdf5deb10907f3a5533503114"
   },
   {
     "path": "lib/audio.js",
@@ -365,6 +405,11 @@
     "sha256": "c18f181d12ae7126d2ed905d4310977b1779a39cd6f8aa90d56f0ee5a183fc84"
   },
   {
+    "path": "site.webmanifest",
+    "bytes": 625,
+    "sha256": "2c045d6b660bbd1ef80d220c2057ee4db9c9e1d48a01f9a48f5ad331bda1599e"
+  },
+  {
     "path": "stories/assets/Roboto-LICENSE.txt",
     "bytes": 4394,
     "sha256": "061402327a96aadb0bfb694a960ed289ecd38d383e396243831ab81feb109c41"
@@ -436,8 +481,8 @@
   },
   {
     "path": "stories/index.html",
-    "bytes": 7034,
-    "sha256": "d0502c35213ac0e21ede5a2f6848733605b3a389eb3ef7a73da9d6eb073345bf"
+    "bytes": 7869,
+    "sha256": "191170f719529ba83fb2a6708716d29bc8e128606d2faa6dd468d253f73c57ff"
   },
   {
     "path": "stories/profiles/10sbiswas.jpg",
