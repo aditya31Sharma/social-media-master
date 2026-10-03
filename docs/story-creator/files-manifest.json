@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 16088,
-    "sha256": "3e1da5d7d028bb1e529c397363eb9122c5da47d97e5069c7beb3663e28f82ac6"
+    "bytes": 16398,
+    "sha256": "a39afd10491903bd751eef5102e687d6fe5e42d2e2c8b30de2a23d42072db1b5"
   },
   {
     "path": "app.css",
@@ -101,8 +101,8 @@
   },
   {
     "path": "docs/WORKSPACE-REVAMP.md",
-    "bytes": 10272,
-    "sha256": "3ae674148e3690fecf0ee932f5f85ac46bdf8aeb781772a6c6731cc5c4a28bbb"
+    "bytes": 11001,
+    "sha256": "ee2f794a8ab5f265140d5ccac83751d98263194231932558b98ab6bbb61a9ed6"
   },
   {
     "path": "docs/qa/carousel-check.js",
@@ -346,8 +346,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 41678,
-    "sha256": "c6443ac93179dad7910674d01c3498aee614743afafb76a879508f6427252580"
+    "bytes": 41760,
+    "sha256": "80cd3b14cfb2092e875488c9266cde18983d513c87c58e384f0b8a7060adb75a"
   },
   {
     "path": "lab/frame.html",
@@ -3581,7 +3581,7 @@
   },
   {
     "path": "styles/workspace.css",
-    "bytes": 26024,
-    "sha256": "cc5598864cae7dd51d2d4c4db569d6ac76b440300f3f83e6cd2d65d6ee318909"
+    "bytes": 27423,
+    "sha256": "ebf9fa4aeffb33918726c7de5141a6d5467419e7b3f75eadb985cb3af1b7099b"
   }
 ]

@@ -155,3 +155,16 @@ overflow at375/768/1024/1440. Chrome exported24 sampled frames of the original
 5cm sideways/8cm depth. Visually inspected the forward-facing garment and mobile
 controls. Original900-frame renderer commands still match the pre-cover animation
 apart from the approved background. No full900-frame encode repeated here.
+
+## Compact fit layout, 2026-10-04
+
+The global column layout for rows made each fit slider occupy separate label,
+slider and value lines. Scoped .reel-fit-controls grid rows now put all three
+inline while preserving44px range targets. Desktop uses an840px setup panel and
+side-by-side preview/controls; mobile keeps the preview sticky above the sliders.
+Preview height reserves space for the modal header/footer on shorter displays.
+No fit state, presets, animation or export logic changed.
+
+Verified preview and final slider visibility from320x568 through1440x1000,
+including1024x768.16 fit browser checks passed. Inspected real WebGL desktop and
+mobile screenshots and confirmed a sampled1080p MP4/cover export still succeeds.

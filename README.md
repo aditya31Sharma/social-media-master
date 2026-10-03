@@ -53,6 +53,9 @@ original garment entrance/blur, photo arrival, rotation, logo/text fades and
 ## Automatic Reel fit
 
 Selecting topwear applies these defaults. You can adjust them under **The fit**.
+Fit sliders use compact rows with their values inline. Desktop places the preview
+beside the controls; phones keep a sticky preview above them. Touch targets stay
+44px. The setup panel uses an840px desktop width and viewport-sized preview.
 Changing bottoms or switching tools preserves your manual adjustments; selecting
 a new top applies its preset and resets the preview Turn to0 degrees.
 
@@ -284,3 +287,5 @@ if iOS keeps its cached icon. Physical-device installation has not been tested.
 
 Implementation follows [Apple's Web Clip icon guidance](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html)
 and [WebKit's Home Screen manifest guidance](https://webkit.org/blog/13878/web-push-for-web-apps-on-ios-and-ipados/).
+
+Fit layout CSS is versioned as `20261004-compact1` in the root HTML.
