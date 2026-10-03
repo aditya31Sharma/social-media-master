@@ -22,11 +22,28 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand story-brand" href="../"><span class="brand__mark" aria-hidden="true"></span><span class="brand__name">Social Media Master</span></a>
+    <a class="brand story-brand" href="../"><img src="../assets/favicon-96.png?v=social-m-m" width="40" height="40" alt=""><span class="brand__name">Social Media Master</span></a>
     <a class="btn btn--quiet" href="../">Carousel / Reel</a>
   </header>
   <main class="story-editor">
+    <section class="story-connection" id="driveConnection" data-state="disconnected" aria-label="Google Drive connection">
+      <div class="story-connection-copy">
+        <h2>Google Drive <span class="connection-badge" id="driveConnectionStatus" role="status" aria-live="polite">Not connected</span></h2>
+        <p id="driveConnectionNote">Connect to skip users already saved to your product folder.</p>
+      </div>
+      <button type="button" class="btn btn--primary" id="driveConnect">Connect Google Drive</button>
+    </section>
     <aside class="story-controls" aria-label="Story controls">
+      <section class="story-section story-product story-drive" aria-label="Product folder">
+        <div class="story-row"><h2>Product</h2><button type="button" class="btn btn--quiet" id="driveRefresh">Refresh products</button></div>
+        <label class="sr-only" for="driveSearch">Search product name or SKU</label>
+        <input id="driveSearch" type="search" placeholder="Search product name or SKU" autocomplete="off" disabled>
+        <label class="sr-only" for="driveProduct">Product folder</label>
+        <select id="driveProduct" disabled><option value="">Loading products…</option></select>
+        <a id="driveFolderLink" class="story-note" href="#" target="_blank" rel="noopener" hidden>Open product folder</a>
+        <p class="story-note" id="driveStatus" role="status" aria-live="polite">Tenzen Reviews / product name</p>
+      </section>
+      <div class="story-editing">
       <div class="story-heading"><span class="story-kicker">INSTAGRAM</span><h1>Story creator</h1><p class="story-note" id="editingStory">Story 1</p></div>
       <section class="story-section">
         <h2>Review photo</h2>
@@ -77,22 +94,13 @@
         <button type="button" class="btn btn--primary" id="download" disabled>Download WebP</button>
         <p class="story-note" id="storyStatus" role="status" aria-live="polite">Loading story assets…</p>
       </section>
-      <section class="story-section story-drive" aria-label="Save stories to Google Drive">
-        <div class="story-row"><h2>Save to Drive</h2><button type="button" class="btn btn--quiet" id="driveRefresh">Refresh products</button></div>
-        <label class="sr-only" for="driveSearch">Search product name or SKU</label>
-        <input id="driveSearch" type="search" placeholder="Search product name or SKU" autocomplete="off" disabled>
-        <label class="sr-only" for="driveProduct">Product folder</label>
-        <select id="driveProduct" disabled><option value="">Loading products…</option></select>
-        <button type="button" class="btn" id="driveConnect">Connect Google Drive</button>
-        <button type="button" class="btn btn--primary" id="driveSave" disabled>Save all WebPs to Drive</button>
-        <a id="driveFolderLink" class="story-note" href="#" target="_blank" rel="noopener" hidden>Open product folder</a>
-        <p class="story-note" id="driveStatus" role="status" aria-live="polite">Tenzen Reviews / product name</p>
-      </section>
+
+      </div>
     </aside>
     <section class="story-workspace" aria-label="Story previews">
       <div class="story-toolbar">
         <span id="storyCount" class="story-note" aria-live="polite">1 story</span>
-        <div><button type="button" class="btn" id="addStory" disabled>Add story</button><button type="button" class="btn btn--primary" id="downloadAll" disabled>Download all WebPs</button></div>
+        <div><button type="button" class="btn" id="addStory" disabled>Add story</button><button type="button" class="btn" id="downloadAll" disabled>Download all WebPs</button><button type="button" class="btn btn--primary" id="driveSave" disabled>Save all WebPs to Drive</button></div>
       </div>
       <div id="storyTrack" class="story-track" aria-label="Stories"></div>
     </section>

@@ -1,6 +1,7 @@
 import { loadCatalogue } from '../lib/shopify.js';
 import { storyWebP } from './download.js';
 import { connectDrive } from './drive-auth.js';
+import { DRIVE_ACCOUNT } from './drive-api.js';
 
 export function setupDrive(getStories, onSavedUsers, root = document) {
   const $ = selector => root.querySelector(selector);
@@ -8,11 +9,20 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
   let savedUsers = null;
   let productsRequest = 0;
   const status = (text, error = false) => { $('#driveStatus').textContent = text; $('#driveStatus').dataset.error = String(error); };
+  function connection(state, note) {
+    $('#driveConnection').dataset.state = state;
+    $('#driveConnectionStatus').textContent = state === 'connected' ? `Connected · ${DRIVE_ACCOUNT}`
+      : state === 'connecting' ? 'Connecting…' : state === 'error' ? 'Connection failed' : 'Not connected';
+    $('#driveConnectionNote').textContent = note;
+    $('#driveConnect').textContent = state === 'connected' ? 'Reconnect Google Drive' : 'Connect Google Drive';
+    $('#driveConnect').classList.toggle('btn--primary', state !== 'connected');
+  }
   function resetSavedUsers() { scanVersion++; savedUsers = null; onSavedUsers(null); }
   async function scanSavedUsers() {
     const version = ++scanVersion;
     savedUsers = null; onSavedUsers(null);
-    if (!drive || !selected) return;
+    if (!selected) { status('Select a product folder to check saved users.'); return; }
+    if (!drive) { status(`Connect Google Drive above to check saved users for ${selected.title}.`); return; }
     const product = selected;
     status(`Checking saved stories in ${product.title}…`);
     try {
@@ -43,7 +53,10 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
     $('#driveProduct').replaceChildren(new Option('Select a product', ''), ...matches.map(product => new Option(`${product.title}${product.sku ? ` · ${product.sku}` : ''}`, product.id)));
     $('#driveProduct').value = matches.some(product => product.id === selected?.id) ? selected.id : '';
     $('#driveProduct').disabled = !matches.length;
-    if (!$('#driveProduct').value) { selected = null; $('#driveFolderLink').hidden = true; resetSavedUsers(); }
+    if (!$('#driveProduct').value) {
+      selected = null; $('#driveFolderLink').hidden = true; resetSavedUsers();
+      status('Select a product folder to check saved users.');
+    }
     refresh();
   }
   async function loadProducts() {
@@ -81,13 +94,17 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
   });
   $('#driveRefresh').addEventListener('click', loadProducts);
   $('#driveConnect').addEventListener('click', async () => {
-    busy = true; refresh(); status('Connecting to Google Drive…');
+    busy = true; resetSavedUsers(); refresh(); status('Connecting to Google Drive…');
+    connection('connecting', `Choose ${DRIVE_ACCOUNT} in the Google account picker.`);
     try {
       drive = await connectDrive();
-      $('#driveConnect').textContent = 'Reconnect Google Drive';
+      connection('connected', 'Saved users are checked for the product you select below.');
       if (selected) await scanSavedUsers();
       else status('Connected to team@tenzen.in. Choose a product folder.');
-    } catch (error) { drive = null; resetSavedUsers(); status(error.message, true); }
+    } catch (error) {
+      drive = null; resetSavedUsers(); status(error.message, true);
+      connection('error', error.message);
+    }
     finally { busy = false; refresh(); }
   });
   $('#driveSave').addEventListener('click', async () => {
@@ -112,7 +129,8 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
       status(`Saved ${saved} WebPs to ${selected.title}.${skipped ? ` ${skipped} unfinished ${skipped === 1 ? 'story' : 'stories'} skipped.` : ''}`);
     } catch (error) {
       if (/auth|token|credential|unauthoriz/i.test(error.message)) {
-        drive = null; $('#driveConnect').textContent = 'Connect Google Drive';
+        drive = null;
+        connection('error', 'Reconnect Google Drive to continue saving.');
         resetSavedUsers();
       }
       status(`${saved} saved. ${error.message}`, true);

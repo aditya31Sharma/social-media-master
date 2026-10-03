@@ -30,7 +30,7 @@ before posting. Not a designer sitting at a desk with time to read a form.
 - Plain HTML, CSS and ES modules. No framework, no build step.
 - Icons are a hand-rolled SVG sprite in `index.html` (`#i-*`). One set only.
 - Workspace tokens live in `styles/tokens.css`, following the Aditya Tools
-  Design System Mono preset. UI uses local Plus Jakarta Sans. Export renderers
+  Design System with colours derived from the supplied app icon. UI uses local Plus Jakarta Sans. Export renderers
   retain the original brand fonts and Story Roboto.
 - `styles/workspace.css` loads after the original component styles and owns
   the responsive shell. Keep its desktop overrides in one 900px block.

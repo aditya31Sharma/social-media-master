@@ -18,6 +18,13 @@ Open http://localhost:8801/stories/ . The deployed route is https://aditya31shar
 
 ## Drive save integration
 
+Connection/account status appears above the workspace. Product search and
+selection come first in the sidebar; mobile order is connection, product,
+previews, editing. Save to Drive sits alongside preview downloads. The connection
+strip keeps success, pending and retry states visible independently of upload
+status. Selection outlines have 12px scroll padding so their 6px extent fits at
+both ends. `../qa/story-setup-check.js` covers this layout and connection failures.
+
 Story Creator can search the current published Shopify catalogue by product title or SKU and save all ready WebPs to an app-created `Tenzen Reviews/<product title>` folder in the `team@tenzen.in` Drive. Folders are created when first needed, keyed by Shopify product ID in Drive properties. Google OAuth is configured for both hosted origins and localhost:8088; see [DRIVE-SETUP.md](DRIVE-SETUP.md).
 After connection and product selection, the editor reads the saved WebPs in that product folder and excludes their Instagram usernames from **Randomize user**. Earlier saves are identified by their `story-<number>-<username>-<time><m|h>.webp` filenames; new saves also store the username in Drive properties. The full 600-account profile picker remains available for manual selection. Randomize is disabled if Drive is disconnected or the folder scan fails, and the Drive status reports the saved WebP and excluded-user counts. Each new successful upload updates the exclusion immediately.
 

@@ -20,11 +20,21 @@ without losing selections, photos, framing or generated output. Hash links
 redirect to the Story tab. Drafts remain in memory until the page is reloaded.
 
 The workspace follows the Constitution's Aditya Tools Design System, using its
-Mono preset, self-hosted Plus Jakarta Sans, 44px touch targets and 54px primary
+a preset derived from the supplied gradient app icon, self-hosted Plus Jakarta
+Sans, 44px touch targets and 54px primary
 actions. Phones have bottom navigation and a contextual plus button. Desktop
 has a controls card beside previews. Secondary settings fold away. Settings
 offers Light, Dark and System appearance; Light is the initial default. Exported
 artwork retains its original typography, colours, geometry and resolution.
+
+The header and empty states use the supplied app icon. Purple accents come from
+its artwork; exported Tenzen logos remain unchanged. The Reel navigation uses
+Google Material Symbols `movie` at weight 300, normalized to the adjacent 1.6px
+outlines. The source SVG is preserved in `assets/icons/`.
+
+Changed workspace resources share the release key `20261004-polish1` in the
+root HTML/import map and Story markup fetch. Update that key together when
+changing those resources so returning sessions cannot mix old and new layouts.
 
 See [the implementation and feature checklist](docs/WORKSPACE-REVAMP.md).
 
@@ -42,6 +52,10 @@ profile pictures, independent frames, and separate downloads. A product search b
 name or SKU can save all ready WebPs to `Tenzen Reviews/<product title>` in the
 `team@tenzen.in` Google Drive. If a published Shopify product has no folder yet, the
 first save creates it. Refresh products to see newly published SKUs.
+The Drive connection strip sits above the Story workspace and keeps connection
+and account status visible. Product search and selection are first in the left
+controls. On phones the order is connection, product, previews, then editing.
+Save to Drive sits beside the preview download actions.
 After connecting Drive and choosing a product, Story Creator scans that folder's
 saved WebPs. Randomize user skips usernames found in earlier story filenames or
 new upload metadata, including prior saves. The profile picker still shows all

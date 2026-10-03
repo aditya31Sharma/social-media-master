@@ -1,21 +1,22 @@
-/* Aditya Tools Design System: Mono preset from Brainboard, Constitution 2026-10-03. */
+/* Aditya Tools Design System: favicon-derived preset requested by Aditya.
+   Purple #7B3FC9 sampled at (200,30) from assets/social-m-m.png. */
 :root,
 :root[data-theme='light'] {
   color-scheme: light;
   --bg: #FFFFFF;
   --card: #FFFFFF;
-  --card-2: #F3F3F3;
-  --line: #E4E4E4;
+  --card-2: #F5F1FA;
+  --line: #E7E0EE;
   --ink: #111111;
   --ink-2: #6A6A6A;
   --ink-3: #9C9C9C;
   --inverse: #111111;
   --on-inverse: #FFFFFF;
 
-  --accent: #111111;
-  --accent-ink: #111111;
-  --accent-2: #444444;
-  --accent-soft: #EFEFEF;
+  --accent: #7B3FC9;
+  --accent-ink: #6830B2;
+  --accent-2: #6830B2;
+  --accent-soft: #F0E8F9;
   --on-accent: #FFFFFF;
   --hero: #FFFFFF;
   --hero-ink: #111111;
@@ -24,9 +25,9 @@
   --hero-chip: #F3F3F3;
   --on-strip: #FFFFFF;
 
-  --pos: #111111;
-  --pos-soft: #EFEFEF;
-  --neg: #111111;
+  --pos: #23734E;
+  --pos-soft: #EAF5EF;
+  --neg: #A32635;
   --neg-soft: #EFEFEF;
   --warn: #111111;
   --warn-soft: #EFEFEF;
@@ -64,33 +65,33 @@
   --sab: env(safe-area-inset-bottom, 0px);
   --dur: 180ms;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --focus: 0 0 0 3px rgba(17, 17, 17, 0.25);
+  --focus: 0 0 0 3px rgba(123, 63, 201, 0.25);
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #0E0E0E;
-  --card: #171717;
-  --card-2: #222222;
-  --line: #2C2C2C;
+  --bg: #131016;
+  --card: #1C1821;
+  --card-2: #27222E;
+  --line: #38303F;
   --ink: #F2F2F2;
   --ink-2: #A6A6A6;
   --ink-3: #6E6E6E;
   --inverse: #F2F2F2;
   --on-inverse: #111111;
-  --accent: #F2F2F2;
-  --accent-ink: #F2F2F2;
-  --accent-2: #BBBBBB;
-  --accent-soft: #262626;
-  --on-accent: #111111;
+  --accent: #CEAAF3;
+  --accent-ink: #D7BAF4;
+  --accent-2: #DCC1F5;
+  --accent-soft: #352647;
+  --on-accent: #231232;
   --hero: #0E0E0E;
   --hero-ink: #F2F2F2;
   --hero-amount: #F2F2F2;
   --hero-chip: #222222;
   --on-strip: #111111;
-  --pos: #F2F2F2;
-  --pos-soft: #262626;
-  --neg: #F2F2F2;
+  --pos: #9CD7B7;
+  --pos-soft: #1F352B;
+  --neg: #FFB2BB;
   --neg-soft: #262626;
   --warn: #F2F2F2;
   --warn-soft: #262626;
@@ -100,7 +101,7 @@
   --shadow-float: 0 10px 30px rgba(0, 0, 0, 0.6);
   --shadow-fab: 0 8px 20px rgba(0, 0, 0, 0.5);
   --shadow-seg: 0 1px 3px rgba(0, 0, 0, 0.5);
-  --focus: 0 0 0 3px rgba(242, 242, 242, 0.3);
+  --focus: 0 0 0 3px rgba(206, 170, 243, 0.3);
 }
 
 /* Workspace dimensions and aliases for the existing editing controls. */
@@ -153,6 +154,7 @@
   --fab-size: 60px;
   --brand-width: 62px;
   --brand-height: 24px;
+  --brand-icon-size: 40px;
   --story-preview-bg: #222222;
   --story-preview-ink: #FFFFFF;
   --story-preview-muted: #B5B5B5;

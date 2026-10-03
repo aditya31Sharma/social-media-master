@@ -105,3 +105,14 @@ framework migration, new dependencies, hosting changes or another backend.
 No dependencies, hosting changes, files deleted, PR or live push. Local preview:
 `http://localhost:8088/`. Release requires Aditya's explicit go because pushing
 main publishes both GitHub Pages and the Tenzen HQ mirror.
+
+## Branding and Story setup polish, 2026-10-04
+
+The initial Mono preset is superseded by a purple preset sampled from the supplied
+app icon. The icon replaces the header and empty-state Tenzen marks; exported
+artwork stays unchanged. Google Material Symbols movie weight 300 is normalized
+to 1.6px for the Reel tab. Drive connection now has a separate top strip, product
+selection leads the controls, and saves sit beside previews. Mobile order is
+connection, product, previews, editing. Story scroll padding accommodates the
+full selected outline at either edge. Release query keys cover changed CSS and
+workspace/Story modules to prevent mixed cached versions.
