@@ -1,6 +1,7 @@
 import { createFramer } from '../lib/framer.js';
 import { clampCrop } from './crop.js';
 import { drawStory, loadImage, photoFrame } from './render.js';
+import { decodeReviewPhoto, isReviewPhoto } from './heic.js';
 
 export function createStory(id, { assets, onSelect, onChange, onDownload, say }) {
   const element = document.querySelector('#storyTemplate').content.firstElementChild.cloneNode(true);
@@ -63,16 +64,21 @@ export function createStory(id, { assets, onSelect, onChange, onDownload, say })
   };
   story.setPhoto = async file => {
     if (!file) return;
-    if (!file.type.startsWith('image/')) { say('Choose an image file.', true); return; }
+    if (!isReviewPhoto(file)) { say('Choose an image file.', true); return; }
     const request = ++photoRequest;
     story.loadingPhoto = true; paint(); say(`Loading photo for story ${id}…`);
     try {
-      const photo = await createImageBitmap(file);
+      const photo = await decodeReviewPhoto(file);
       if (request !== photoRequest) { photo.close(); return; }
       story.photo?.close(); story.photo = photo; story.photoName = file.name || 'Pasted photo';
       framer.reset(); say(`Story ${id} ready.`);
-    } catch {
-      if (request === photoRequest) say(`Story ${id}: this image could not be opened. Try a JPEG, PNG or WebP.`, true);
+    } catch (error) {
+      if (request === photoRequest) {
+        const message = error.message?.startsWith('HEIC decoder')
+          ? error.message
+          : 'This image could not be opened. Try a JPEG, PNG, WebP or HEIC.';
+        say(`Story ${id}: ${message}`, true);
+      }
     } finally {
       if (request === photoRequest) { story.loadingPhoto = false; paint(); }
     }

@@ -11,8 +11,8 @@
   },
   {
     "path": "docs/story-creator/README.md",
-    "bytes": 6416,
-    "sha256": "0494807707e7c045ee3fe1e1112b996a8bca118c618e134d6930f06ac9ac2873"
+    "bytes": 6710,
+    "sha256": "b08f175b1fec37f672e0131ec5716cfc6ef63ad25a43a3e233c641a87b187f04"
   },
   {
     "path": "docs/story-creator/UPLOAD-STATUS.md",
@@ -115,6 +115,16 @@
     "sha256": "08188a34792943cecd651804f1fc0786390893dab2ec8cd99f2cbead920c5024"
   },
   {
+    "path": "docs/story-creator/qa/heic-check.js",
+    "bytes": 1430,
+    "sha256": "768990093273d5cf92620e93a95b8ebf5948c0a0dfb9fcff01f7bd954a361d72"
+  },
+  {
+    "path": "docs/story-creator/qa/heic-sample.heic",
+    "bytes": 3888,
+    "sha256": "58236d50594c442812fda4b4dd5f8d0e754d400a1e30d70e9c1be283b4e06bc9"
+  },
+  {
     "path": "docs/story-creator/qa/india-600.png",
     "bytes": 308991,
     "sha256": "a67138fd8e4c77a03a192aba6e8f6d0fc5fb361a56d990ed16a0d41c91aa6d66"
@@ -181,8 +191,8 @@
   },
   {
     "path": "stories/card.js",
-    "bytes": 4386,
-    "sha256": "b64d63f3412240a4a617770b1385d08df08a189e30b815e5893c399fa1de5760"
+    "bytes": 4587,
+    "sha256": "25046d8305402cf39a05185d716494c2ef25d3e6724b35e6dd0b3368d5b49971"
   },
   {
     "path": "stories/crop.js",
@@ -215,9 +225,14 @@
     "sha256": "57efa24633835b33dea154adea16ccd35229c367fd4afe0d56a391b72cc1cb61"
   },
   {
+    "path": "stories/heic.js",
+    "bytes": 1313,
+    "sha256": "26da20890f19b2a38429314d4a9b0f471bb9e8b1643276316c9028d2ffeec098"
+  },
+  {
     "path": "stories/index.html",
-    "bytes": 6872,
-    "sha256": "4749f506e80aa0ca16c538ce6257b02db9a451f55119572586d2b8a4985343a7"
+    "bytes": 6884,
+    "sha256": "29931437aa57941a2312ff9e201e7ab1c59fcfe8ba0301a51de8be6252f761fc"
   },
   {
     "path": "stories/profiles/10sbiswas.jpg",
@@ -3241,7 +3256,7 @@
   },
   {
     "path": "stories/story.js",
-    "bytes": 8318,
-    "sha256": "d2904f1588e9cf5d1fc557eb1701a8610ffc089554c347f57f2551d86e86ba28"
+    "bytes": 8362,
+    "sha256": "aee6887c02b7f780637f8d6bb2525c890f467b3141d65c05f76bd2f0740231a2"
   }
 ]

@@ -20,6 +20,8 @@ Open http://localhost:8801/stories/ . The deployed route is https://aditya31shar
 
 Story Creator can search the current published Shopify catalogue by product title or SKU and save all ready WebPs to an app-created `Tenzen Reviews/<product title>` folder in the `team@tenzen.in` Drive. Folders are created when first needed, keyed by Shopify product ID in Drive properties. Google OAuth is configured for both hosted origins and localhost:8088; see [DRIVE-SETUP.md](DRIVE-SETUP.md).
 
+HEIC and HEIF review photos are decoded in the browser through a pinned `heic-to@1.6.5` script when native decoding fails. The converter loads only for those photos. Run `qa/heic-check.js` on a fresh Story page to check actual HEIC input and WebP export; its fixture is `qa/heic-sample.heic`.
+
 ## What is preserved
 
 - `../../stories/`: complete runnable editor,600 DP JPEGs, users.json, local font/license and original Figma SVGs.

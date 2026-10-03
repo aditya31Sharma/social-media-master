@@ -19,6 +19,8 @@ profile pictures, independent frames, and separate downloads. A product search b
 name or SKU can save all ready WebPs to `Tenzen Reviews/<product title>` in the
 `team@tenzen.in` Google Drive. If a published Shopify product has no folder yet, the
 first save creates it. Refresh products to see newly published SKUs.
+HEIC and HEIF iPhone photos are accepted. A pinned browser decoder loads only when
+the browser cannot open one natively; conversion stays in the browser.
 
 Drive saving uses Tenzen's Google Cloud project and the configured public OAuth
 web client. Sign in as `team@tenzen.in` when prompted. Local WebP downloads also

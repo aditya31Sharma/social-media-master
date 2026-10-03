@@ -2,6 +2,7 @@ import { loadAssets } from './render.js';
 import { createStory } from './card.js';
 import { downloadStories } from './download.js';
 import { setupDrive } from './drive-ui.js';
+import { isReviewPhoto } from './heic.js';
 
 const $ = selector => document.querySelector(selector);
 
@@ -95,7 +96,7 @@ $('#randomProfile').addEventListener('click', () => {
   $('#profileSearch').value = ''; filterProfiles(false);
 });
 window.addEventListener('paste', event => {
-  const item = [...(event.clipboardData?.items || [])].find(item => item.type.startsWith('image/'));
+  const item = [...(event.clipboardData?.items || [])].find(item => isReviewPhoto(item.getAsFile()));
   if (item && active) { event.preventDefault(); active.setPhoto(item.getAsFile()); }
 });
 window.addEventListener('dragover', event => {
