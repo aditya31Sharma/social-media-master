@@ -59,23 +59,42 @@ beside the controls; phones keep a sticky preview above them. Touch targets stay
 Changing bottoms or switching tools preserves your manual adjustments; selecting
 a new top applies its preset and resets the preview Turn to0 degrees.
 
-| Topwear | Size | Height | Top-only rotation |
-| --- | --- | --- | --- |
-| Polo Sweatshirt |103% |-9cm |0 degrees |
-| Oversized Hoodie |105% |-4cm |0 degrees |
-| Oversized Sweatshirt |102% |-9cm |0 degrees |
-| Baby Tee |107% |-5cm |0 degrees |
-| Henley Waffle Tee |97% |-12cm |0 degrees |
-| Oversized Tee, including Acid Wash Tee |91% |-9cm |180 degrees |
+| Topwear | Size | Height | Sideways | Depth | Top-only rotation |
+| --- | --- | --- | --- | --- | --- |
+| Polo Sweatshirt |103% |-11cm |0cm |+1cm |0 degrees |
+| Oversized Hoodie |105% |-4cm |0cm |0cm |0 degrees |
+| Oversized Sweatshirt |103% |-11cm |0cm |+2cm |0 degrees |
+| Baby Tee |107% |-5cm |0cm |0cm |0 degrees |
+| Henley Waffle Tee |96% |-12cm |+1cm |+2cm |0 degrees |
+| Oversized Tee, including Acid Wash Tee |90% |-9cm |0cm |+2cm |180 degrees |
 
-Unlisted types retain100% size and0cm height. **Top sideways** and **Top depth**
-range from-30cm to+30cm and start at0cm. Positive values move the top right and
-forward in its starting pose; negative values move left and backward. These
-adjustments affect the preview, MP4 and separate cover. The bottom stays anchored,
-and the original entrance and turning animation remain unchanged.
+Unlisted types retain100% size and0cm offsets. **Top sideways** and **Top depth**
+range from-30cm to+30cm. Positive values move the top right and forward in its
+starting pose; negative values move left and backward. These adjustments affect
+the preview, MP4 and separate cover. The bottom stays anchored, and the original
+entrance and turning animation remain unchanged.
 
-Preset values live in `lib/reel-fit.js`. The UI and stage use the release key
-`20261004-fit1` in the root import map. Geometry/export settings remain shared.
+**Lighting** under **The fit** offers Soft studio (default), Defined edges and
+Original. It affects both garments in the preview, MP4 and separate cover, persists
+when changing products, and marks an existing export for regeneration when changed.
+Soft studio adds front fill and environment lighting to reveal fabric on dark
+clothes. Original retains the previous lighting calibration.
+
+Every stage clones its materials before adjusting them. Three.js scene clones
+share materials by default, so modifying them used to increase cached roughness
+with each preview rebuild. Cached GLB materials now remain unchanged. Texture
+filtering uses the device's maximum anisotropy. Temporary materials, lighting
+resources and environment maps are released after rendering; cached models stay
+available. No textures are upscaled and no animation frames are changed.
+
+H.264 export targets0.20 bits per pixel per frame (24.9Mbps at1080p60, previously
+13.7Mbps), with variable bitrate and quality latency mode. Larger exports retain
+their existing resolution choices. Instagram's subsequent compression is outside
+this tool's control; the downloaded MP4 is the quality reference.
+
+Preset values live in `lib/reel-fit.js`; lighting lives in `lib/reel-lighting.js`.
+The UI, stage, presets and encoder use release key `20261004-light1` in the root
+import map. Geometry remains shared and unchanged.
 
 ## Story Creator and review folders
 
@@ -288,4 +307,12 @@ if iOS keeps its cached icon. Physical-device installation has not been tested.
 Implementation follows [Apple's Web Clip icon guidance](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html)
 and [WebKit's Home Screen manifest guidance](https://webkit.org/blog/13878/web-push-for-web-apps-on-ios-and-ipados/).
 
-Fit layout CSS is versioned as `20261004-compact1` in the root HTML.
+Fit layout CSS is versioned as `20261004-light1` in the root HTML.
+
+
+Lighting/fit QA:32 Node tests, including all900 animation-frame command comparisons
+and the cached-material regression;18 browser fit/lighting checks. Real Chrome
+exported24 sampled frames from the900-frame timeline at1080x1920/60fps, plus a
+matching1080x1920 PNG cover, with no page errors. Lighting changes enabled
+regeneration. The entire900-frame MP4 was not re-encoded in this check. Responsive
+preview/control checks covered320,375,768,1024 and1440px widths.

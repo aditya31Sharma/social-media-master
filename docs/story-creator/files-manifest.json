@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 16398,
-    "sha256": "a39afd10491903bd751eef5102e687d6fe5e42d2e2c8b30de2a23d42072db1b5"
+    "bytes": 18169,
+    "sha256": "8fb4bbfd763ae6b6f24f810b85f7391bf1caf00d64d32edd690e84a863658468"
   },
   {
     "path": "app.css",
@@ -126,13 +126,13 @@
   },
   {
     "path": "docs/qa/reel-fit-check.js",
-    "bytes": 3124,
-    "sha256": "a48ad46e65f3a8192094cdbe93dacbf21a0e5375768229d179c8ed81732315d0"
+    "bytes": 3512,
+    "sha256": "16b0b75b4712ad427a32f3b25c2ad7b0348b4a36ab1a4a8c0b875c12dad54b68"
   },
   {
     "path": "docs/qa/reel-fit.test.mjs",
-    "bytes": 3587,
-    "sha256": "acab92f28ea635fb1e6bc2394426631f2cb8cd8090c0c3a0728d2642ac292ab2"
+    "bytes": 4823,
+    "sha256": "5e6a56050bd1c711a9178084d332104c8ba6a7beca0ca01a42f21625234b6c84"
   },
   {
     "path": "docs/qa/story-retry-check.js",
@@ -346,8 +346,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 41760,
-    "sha256": "80cd3b14cfb2092e875488c9266cde18983d513c87c58e384f0b8a7060adb75a"
+    "bytes": 42349,
+    "sha256": "dca8b6f89e0cbe510287c1ad0192df1fb46a648b95a2625114a9674d0af10189"
   },
   {
     "path": "lab/frame.html",
@@ -386,8 +386,8 @@
   },
   {
     "path": "lib/encode.js",
-    "bytes": 4130,
-    "sha256": "16922f5fb02facc55205c0cc85dd5a08c0c0181dad1bbcdfb6dd86010410f73f"
+    "bytes": 4219,
+    "sha256": "dc54dba706eb843d4e70228e8800e2bc98a2c2a0bb844e0aec11e8b197b82b6e"
   },
   {
     "path": "lib/frame.js",
@@ -411,13 +411,18 @@
   },
   {
     "path": "lib/reel-fit.js",
-    "bytes": 536,
-    "sha256": "150822f4488dc7b91a9443a2723c340e0c321d72d0ceac68b11c8e5afc79454c"
+    "bytes": 587,
+    "sha256": "b1a9b0d9f93b129fa2a648dd32432f1b19b6bd87891ffeb751a08528a51040c1"
   },
   {
     "path": "lib/reel-geom.js",
     "bytes": 9186,
     "sha256": "78254bc8114513990c68f464fab611e40b9d2fc1390d62654000b891aa47e011"
+  },
+  {
+    "path": "lib/reel-lighting.js",
+    "bytes": 598,
+    "sha256": "9d0eb8a2937b489a4ac389f03610d7e96e6861228ebc5fb10ccb62518122c07c"
   },
   {
     "path": "lib/reel-picker.js",
@@ -426,8 +431,8 @@
   },
   {
     "path": "lib/reel-ui.js",
-    "bytes": 23862,
-    "sha256": "23ac9e739d849a8ad94af305a2f72c46ab3978ee055291cf68ef0c10d941c147"
+    "bytes": 24088,
+    "sha256": "7c17242dea8625b4bc0baf74306af260fa151b89a2fd5b3f82313293d2c43d94"
   },
   {
     "path": "lib/reel.js",
@@ -446,8 +451,8 @@
   },
   {
     "path": "lib/stage3d.js",
-    "bytes": 10456,
-    "sha256": "f1fa7a34307e779065d752a4c164190f3192ae5254d2c5031606710d2b506b5f"
+    "bytes": 11519,
+    "sha256": "a0aa28f8778d3b996edf53cd684f5c17cbd61444db1e3836b2f6e6d49441c748"
   },
   {
     "path": "lib/theme.js",
@@ -3581,7 +3586,7 @@
   },
   {
     "path": "styles/workspace.css",
-    "bytes": 27423,
-    "sha256": "ebf9fa4aeffb33918726c7de5141a6d5467419e7b3f75eadb985cb3af1b7099b"
+    "bytes": 27577,
+    "sha256": "8088a688e0cfb58c1cd3b3250bd8c58d04e1573b6d8081ffb41b27441ce429a8"
   }
 ]

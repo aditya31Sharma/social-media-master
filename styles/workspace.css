@@ -199,11 +199,12 @@ input[type=range] { min-height: var(--control-h); accent-color: var(--accent); }
 /* Keep the garment in view while the fit controls are adjusted. */
 .reel-fit-layout { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; }
 .reel-fit-layout .fitprev { position: sticky; top: 0; z-index: 1; margin: 0; padding: var(--space-2); background: var(--card-2); box-shadow: 0 var(--space-1) 0 var(--card); }
-.reel-fit-layout .fitprev canvas { width: auto; height: clamp(120px, 30dvh, 240px); max-width: 100%; object-fit: contain; }
+.reel-fit-layout .fitprev canvas { width: auto; height: clamp(120px, 24dvh, 220px); max-width: 100%; object-fit: contain; }
 .reel-fit-controls { min-width: 0; display: grid; gap: var(--space-1); }
 .reel-fit-controls .row { display: grid; grid-template-columns: 84px minmax(0, 1fr) 44px; align-items: center; gap: var(--space-2); min-height: var(--control-h); padding: 0; }
 .reel-fit-controls .row__label { font-size: var(--fs-12); }
 .reel-fit-controls input[type=range] { width: 100%; min-width: 0; margin: 0; }
+.reel-fit-controls select { grid-column: 2 / -1; width: 100%; min-width: 0; height: var(--control-h); padding: var(--space-2); font-size: var(--fs-12); }
 .reel-fit-controls output { text-align: right; font-size: var(--fs-12); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .reel-fit-controls .note { margin: var(--space-1) 0 0; font-size: var(--fs-11); line-height: 1.5; }
 .slot { border-radius: var(--r-lg); padding: var(--space-3); min-height: var(--control-h); }

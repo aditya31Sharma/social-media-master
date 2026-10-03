@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="./stories/story.css">
 <link rel="stylesheet" href="./styles/fonts.css">
 <link rel="stylesheet" href="./styles/tokens.css?v=20261004-reel2">
-<link rel="stylesheet" href="./styles/workspace.css?v=20261004-compact1">
+<link rel="stylesheet" href="./styles/workspace.css?v=20261004-light1">
 <script src="./lib/theme.js?v=20261004-reel2"></script>
 <script src="coi-serviceworker.js"></script>
 </head>
@@ -377,6 +377,14 @@
             <div class="fold__body reel-fit-layout">
             <div class="fitprev"><canvas id="reelFitCv" width="520" height="924"></canvas></div>
             <div class="reel-fit-controls">
+            <label class="row" for="reelLighting">
+              <span class="row__label">Lighting</span>
+              <select id="reelLighting" class="input">
+                <option value="studio">Soft studio</option>
+                <option value="contrast">Defined edges</option>
+                <option value="original">Original</option>
+              </select>
+            </label>
             <div class="row">
               <span class="row__label">Turn</span>
               <input type="range" id="reelFitTurn" min="0" max="359" step="1" value="0" aria-label="Turn the preview">
@@ -690,8 +698,11 @@
     "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
     "./lib/reel.js": "./lib/reel.js?v=20261004-gradient1",
     "./lib/reel-geom.js": "./lib/reel-geom.js?v=20261004-reel2",
-    "./lib/stage3d.js": "./lib/stage3d.js?v=20261004-fit1",
-    "./lib/reel-ui.js": "./lib/reel-ui.js?v=20261004-fit1",
+    "./lib/stage3d.js": "./lib/stage3d.js?v=20261004-light1",
+    "./lib/reel-fit.js": "./lib/reel-fit.js?v=20261004-light1",
+    "./lib/reel-lighting.js": "./lib/reel-lighting.js?v=20261004-light1",
+    "./lib/encode.js": "./lib/encode.js?v=20261004-light1",
+    "./lib/reel-ui.js": "./lib/reel-ui.js?v=20261004-light1",
     "./lib/workspace.js": "./lib/workspace.js?v=20261004-reel2",
     "./stories/story.js": "./stories/story.js?v=20261004-reel2",
     "./stories/drive-api.js": "./stories/drive-api.js?v=20261004-reel2",

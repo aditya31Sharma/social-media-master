@@ -6,13 +6,15 @@ import { fitForTop } from '../../lib/reel-fit.js';
 import { lengthOf, liftOf } from '../../lib/garment-scale.js';
 import { LIGHT, FABRIC, FIT } from '../../lib/reel-geom.js';
 
-for (const [type, scale, y, turn] of [
-  ['Polo Sweatshirt', 1.03, -9, 0], ['Oversized Hoodie', 1.05, -4, 0],
-  ['Oversized Sweatshirt', 1.02, -9, 0], ['Baby Tee', 1.07, -5, 0],
-  ['Henley Waffle Tee', .97, -12, 0], ['Oversized Tee', .91, -9, 180],
-  ['Acid Wash Tee', .91, -9, 180],
+import { lightingFor } from '../../lib/reel-lighting.js';
+
+for (const [type, scale, y, turn, x = 0, z = 0] of [
+  ['Polo Sweatshirt', 1.03, -11, 0, 0, 1], ['Oversized Hoodie', 1.05, -4, 0],
+  ['Oversized Sweatshirt', 1.03, -11, 0, 0, 2], ['Baby Tee', 1.07, -5, 0],
+  ['Henley Waffle Tee', .96, -12, 0, 1, 2], ['Oversized Tee', .90, -9, 180, 0, 2],
+  ['Acid Wash Tee', .90, -9, 180, 0, 2],
 ]) test(`${type} uses the supplied fit`, () => {
-  assert.deepEqual(fitForTop(type), { topScale: scale, topY: y, topX: 0, topZ: 0, topTurn: turn });
+  assert.deepEqual(fitForTop(type), { topScale: scale, topY: y, topX: x, topZ: z, topTurn: turn });
 });
 
 test('unlisted types stay neutral and manual edits cannot mutate presets', () => {
@@ -36,7 +38,7 @@ class Box3 {
   getSize(v) { return v.set(40, 60, 20); }
   getCenter(v) { return v.set(0, 0, 0); }
 }
-const context = vm.createContext({ THREE: { Vector3, Object3D, Box3 }, LIGHT, FABRIC, FIT, lengthOf, liftOf, Math });
+const context = vm.createContext({ THREE: { Vector3, Object3D, Box3 }, LIGHT, FABRIC, FIT, lightingFor, lengthOf, liftOf, Math });
 const source = readFileSync(new URL('../../lib/stage3d.js', import.meta.url), 'utf8');
 vm.runInContext(source.replace(/^import .*;$/gm, '').replace(/^export /gm, '') + '\nglobalThis.Stage = OutfitStage; globalThis.models = cache;', context);
 context.models.set('model', Promise.resolve({ clone: () => ({ position: new Vector3(), traverse() {} }) }));
@@ -62,5 +64,28 @@ test('top translation and 180-degree correction leave bottoms and entry motion i
     assert.equal(moved.parts.top.pivot.position.x, moved.home.top.x);
     assert.equal(moved.parts.top.pivot.position.z, moved.home.top.z);
     assert.equal(moved.parts.top.pivot.position.y - moved.home.top.y, baseline.parts.top.pivot.position.y - baseline.home.top.y);
+  }
+});
+
+test('repeated previews do not change cached garment materials', async () => {
+  const texture = { isTexture: true, anisotropy: 1 };
+  const material = { map: texture, roughness: .2, envMapIntensity: 1, clone() { return { ...this, dispose() {} }; } };
+  const copies = [];
+  context.models.set('material-model', Promise.resolve({ clone() {
+    const mesh = { isMesh: true, material };
+    copies.push(mesh);
+    return { position: new Vector3(), traverse(fn) { fn(mesh); } };
+  } }));
+  for (let i = 0; i < 3; i++) {
+    const s = Object.create(context.Stage.prototype);
+    Object.assign(s, { tune: fitForTop(), light: lightingFor('original'), parts: {}, outfit: new Object3D(), materials: new Set(), renderer: { capabilities: { getMaxAnisotropy: () => 16 } } });
+    await s.add('top', 'material-model', 'Oversized Tee');
+  }
+  assert.equal(material.roughness, .2, 'cached source stays authored');
+  assert.equal(material.envMapIntensity, 1);
+  assert.equal(texture.anisotropy, 16);
+  for (const mesh of copies) {
+    assert.notEqual(mesh.material, material);
+    assert.equal(mesh.material.roughness, .5);
   }
 });
