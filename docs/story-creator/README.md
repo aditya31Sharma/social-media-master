@@ -16,6 +16,10 @@ python3 -m http.server 8801 --bind 127.0.0.1
 
 Open http://localhost:8801/stories/ . The deployed route is https://aditya31sharma.github.io/social-media-master/stories/ . GitHub Pages is configured to publish the root of main. The editor requires no npm install, API key, remote profile API, or backend. The existing dashboard navigation still needs the third feature entry, delegated to the receiving Claude session. Carousel and Reel files are unchanged.
 
+## Drive save integration
+
+Story Creator can search the current published Shopify catalogue by product title or SKU and save all ready WebPs to an app-created `Tenzen Reviews/<product title>` folder in the `team@tenzen.in` Drive. Folders are created when first needed, keyed by Shopify product ID in Drive properties. Google OAuth is configured for both hosted origins and localhost:8088; see [DRIVE-SETUP.md](DRIVE-SETUP.md).
+
 ## What is preserved
 
 - `../../stories/`: complete runnable editor,600 DP JPEGs, users.json, local font/license and original Figma SVGs.

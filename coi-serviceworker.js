@@ -19,6 +19,8 @@ if (typeof window === 'undefined') {
     const req = event.request;
     // A range/cache probe must be passed straight through or Safari errors.
     if (req.cache === 'only-if-cached' && req.mode !== 'same-origin') return;
+    // Story Creator uses Google's OAuth popup, which COOP same-origin would isolate.
+    if (req.url.startsWith(new URL('stories/', self.registration.scope).href)) return;
 
     event.respondWith(
       fetch(req)

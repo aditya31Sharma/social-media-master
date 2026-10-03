@@ -65,6 +65,17 @@
         <button type="button" class="btn btn--primary" id="download" disabled>Download WebP</button>
         <p class="story-note" id="status" role="status" aria-live="polite">Loading story assets…</p>
       </section>
+      <section class="story-section story-drive" aria-label="Save stories to Google Drive">
+        <div class="story-row"><h2>Save to Drive</h2><button type="button" class="btn btn--quiet" id="driveRefresh">Refresh products</button></div>
+        <label class="sr-only" for="driveSearch">Search product name or SKU</label>
+        <input id="driveSearch" type="search" placeholder="Search product name or SKU" autocomplete="off" disabled>
+        <label class="sr-only" for="driveProduct">Product folder</label>
+        <select id="driveProduct" disabled><option value="">Loading products…</option></select>
+        <button type="button" class="btn" id="driveConnect">Connect Google Drive</button>
+        <button type="button" class="btn btn--primary" id="driveSave" disabled>Save all WebPs to Drive</button>
+        <a id="driveFolderLink" class="story-note" href="#" target="_blank" rel="noopener" hidden>Open product folder</a>
+        <p class="story-note" id="driveStatus" role="status" aria-live="polite">Tenzen Reviews / product name</p>
+      </section>
     </aside>
     <section class="story-workspace" aria-label="Story previews">
       <div class="story-toolbar">
@@ -86,6 +97,7 @@
       <button type="button" class="btn story-save" disabled>Download WebP</button>
     </article>
   </template>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script type="module" src="story.js"></script>
 </body>
 </html>

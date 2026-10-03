@@ -1,6 +1,7 @@
 import { loadAssets } from './render.js';
 import { createStory } from './card.js';
 import { downloadStories } from './download.js';
+import { setupDrive } from './drive-ui.js';
 
 const $ = selector => document.querySelector(selector);
 
@@ -12,6 +13,7 @@ document.documentElement.style.setProperty('--logo', `url("${new URL('../assets/
 
 const stories = [];
 let assets = null, users = [], active = null, exporting = false;
+let driveUI;
 
 function say(message, error = false) {
   $('#status').textContent = message;
@@ -32,6 +34,7 @@ function refresh(story) {
   stories.forEach(story => { story.element.querySelector('.story-save').disabled = exporting || !story.ready; });
   const ready = stories.filter(story => story.ready).length;
   $('#storyCount').textContent = `${stories.length} ${stories.length === 1 ? 'story' : 'stories'} · ${ready} ready`;
+  driveUI?.refresh();
 }
 function showUnits() {
   document.querySelectorAll('[data-unit]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.unit === active?.unit)));
@@ -132,6 +135,7 @@ document.querySelectorAll('[data-unit]').forEach(button => button.addEventListen
   if (!active) return;
   active.unit = button.dataset.unit; showUnits(); active.paint();
 }));
+driveUI = setupDrive(() => stories);
 $('#zoom').addEventListener('input', () => active?.framer.setZoom(Number($('#zoom').value)));
 $('#resetPhoto').addEventListener('click', () => active?.framer.reset());
 $('#format').addEventListener('change', () => active?.setHeight(Number($('#format').value)));

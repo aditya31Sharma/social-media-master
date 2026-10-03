@@ -12,6 +12,21 @@ brand gradient.
 Everything runs in the browser. There is no server and no build step, which is
 what lets it sit on GitHub Pages.
 
+## Story Creator and review folders
+
+The Story tab makes individual Instagram-style WebPs from review photos, with bundled
+profile pictures, independent frames, and separate downloads. A product search by
+name or SKU can save all ready WebPs to `Tenzen Reviews/<product title>` in the
+`team@tenzen.in` Google Drive. If a published Shopify product has no folder yet, the
+first save creates it. Refresh products to see newly published SKUs.
+
+Drive saving uses Tenzen's Google Cloud project and the configured public OAuth
+web client. Sign in as `team@tenzen.in` when prompted. Local WebP downloads also
+work without signing in. See [Drive setup](docs/story-creator/DRIVE-SETUP.md).
+
+The same GitHub Pages files are also served inside Tenzen HQ at
+`https://dashboard.tenzen.in/social-media-master/`. A push to `main` releases both.
+
 ## Using it
 
 1. **Pick a product.** Search it, paste a link (`tenzen.in/...`,
@@ -89,7 +104,7 @@ at *Oversized Hoodie*. Both fields are editable before you build.
 | `lib/frame.js` | where a photo sits in a frame: clamping, snapping, zoom |
 | `lib/framer.js` | the gestures that move it - drag, pinch, wheel, keys |
 | `lib/editor.js` | the full-screen slide surface, locked and unlocked |
-| `coi-serviceworker.js` | adds COOP/COEP so WebAssembly gets threads |
+| `coi-serviceworker.js` | adds COOP/COEP for Carousel WebAssembly; excludes Story Creator so Google sign-in can open |
 | `assets/logo.svg` | the wordmark, drawn with `currentColor` so it recolours |
 
 **Catalogue** comes from Shopify's Storefront API. The token in `app.js` is the

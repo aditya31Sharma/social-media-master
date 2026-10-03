@@ -31,6 +31,11 @@
 #progress { min-width: 0; }
 .story-section #progressValue { width: 76px; flex: 0 0 76px; }
 .story-export > .btn { width: 100%; margin-top: 12px; }
+.story-drive > .btn { width: 100%; margin-top: 10px; }
+.story-drive #driveRefresh { width: auto; margin: 0; }
+.story-drive #driveFolderLink { display: inline-block; margin-top: 12px; }
+.story-drive #driveFolderLink[hidden] { display: none; }
+#driveStatus[data-error=true] { color: var(--danger-ink); }
 #status[data-error=true] { color: var(--danger-ink); }
 .story-workspace { padding: 24px; min-width: 0; }
 .story-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
