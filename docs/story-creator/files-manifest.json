@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 14928,
-    "sha256": "22b06c654aca0e4164f16da630e1390534154d4128093530446ec9a6726a0ae2"
+    "bytes": 16088,
+    "sha256": "3e1da5d7d028bb1e529c397363eb9122c5da47d97e5069c7beb3663e28f82ac6"
   },
   {
     "path": "app.css",
@@ -101,8 +101,8 @@
   },
   {
     "path": "docs/WORKSPACE-REVAMP.md",
-    "bytes": 9203,
-    "sha256": "d3f0d8c7d2cb321d2bdef498240ff29172260c0bf44bf529de430400c23125ad"
+    "bytes": 10272,
+    "sha256": "3ae674148e3690fecf0ee932f5f85ac46bdf8aeb781772a6c6731cc5c4a28bbb"
   },
   {
     "path": "docs/qa/carousel-check.js",
@@ -123,6 +123,16 @@
     "path": "docs/qa/reel-controls-check.js",
     "bytes": 3384,
     "sha256": "c9975ea5b5102c62ebc3f5f619a0a14d94d0741bfab0ab04788f1588c3a22211"
+  },
+  {
+    "path": "docs/qa/reel-fit-check.js",
+    "bytes": 3124,
+    "sha256": "a48ad46e65f3a8192094cdbe93dacbf21a0e5375768229d179c8ed81732315d0"
+  },
+  {
+    "path": "docs/qa/reel-fit.test.mjs",
+    "bytes": 3587,
+    "sha256": "acab92f28ea635fb1e6bc2394426631f2cb8cd8090c0c3a0728d2642ac292ab2"
   },
   {
     "path": "docs/qa/story-retry-check.js",
@@ -330,9 +340,14 @@
     "sha256": "5b8bb64db3efff71e386d0798ec4b837a82eddbb616bb3ab3e953e9cd2016138"
   },
   {
+    "path": "docs/superpowers/plans/2026-10-04-topwear-fit.md",
+    "bytes": 1425,
+    "sha256": "8d9bac21626e60b2c74f865f091ae8ebf65ea3787ffec854d9e7046c9d319248"
+  },
+  {
     "path": "index.html",
-    "bytes": 40874,
-    "sha256": "fcd4ea9274d0c6279cca04c0443c953f1facd2435279d8a26e276533f1b3b5a5"
+    "bytes": 41678,
+    "sha256": "c6443ac93179dad7910674d01c3498aee614743afafb76a879508f6427252580"
   },
   {
     "path": "lab/frame.html",
@@ -395,6 +410,11 @@
     "sha256": "00ddd1656fde92c6b10bf341e3305583289b8eb28103c981a8978de0e12d9226"
   },
   {
+    "path": "lib/reel-fit.js",
+    "bytes": 536,
+    "sha256": "150822f4488dc7b91a9443a2723c340e0c321d72d0ceac68b11c8e5afc79454c"
+  },
+  {
     "path": "lib/reel-geom.js",
     "bytes": 9186,
     "sha256": "78254bc8114513990c68f464fab611e40b9d2fc1390d62654000b891aa47e011"
@@ -406,8 +426,8 @@
   },
   {
     "path": "lib/reel-ui.js",
-    "bytes": 22978,
-    "sha256": "1e790616f42d849a2d996b48523574ab8f0d2ba5daec742d86cff8fdd7b6b79f"
+    "bytes": 23862,
+    "sha256": "23ac9e739d849a8ad94af305a2f72c46ab3978ee055291cf68ef0c10d941c147"
   },
   {
     "path": "lib/reel.js",
@@ -426,8 +446,8 @@
   },
   {
     "path": "lib/stage3d.js",
-    "bytes": 10265,
-    "sha256": "64ee81ce699bfa1bd12de72f0eab136f569f6ffc59b647e7e73efdc7c2ea3091"
+    "bytes": 10456,
+    "sha256": "f1fa7a34307e779065d752a4c164190f3192ae5254d2c5031606710d2b506b5f"
   },
   {
     "path": "lib/theme.js",

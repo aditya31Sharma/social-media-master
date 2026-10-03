@@ -50,6 +50,30 @@ original garment entrance/blur, photo arrival, rotation, logo/text fades and
 225-degree gradient from `#F2F2F2` to `#C6C9CC`. The Reel/cover Tenzen logo is
 `#AAAAAA`. These colours are independent of the workspace theme.
 
+## Automatic Reel fit
+
+Selecting topwear applies these defaults. You can adjust them under **The fit**.
+Changing bottoms or switching tools preserves your manual adjustments; selecting
+a new top applies its preset and resets the preview Turn to0 degrees.
+
+| Topwear | Size | Height | Top-only rotation |
+| --- | --- | --- | --- |
+| Polo Sweatshirt |103% |-9cm |0 degrees |
+| Oversized Hoodie |105% |-4cm |0 degrees |
+| Oversized Sweatshirt |102% |-9cm |0 degrees |
+| Baby Tee |107% |-5cm |0 degrees |
+| Henley Waffle Tee |97% |-12cm |0 degrees |
+| Oversized Tee, including Acid Wash Tee |91% |-9cm |180 degrees |
+
+Unlisted types retain100% size and0cm height. **Top sideways** and **Top depth**
+range from-30cm to+30cm and start at0cm. Positive values move the top right and
+forward in its starting pose; negative values move left and backward. These
+adjustments affect the preview, MP4 and separate cover. The bottom stays anchored,
+and the original entrance and turning animation remain unchanged.
+
+Preset values live in `lib/reel-fit.js`. The UI and stage use the release key
+`20261004-fit1` in the root import map. Geometry/export settings remain shared.
+
 ## Story Creator and review folders
 
 The Story tab makes individual Instagram-style WebPs from review photos, with bundled

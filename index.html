@@ -391,6 +391,17 @@
               <input type="range" id="reelTopY" min="-30" max="30" step="1" value="0" aria-label="Top height">
               <output id="reelTopYOut">0cm</output>
             </div>
+            <div class="row">
+              <span class="row__label">Top sideways</span>
+              <input type="range" id="reelTopX" min="-30" max="30" step="1" value="0" aria-label="Top sideways, negative left and positive right, in centimetres">
+              <output id="reelTopXOut">0cm</output>
+            </div>
+            <div class="row">
+              <span class="row__label">Top depth</span>
+              <input type="range" id="reelTopZ" min="-30" max="30" step="1" value="0" aria-label="Top depth, negative backward and positive forward, in centimetres">
+              <output id="reelTopZOut">0cm</output>
+            </div>
+            <p class="note">Sideways: left (−) / right (+). Depth: backward (−) / forward (+).</p>
             <p class="note">The bottom stays where it is; only the top moves.</p>
             </div>
           </details>
@@ -677,7 +688,8 @@
     "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
     "./lib/reel.js": "./lib/reel.js?v=20261004-gradient1",
     "./lib/reel-geom.js": "./lib/reel-geom.js?v=20261004-reel2",
-    "./lib/reel-ui.js": "./lib/reel-ui.js?v=20261004-gradient1",
+    "./lib/stage3d.js": "./lib/stage3d.js?v=20261004-fit1",
+    "./lib/reel-ui.js": "./lib/reel-ui.js?v=20261004-fit1",
     "./lib/workspace.js": "./lib/workspace.js?v=20261004-reel2",
     "./stories/story.js": "./stories/story.js?v=20261004-reel2",
     "./stories/drive-api.js": "./stories/drive-api.js?v=20261004-reel2",

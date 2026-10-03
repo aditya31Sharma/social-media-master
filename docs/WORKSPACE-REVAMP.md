@@ -138,3 +138,20 @@ rectangle. The exported logo uses#AAAAAA. Foreground animation/layout remain
 unchanged;900-frame parity normalizes only gradient versus prior white fill.
 Cover still omits photos and product labels. Module keys:20261004-gradient1 for
 reel.js and reel-ui.js; the rest retain their preceding release keys.
+
+## Topwear presets and positioning, 2026-10-04
+
+Aditya supplied six fit screenshots. `lib/reel-fit.js` maps the exact catalogue
+categories to their size/height presets and applies180-degree top-only yaw to
+Oversized Tee and its Acid Wash Tee variants. New sideways/depth range controls
+use the same fit rows, with±30cm limits and zero initial offsets. Changes flow
+through the existing tune signature to fit preview, MP4 and cover. Top selection
+resets the preset and preview Turn; bottom selection and tabs preserve edits.
+Stale asynchronous top selections cannot overwrite a newer preset.
+
+QA:31 Node tests,16 real catalogue/picker checks,44px controls and no horizontal
+overflow at375/768/1024/1440. Chrome exported24 sampled frames of the original
+900-frame timeline and a1080x1920 cover using a corrected oversized tee with
+5cm sideways/8cm depth. Visually inspected the forward-facing garment and mobile
+controls. Original900-frame renderer commands still match the pre-cover animation
+apart from the approved background. No full900-frame encode repeated here.
