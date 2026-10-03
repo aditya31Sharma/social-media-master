@@ -12,6 +12,13 @@ brand gradient.
 Everything runs in the browser. There is no server and no build step, which is
 what lets it sit on GitHub Pages.
 
+## Reel cover
+
+The Reel tab exports a PNG cover beside the MP4 after generation. The cover is
+the video's first frame at the selected resolution: Tenzen logo at the top,
+both center garments visible, and the four corner photos hidden. The opening
+holds that composition before the corner photos enter.
+
 ## Story Creator and review folders
 
 The Story tab makes individual Instagram-style WebPs from review photos, with bundled

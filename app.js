@@ -918,19 +918,22 @@ function miniCombo(input, rows, onPick) {
   window.addEventListener('resize', place);
 }
 
-function showVideo(blob, name) {
+function showVideo(blob, name, cover) {
   const fig = $('#reelOut');
   const video = fig.querySelector('[data-reel-video]');
   const save = fig.querySelector('[data-reel-save]');
+  const coverSave = fig.querySelector('[data-reel-cover]');
   if (video.src) URL.revokeObjectURL(video.src);
   const url = URL.createObjectURL(blob);
   video.src = url;
-  /* The clip opens on white by design, so a paused first frame looks like a
-     failure. It plays itself, muted and looping, the way a reel does. */
+  /* The clip opens on the cover and plays itself, muted and looping. */
   video.autoplay = true;
   video.play?.().catch(() => { video.currentTime = 3; });
   save.href = url;
   save.download = name;
+  if (coverSave.href.startsWith('blob:')) URL.revokeObjectURL(coverSave.href);
+  coverSave.href = URL.createObjectURL(cover);
+  coverSave.download = name.replace(/\.mp4$/i, '-cover.png');
   fig.querySelector('[data-reel-meta]').textContent =
     `${(blob.size / 1048576).toFixed(1)} MB · 15s · MP4`;
   fig.hidden = false;
