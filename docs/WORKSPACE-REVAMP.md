@@ -122,8 +122,8 @@ workspace/Story modules to prevent mixed cached versions.
 The opening-cover change831e322 had removed the original garment entrance/blur
 and logo fade. Restore animation and geometry from its parent. Cover generation
 now runs separately after encoding at frame899, with only the four photos hidden.
-Final pose, logo and product text remain. The MP4 keeps the original animation.
+Final pose and logo remain. The cover also omits product names and subtitles. The MP4 keeps the original animation.
 The historical first-frame cover verification above describes the superseded
 implementation. docs/qa/reel-animation.test.mjs compares all900 renderer-command
-sequences against831e322^ and checks cover separation and final pose/text.
+sequences against831e322^ and checks cover separation, final pose and absence of product labels.
 The comparison test needs Git history containing831e322^.

@@ -33,7 +33,8 @@ Google Material Symbols `movie` at weight 300, normalized to the adjacent 1.6px
 outlines. The source SVG is preserved in `assets/icons/`.
 
 Changed workspace resources share the release key `20261004-reel2` in the
-root HTML/import map and Story markup fetch. Update that key together when
+root HTML/import map and Story markup fetch. The cover renderer overrides its
+module key with `20261004-cover3` to remove product labels. Update that key together when
 changing those resources so returning sessions cannot mix old and new layouts.
 
 See [the implementation and feature checklist](docs/WORKSPACE-REVAMP.md).
@@ -42,7 +43,7 @@ See [the implementation and feature checklist](docs/WORKSPACE-REVAMP.md).
 
 The Reel tab exports a separate PNG cover beside the MP4. It renders the video's
 last frame (frame 899 of 900) at the selected resolution, keeping the final garment
-pose, logo and product text while omitting all four background photos. Cover
+pose and logo while omitting all four background photos and product labels. Cover
 computation runs after video encoding and never replaces a video frame. The
 original garment entrance/blur, photo arrival, rotation, logo/text fades and
 15-second timing are preserved.

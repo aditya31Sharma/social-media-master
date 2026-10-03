@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 14633,
-    "sha256": "454db5dbad4a2353724cfce7507ee246d68495b75300399636b1d6cb6426cb58"
+    "bytes": 14731,
+    "sha256": "f0dc383ecdb35b8702dbfc4d2599d907ed036c35487929bfd6b8034e261a78c8"
   },
   {
     "path": "app.css",
@@ -101,8 +101,8 @@
   },
   {
     "path": "docs/WORKSPACE-REVAMP.md",
-    "bytes": 8463,
-    "sha256": "2ecdda22b553f8de5a9ac41d32935576e9fb3b1fc045bad55419286e4bb05f50"
+    "bytes": 8521,
+    "sha256": "77c6038a8686e16c39efe1f3b6117951f0121c44805d537acb953ed8365931f2"
   },
   {
     "path": "docs/qa/carousel-check.js",
@@ -116,8 +116,8 @@
   },
   {
     "path": "docs/qa/reel-animation.test.mjs",
-    "bytes": 3606,
-    "sha256": "358d56f2796b9e490691ad5094a601dc61ab7284e0ca9a4a5df6d066b74e6597"
+    "bytes": 3742,
+    "sha256": "939ca321caee08f9d64fa7e760e6933247a59d6ecd422ae7a98abf87e22aced7"
   },
   {
     "path": "docs/qa/reel-controls-check.js",
@@ -331,8 +331,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 40866,
-    "sha256": "c933912a9f8c280074971f453425b1ce553633a7c5cd92a24d1062f1b95dc3fa"
+    "bytes": 40867,
+    "sha256": "be26ecb3300a68c341faf52a39ae91a059c470f76e09d7e93b5d9acc94bd54cb"
   },
   {
     "path": "lab/frame.html",
@@ -406,8 +406,8 @@
   },
   {
     "path": "lib/reel.js",
-    "bytes": 16507,
-    "sha256": "45c9a6734cc167dc1b33da307387c7ea96d0163f12b48d6614294efc8cce6090"
+    "bytes": 16565,
+    "sha256": "e1f878acd0dfe1315c1fda49d3ee19711eb9b2d98614344258f5e89cdc55c237"
   },
   {
     "path": "lib/render.js",

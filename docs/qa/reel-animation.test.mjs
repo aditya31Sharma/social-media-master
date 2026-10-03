@@ -45,17 +45,19 @@ test('all 900 video frames match the original animation commands', async () => {
   }
 });
 
-test('cover uses final pose and text without photos, and does not alter subsequent video frames', async () => {
+test('cover uses final pose without photos or product labels, and does not alter subsequent video frames', async () => {
   const normal = await renderer(current), cover = await renderer(current);
   normal.reset(); const videoSurface = normal.reel.drawFrame(G.FRAMES - 1);
   const last = normal.commands();
   cover.reset(); const coverSurface = cover.reel.drawCover();
   const commands = cover.commands();
-  const layers = list => list.filter(op => ['entry', 'turn', 'fillText'].includes(op[0]));
+  const layers = list => list.filter(op => ['entry', 'turn'].includes(op[0]));
   assert.deepEqual(layers(commands), layers(last));
   assert.ok(commands.some(op => op[0] === 'drawImage' && op[1] === 'logo'));
   assert.ok(commands.some(op => op[0] === 'drawImage' && op[1] === 'garments'));
   assert.ok(!commands.some(op => op.includes('photo')));
+  assert.ok(!commands.some(op => op[0] === 'fillText'));
+  assert.ok(last.some(op => op[0] === 'fillText'), 'video keeps product labels');
   assert.deepEqual([coverSurface.width, coverSurface.height], [videoSurface.width, videoSurface.height]);
   assert.notEqual(coverSurface, cover.reel.drawFrame(0));
   const baseline = await renderer(historical);
