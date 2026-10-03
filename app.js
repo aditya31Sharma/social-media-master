@@ -986,7 +986,7 @@ function showVideo(blob, name, cover) {
   if (video.src) URL.revokeObjectURL(video.src);
   const url = URL.createObjectURL(blob);
   video.src = url;
-  /* The clip opens on the cover and plays itself, muted and looping. */
+  /* Play the original animation, muted and looping; the cover is separate. */
   video.autoplay = true;
   video.play?.().catch(() => { video.currentTime = 3; });
   save.href = url;

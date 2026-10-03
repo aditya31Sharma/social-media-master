@@ -32,7 +32,7 @@ its artwork; exported Tenzen logos remain unchanged. The Reel navigation uses
 Google Material Symbols `movie` at weight 300, normalized to the adjacent 1.6px
 outlines. The source SVG is preserved in `assets/icons/`.
 
-Changed workspace resources share the release key `20261004-global1` in the
+Changed workspace resources share the release key `20261004-reel2` in the
 root HTML/import map and Story markup fetch. Update that key together when
 changing those resources so returning sessions cannot mix old and new layouts.
 
@@ -40,10 +40,12 @@ See [the implementation and feature checklist](docs/WORKSPACE-REVAMP.md).
 
 ## Reel cover
 
-The Reel tab exports a PNG cover beside the MP4 after generation. The cover is
-the video's first frame at the selected resolution: Tenzen logo at the top,
-both center garments visible, and the four corner photos hidden. The opening
-holds that composition before the corner photos enter.
+The Reel tab exports a separate PNG cover beside the MP4. It renders the video's
+last frame (frame 899 of 900) at the selected resolution, keeping the final garment
+pose, logo and product text while omitting all four background photos. Cover
+computation runs after video encoding and never replaces a video frame. The
+original garment entrance/blur, photo arrival, rotation, logo/text fades and
+15-second timing are preserved.
 
 ## Story Creator and review folders
 

@@ -28,7 +28,7 @@ framework migration, new dependencies, hosting changes or another backend.
 | Reel | Top/bottom selection, 3D fit preview, top scale/height, preview turn |
 | Reel | Four photo sequences, selection/order, per-photo framing and alignment |
 | Reel | Text overrides, music/switch audio uploads, music trim/preview, volume controls, YouTube helper |
-| Reel | 1080p/1440p/4K, 15-second MP4, progress, edit after export, matching first-frame PNG cover |
+| Reel | 1080p/1440p/4K, 15-second MP4, progress, edit after export, separate final-frame PNG cover without background photos |
 | Story | Multiple independent stories, upload/paste/drop including HEIC/HEIF |
 | Story | 600 profiles, manual search, randomize excluding Drive-saved users |
 | Story | Timestamp 1-60 with M/H, random timestamp, progress 0-100 and random progress |
@@ -116,3 +116,14 @@ selection leads the controls, and saves sit beside previews. Mobile order is
 connection, product, previews, editing. Story scroll padding accommodates the
 full selected outline at either edge. Release query keys cover changed CSS and
 workspace/Story modules to prevent mixed cached versions.
+
+## Reel animation correction, 2026-10-04
+
+The opening-cover change831e322 had removed the original garment entrance/blur
+and logo fade. Restore animation and geometry from its parent. Cover generation
+now runs separately after encoding at frame899, with only the four photos hidden.
+Final pose, logo and product text remain. The MP4 keeps the original animation.
+The historical first-frame cover verification above describes the superseded
+implementation. docs/qa/reel-animation.test.mjs compares all900 renderer-command
+sequences against831e322^ and checks cover separation and final pose/text.
+The comparison test needs Git history containing831e322^.

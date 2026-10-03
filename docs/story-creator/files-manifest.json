@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 14495,
-    "sha256": "29087ae95d29c6b5f2d8a2f0d0ced70e5013a0f4304e951383188864af31cb78"
+    "bytes": 14633,
+    "sha256": "454db5dbad4a2353724cfce7507ee246d68495b75300399636b1d6cb6426cb58"
   },
   {
     "path": "app.css",
@@ -16,8 +16,8 @@
   },
   {
     "path": "app.js",
-    "bytes": 40616,
-    "sha256": "dcdb93df51099757ad3f4c7591d2a3bf3c880b222fa9ab4855491d1d91673b0d"
+    "bytes": 40622,
+    "sha256": "adb1d710719074b6b0eb61bd9d4bdb064e16cb9e71951a443c581ca9884efde9"
   },
   {
     "path": "assets/apple-touch-icon.png",
@@ -101,8 +101,8 @@
   },
   {
     "path": "docs/WORKSPACE-REVAMP.md",
-    "bytes": 7782,
-    "sha256": "b83b76f7f78f73e3e6bfedb08faa9ef3deb5cda1b5d94b81af6e423acf76c835"
+    "bytes": 8463,
+    "sha256": "2ecdda22b553f8de5a9ac41d32935576e9fb3b1fc045bad55419286e4bb05f50"
   },
   {
     "path": "docs/qa/carousel-check.js",
@@ -113,6 +113,11 @@
     "path": "docs/qa/isolation.test.mjs",
     "bytes": 1794,
     "sha256": "7e3c4ad0eaaaca9d64867faf3cc7027d7b5f8f8c6c33be9f8c8f1b715f0477a2"
+  },
+  {
+    "path": "docs/qa/reel-animation.test.mjs",
+    "bytes": 3606,
+    "sha256": "358d56f2796b9e490691ad5094a601dc61ab7284e0ca9a4a5df6d066b74e6597"
   },
   {
     "path": "docs/qa/reel-controls-check.js",
@@ -320,9 +325,14 @@
     "sha256": "8e504f8e4c9746a292d4874eb33846e6f9a8b556e417155e77447ac52ec2425c"
   },
   {
+    "path": "docs/superpowers/plans/2026-10-04-reel-animation-restore.md",
+    "bytes": 906,
+    "sha256": "5b8bb64db3efff71e386d0798ec4b837a82eddbb616bb3ab3e953e9cd2016138"
+  },
+  {
     "path": "index.html",
-    "bytes": 40701,
-    "sha256": "d9b1d8241e6654f51cade9a81ac3ac9aa1d8ea5128727ce12c38e4a0210e4cba"
+    "bytes": 40866,
+    "sha256": "c933912a9f8c280074971f453425b1ce553633a7c5cd92a24d1062f1b95dc3fa"
   },
   {
     "path": "lab/frame.html",
@@ -381,8 +391,8 @@
   },
   {
     "path": "lib/reel-geom.js",
-    "bytes": 8799,
-    "sha256": "afb8d3daa3ed2f7f77b33ecb94a1db07b81eaa468f268ca2dab714a62bbd1b93"
+    "bytes": 9186,
+    "sha256": "78254bc8114513990c68f464fab611e40b9d2fc1390d62654000b891aa47e011"
   },
   {
     "path": "lib/reel-picker.js",
@@ -391,13 +401,13 @@
   },
   {
     "path": "lib/reel-ui.js",
-    "bytes": 23049,
-    "sha256": "0ffaa43ccc5c06363fb9d1aaa03a4d963bcbc4757e1c728f7bdf02972ca29717"
+    "bytes": 22914,
+    "sha256": "4f42d55020a9a1e35df6aa16e7d65655da4c11883c4b03a97818730720961822"
   },
   {
     "path": "lib/reel.js",
-    "bytes": 15507,
-    "sha256": "99cd8aaae2921fc6353f959adb965523b214e06ef1356222be3b5e7c94407477"
+    "bytes": 16507,
+    "sha256": "45c9a6734cc167dc1b33da307387c7ea96d0163f12b48d6614294efc8cce6090"
   },
   {
     "path": "lib/render.js",
@@ -421,8 +431,8 @@
   },
   {
     "path": "lib/workspace.js",
-    "bytes": 6497,
-    "sha256": "5911240ead4826300e0dcfad47bac4e2445170b5b48466e296770632fd296b8d"
+    "bytes": 6495,
+    "sha256": "7d1e3ecf8910edd42e67f6bd1b3e6230412c521ee8f075cce8338d1ee70261b3"
   },
   {
     "path": "site.webmanifest",
