@@ -9,7 +9,7 @@
   check('All five shoot and garment defaults load', $('[data-v2-count]').textContent === '5 / 5');
   check('Victor Doom is first and Stand Unshaken is last', $('[data-v2-name="0"]').value.includes('Victor Doom') && $('[data-v2-name="4"]').value.includes('Stand Unshaken'));
   check('Intro has only main text, logo, color and subtext', $('#albumV2Setup [data-v2-intro-controls]').querySelectorAll('input, select, textarea').length === 4);
-  check('Three-second intro and 2.5-second ending surround the 40-second gallery', +$('[data-v2-scrub]').max === 45.5);
+  check('Three-second intro, half-second hold and six-second ending surround the 45-second gallery', +$('[data-v2-scrub]').max === 54.5);
   check('Geist is loaded and intro heading defaults correctly', document.fonts.check('500 44px Geist') && $('[data-v2-main-text]').value === 'Tenzen Presents');
   set('[data-v2-scrub]', '1'); await wait(() => $('[data-v2-time]').textContent.startsWith('1.0'));
   const intro = $('#albumV2Setup canvas').toDataURL();
@@ -48,8 +48,8 @@
   $('[data-v2-move="1"][data-step="-1"]').click(); await wait(() => !$('#albumV2Setup [data-v2-generate]').disabled);
   set('[data-v2-name="0"]', 'Victor Doom test');
   $('#v2-tab-2').click();
-  set('[data-v2-duration]', '30', 'change'); check('Gallery duration includes fixed intro and ending', +$('[data-v2-scrub]').max === 35.5);
-  set('[data-v2-duration]', '40', 'change');
+  set('[data-v2-duration]', '30', 'change'); check('Gallery duration includes fixed intro and ending', +$('[data-v2-scrub]').max === 39.5);
+  set('[data-v2-duration]', '45', 'change');
   $('[data-v2-play]').click(); await new Promise(r => setTimeout(r, 400)); $('[data-v2-play]').click();
   check('Preview playback advances and stops', +$('[data-v2-scrub]').value > 0 && $('[data-v2-play]').textContent === 'Play');
   $('[data-v2-close]').click(); await new Promise(r => setTimeout(r, 50));

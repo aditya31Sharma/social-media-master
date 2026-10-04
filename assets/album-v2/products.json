@@ -34,7 +34,11 @@
         "file": "stand-unshaken-woman-front.webp",
         "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Woman-Front-Full_38aee5c8-e811-4c43-aa06-f86fc097e210.webp?v=1790334990"
       }
-    ]
+    ],
+    "lineup": {
+      "man": "../album-defaults/stand-unshaken-model.webp",
+      "woman": "stand-unshaken-woman-cutout.webp"
+    }
   },
   {
     "id": "victor-doom",
@@ -71,7 +75,11 @@
         "file": "victor-doom-woman-front.webp",
         "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Woman-Front-Full_0b88ff88-593f-4789-ac5b-508729143d8c.webp?v=1790719822"
       }
-    ]
+    ],
+    "lineup": {
+      "man": "../album-defaults/victor-doom-model.webp",
+      "woman": "victor-doom-woman-cutout.webp"
+    }
   },
   {
     "id": "california-love",
@@ -108,7 +116,11 @@
         "file": "california-love-woman-front.webp",
         "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Woman-Front-Full_c7edf9f6-34ff-4fa8-ac0a-6078341919e2.webp?v=1790205964"
       }
-    ]
+    ],
+    "lineup": {
+      "man": "../album-defaults/california-love-model.webp",
+      "woman": "california-love-woman-cutout.webp"
+    }
   },
   {
     "id": "ragnarsons",
@@ -145,7 +157,11 @@
         "file": "ragnarsons-woman-front.webp",
         "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Woman-Front-Full.webp?v=1790089745"
       }
-    ]
+    ],
+    "lineup": {
+      "man": "../album-defaults/ragnarsons-model.webp",
+      "woman": "ragnarsons-woman-cutout.webp"
+    }
   },
   {
     "id": "northumbria",
@@ -182,6 +198,10 @@
         "file": "northumbria-woman-front.webp",
         "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Woman-Front-Full_e3a6888c-8b5e-4b72-8a70-72f8ee78f2a4.webp?v=1789926953"
       }
-    ]
+    ],
+    "lineup": {
+      "man": "northumbria-man-cutout.webp",
+      "woman": "../album-defaults/northumbria-model.webp"
+    }
   }
 ]

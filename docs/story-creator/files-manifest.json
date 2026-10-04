@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 32784,
-    "sha256": "02efb8c175c3076ec9e38adc1b0614943df405cd77219b65a72cd963e89da871"
+    "bytes": 34218,
+    "sha256": "c9fd370c118fe705af894557ba378acdcb9235d01e8000268ef412c5ecfdce28"
   },
   {
     "path": "app.css",
@@ -96,8 +96,8 @@
   },
   {
     "path": "assets/album-v2/products.json",
-    "bytes": 9330,
-    "sha256": "92390fb714009f210ca7583ed7d616fe8e9fbbf13a6c9cda139df972828ce571"
+    "bytes": 9975,
+    "sha256": "5cdd6c6000baf1cfae7200dfa47429564c4ba197af224443f2df65bcd22848c3"
   },
   {
     "path": "assets/album-v2/ragnarsons-shoot.webp",
@@ -226,13 +226,13 @@
   },
   {
     "path": "docs/qa/album-v2-browser.js",
-    "bytes": 5748,
-    "sha256": "833842cda441e34e17123c3a046cd671df30a2ea656c5a97e46fa89e1acb51f6"
+    "bytes": 5766,
+    "sha256": "f1b6460d5fc2ac4ac87cee95dca20bb1e4a1b4bcb8ed4626b988b9d3479602f5"
   },
   {
     "path": "docs/qa/album-v2.test.mjs",
-    "bytes": 8900,
-    "sha256": "de038d54e6230f2c9652d2a6c6cccbde142b2c0f8d2c8e76eeb439d7d9f7513d"
+    "bytes": 9765,
+    "sha256": "55ae4ba83412082a00a96f3f0a3ba185a38c6cbab2f58d941e218270fbdb257b"
   },
   {
     "path": "docs/qa/album.test.mjs",
@@ -501,8 +501,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 45437,
-    "sha256": "8df477d1bd7fba753925676d01d8c3ba08281fd481d5eb796bf55815243f9e48"
+    "bytes": 45518,
+    "sha256": "1f18f39f821fcbd566642fc7fea95d4c3312767d020d7f8ef7dad6b53ab617cb"
   },
   {
     "path": "lab/frame.html",
@@ -556,18 +556,18 @@
   },
   {
     "path": "lib/album-v2-motion.js",
-    "bytes": 4335,
-    "sha256": "d041b2bff3b1687161ab416474292d95dfb97ea36d5a2a5cc5b223597b0e4ef4"
+    "bytes": 4517,
+    "sha256": "3da2db6644095add532d19f5a30264fce2c0e90d7f678859865fe49c26abf8cb"
   },
   {
     "path": "lib/album-v2-render.js",
-    "bytes": 10128,
-    "sha256": "4fe5d93bf3e49e0171f38c8455df49031b3f166c6be238336973c1b1b2e74768"
+    "bytes": 10302,
+    "sha256": "5a74bf491db0db637870b10b1a24da67dffa31508bf5103163e31cbd63520c7b"
   },
   {
     "path": "lib/album-v2-ui.js",
-    "bytes": 14844,
-    "sha256": "af0592436abb20a495a47afcdf755d168e56decdf3d3591c031c9cdc1d6e45a5"
+    "bytes": 15069,
+    "sha256": "486124c593173740f9e130eb364f24a52f5ebe6612229f2e804c1cb50e22c4c9"
   },
   {
     "path": "lib/audio.js",
@@ -3826,8 +3826,8 @@
   },
   {
     "path": "lib/album-v2-brand.js",
-    "bytes": 1287,
-    "sha256": "5e83907ec1f0d7b76da6f24dc7ba98d213e2dc86167b6ac3538e26eeaa2d78bb"
+    "bytes": 1831,
+    "sha256": "da339a36708c920c6d6b1fc9a750b64916238d25c11c5cafb4926c02353c6191"
   },
   {
     "path": "docs/plans/2026-10-05-album-v2-branding.md",
@@ -3916,12 +3916,52 @@
   },
   {
     "path": "lib/album-v2-editor.js",
-    "bytes": 5497,
-    "sha256": "b299bf4dc95321dd01564ce78f6188934ff2e0f49d79be052b3eb7f48fa4fe6f"
+    "bytes": 5516,
+    "sha256": "2dd162ec92a10f61d9cbe0383269d513aba8dcff8faa1cf68692aec359064083"
   },
   {
     "path": "lib/album-v2-glass.js",
-    "bytes": 3100,
-    "sha256": "dd3c5247b11c09bd8148d1b699fc8ef1c64936f24b667e96b9537a99b4028643"
+    "bytes": 3104,
+    "sha256": "39aa3245d4ebf6f125ebbec6c8ea1b269a7814b5885748c52ccf40fb359f137b"
+  },
+  {
+    "path": "assets/album-v2/california-love-woman-cutout.webp",
+    "bytes": 241178,
+    "sha256": "443e8394f1c4f204cfe80ea0e6ad93f63441a76f59e22a5ecd929bbfa74400f9"
+  },
+  {
+    "path": "assets/album-v2/globe-tenzen.svg",
+    "bytes": 5616,
+    "sha256": "fbb8fe9df20bb3d3b6f1096fa4067829c95e7c387f1971a9e5814e2c13d5710d"
+  },
+  {
+    "path": "assets/album-v2/northumbria-man-cutout.webp",
+    "bytes": 268776,
+    "sha256": "a1e47de8a9cf15b19dae6de1ef2cc3c7b34e65b8fb6d4803961b1f4653969f8d"
+  },
+  {
+    "path": "assets/album-v2/ragnarsons-woman-cutout.webp",
+    "bytes": 220298,
+    "sha256": "2f70f277664b45b599b7936e0f9e11d3bbff75d72abae909ce60badc9a641c3f"
+  },
+  {
+    "path": "assets/album-v2/stand-unshaken-woman-cutout.webp",
+    "bytes": 246248,
+    "sha256": "4b9bcbfe1675d4c4c9ea4114cadfe1787d7e1afb9a9c390b63d4f1559f9aa10c"
+  },
+  {
+    "path": "assets/album-v2/victor-doom-woman-cutout.webp",
+    "bytes": 260970,
+    "sha256": "68e5bda8cc8e66011bc23fdf70e340a77aa6e094c177696142ce220dc3c21a47"
+  },
+  {
+    "path": "docs/plans/2026-10-05-album-v2-lineup.md",
+    "bytes": 1115,
+    "sha256": "aaf33d32ac82e15d605a9617edbf328a76bca6847e232d9f4338dae4aa5a502d"
+  },
+  {
+    "path": "lib/album-v2-lineup.js",
+    "bytes": 1690,
+    "sha256": "85973a8867451cdcf9236eba6ccb90e28ae96b70e7217a4dcce20cf33f23c96d"
   }
 ]
