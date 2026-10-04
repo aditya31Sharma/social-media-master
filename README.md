@@ -467,79 +467,78 @@ Recovery manifest now covers744 shipped files.
 ## Album creator V2 (revised 2026-10-05)
 
 Choose **Reel > Reel template > Album creator V2 > Set up Album creator V2**.
-V2 has its own settings and finished outputs. Original Album showcase and Outfit
-reel behavior remain unchanged.
+The editor has Intro, Products and Export tabs with keyboard navigation. A
+persistent preview stays visible while settings scroll independently, on phone
+and desktop. Chapter buttons jump to the intro, each product or the logo ending.
+Products expand individually, with four labeled thumbnails that preview their
+place in the reel. Each image can be replaced independently, including HEIC.
+Product names, order, 3D garment uploads, gallery music and export settings remain.
+Original Album showcase and Outfit reel behavior are unchanged.
 
-The winter intro uses the first three seconds of the bundled video and is muted.
-Its only settings are **Main text**, **Tenzen logo**, **Logo color**, and **Subtext**.
-Logo choices use the original SVGs: wordmark with Japanese text, full wordmark,
-and asterisk. Main text defaults to Tenzen Presents; subtext to Tenzen Angels.
-Both use fixed Geist typography and automatically fit their allotted space.
-The three elements appear abruptly at 0.5 seconds and stay attached to the intro.
-V2 no longer exposes font, position, upload, duration, enable or audio controls
-for the intro. Original Album showcase retains its full text editor.
+Intro settings are only Main text, Tenzen logo, Logo color and Subtext. The
+three-second winter intro is muted. Main text defaults to Tenzen Presents,
+subtext to Tenzen Angels, with fixed Geist typography and automatic text fitting.
+Original SVG choices are Japanese wordmark, full wordmark and asterisk. Text and
+logo appear at 0.5 seconds, attached to the video as it shrinks to 5% centrally.
+Five cards rise tilted from below, straighten and build the stack in reverse
+showcase order. The last arriving card zooms to fill the 9:16 output.
 
-The intro shrinks centrally to 5% from 1.7 to 2.3 seconds. Five new product cards
-rise from below, tilted toward the viewer, at 0.16-second stagger intervals.
-Each straightens and settles in front of earlier arrivals. The last arriving
-card is the first selected gallery product, preserving the selected SKU order.
-The assembled stack briefly holds before that card zooms to fill 9:16.
-This replaces the earlier prebuilt stack and downward intro exit.
+Default SKU order: Victor Doom, California Love, The Ragnarsons, Kingdom Of
+Northumbria, Stand Unshaken. Every SKU has four bundled photos in sequence:
+Shoot-1, Macro-Front, Model-Man-Front-Full, Model-Woman-Front-Full. Original CDN
+URLs are recorded in assets/album-v2/products.json. Fifteen extra WebPs add 5.4MB.
+Photos fill the frame through cover cropping without stretching or black bars.
 
-Gallery music begins at three seconds. The gallery lasts 23 seconds by default,
-with a 30-second option. A fixed 2.5-second ending follows, making total lengths
-28.5 or 35.5 seconds. The last product panel dismisses, its photo scales to 5%,
-then fades completely into pitch black. The selected logo and color fade in and
-hold. The default white logo is visible against black; color selection is shared
-between intro and ending.
+The default gallery is 40 seconds: eight seconds per product. Faster 23-second
+and 30-second options remain and scale the same timeline. Each product zooms in
+for 0.55 seconds and holds its photo clear for one second before the glass card
+enters. Additional images slide right at local times 2.25, 3.6 and 4.95 seconds,
+with 0.45-second transitions. The floating card leaves at 6.6-6.9 seconds, the
+photo zooms out at 6.9-7.35 seconds, then exits upward while tilting and shrinking.
+Once outside the viewport, it recycles behind the stack. Stack spacing is doubled:
+y .44 and z -1.5 per layer instead of .22 and -.75. Every card stays centered.
 
-Five bundled Shoot-1 photos load in order: Victor Doom, California Love,
-The Ragnarsons, Kingdom Of Northumbria, Stand Unshaken. Photos retain their
-backgrounds and sit on portrait 2:3 cards. Each card zooms to cover the entire 9:16 frame
-in 0.55 seconds, cropping its sides without stretching, then holds clear for one second before its product panel enters.
-The panel leaves before the photo zooms out. The outgoing photo dips forward,
-recedes in depth and settles at the rear of the circular stack; the next card
-then fills the screen. No product cards are removed from the stack. The final
-product holds before the closing sequence. The 30-second gallery option proportionally lengthens these holds.
+The floating glass card has 20px left/right/bottom margins and a 32px radius,
+measured in a 390px-wide design viewport and scaled proportionally for export.
+Its height is 60% of the viewport. It contains the rotating garment, name plus
+product type/color using Carousel's splitTitle, and animated Add to Bag controls.
+Button height and split proportions follow the live mobile store; row width fits
+inside the new floating card. There is no cursor and no real cart request.
 
-The frosted panel is attached to the screen bottom, full width and 60% height.
-It contains the garment, product name and garment type/color on separate lines,
-using the same `splitTitle` helper as Carousel. The default font is **Geist**,
-self-hosted in `assets/fonts/geist-latin.woff2` from the live Tenzen site. The
-shoot background is blurred, desaturated and dimmed only when the panel appears.
+Liquid glass is rendered with the existing Three.js renderer: a rounded-rectangle
+signed-distance lens refracts the backdrop near the rim, adds a specular highlight,
+soft scattering, tint and shadow. This is rendered into both preview and MP4,
+without a DOM-only backdrop-filter dependency. References:
+- [Apple: Meet Liquid Glass](https://developer.apple.com/videos/play/wwdc2025/219/)
+- [Chrome Labs: Liquid Glass reference](https://github.com/GoogleChromeLabs/css-web-ui-demos/blob/main/html-in-canvas/public/assets/liquid_glass_reference/README.md)
 
-Garments rotate at 36 degrees/second (one turn per 10 seconds at default timing).
-Gallery motion uses five temporal samples over 8ms; garments use three angular
-samples at +/-0.012 radians. V1 retains its previous blur and rotation settings.
-V2 garment rendering uses 360x360 previews and 1000x1000 export canvases, original
-export textures and existing Dramatic side lighting.
+All moving composition layers use five temporal shutter samples across 32ms,
+including photo slides, camera/stack movement, glass entry/exit and bag animation.
+Garments retain slow 36-degree-per-second rotation with three angular samples
+at +/-0.04 radians. Steady holds skip redundant background samples while keeping
+angular garment blur. Dramatic side lighting remains the default. Preview garment
+canvases are 360x360; exports use 1000x1000 and original model textures.
 
-There is no cursor. Add to Bag has an implicit press, then becomes Added/check
-and Visit bag. The row matches the live mobile site's measured proportions:
-348px wide in a 390px viewport, 21px side margins, 64px height and an 8px split
-gap, scaled to the export width. The split retains the site's 30:70 ratio and
-0.5-second cubic-bezier(.32,.72,0,1). It is a video animation, with no cart calls.
+A fixed 2.5-second ending dismisses the last glass card, scales its final photo
+to 5%, fades into pure black, then reveals the selected logo/color. Default total
+is 45.5 seconds; faster options total 28.5 or 35.5 seconds. Music starts after the
+three-second muted intro. Output is 720p/1080p 60fps H.264 MP4 with optional gallery
+music in AAC, plus a PNG cover. Settings and uploads last for the page session.
 
-Each product can be reordered, renamed or given a replacement shoot photo
-(including HEIC) or local GLB. Playback and export share the deterministic
-renderer. Output is 720p/1080p 60fps H.264 MP4 with optional AAC, plus a PNG cover.
-The intro source is 720x1280 at 30fps and is scaled for 1080p exports. Uploads,
-logo selections and settings last for the page session.
+Modules: lib/album-v2-{motion,media,render,ui,labels,brand,editor,glass}.js,
+styles/album-v2.css and bundled assets/album-v2/ media. Relative paths support
+both hosting addresses. Cache key: 20261005-albumv2-4. No dependencies, paid
+services, HQ edits or changes to the original Reel animations.
 
-Modules: `lib/album-v2-{motion,media,render,ui,labels,brand}.js`, scoped
-`styles/album-v2.css`, bundled `assets/album-v2/` media/source metadata and Geist.
-Relative URLs support both published addresses. Cache key: `20261005-albumv2-3`.
-No new dependencies, services, original-template animation changes or HQ edits.
+Known traps: intro video must load into a complete Blob URL for deterministic
+seeking on hosts without HTTP range support. Failed media or GLB loads block
+export and expose Retry. Never sample the WebGL output canvas while replacing it
+with the glass pass: the glass uses an independent background canvas texture.
 
-Known trap: hosts without HTTP range support can report successful video seeks
-while remaining at time zero. Always load the intro into a complete Blob URL
-before seeking, and reject a seek that does not reach its target. GLB failures
-block export and expose Retry; invalid replacements cannot export stale data.
-
-Revision QA: 69 unit tests, 19 V2 browser checks, 16 V1 checks and 24 Outfit fit
-checks passed with zero page errors. Four viewport sizes (375/768/1024/1440px)
-have no overflow. Tests cover entrance direction, stack continuity, exact 5%
-ending scale, black before logo, simplified controls and muted intro audio.
-Full export: 1710 H.264 frames at 1080x1920, exactly 28.500 seconds, with no audio
-track by default; generated in 23.325 seconds on hardware Metal. Opening and
-closing frames were visually inspected. Recovery verification covers 767 files.
+Validation: 71 unit tests, 24 V2 browser checks, 16 V1 checks and 24 Outfit checks
+pass. All twenty photos preload. Light/dark layouts at 375/768/1024/1440 and a
+375x667 phone keep preview and controls accessible with no horizontal overflow.
+Real full 1080p export contains 2730 H.264 frames, exactly 45.500 seconds and no
+audio track by default. The final export took 93.072 seconds on hardware Metal. Individual photo
+replacement, keyboard tabs and 375x667 controls passed. The recovery manifest
+verifies 785 shipped files. This revision is local only, not published.

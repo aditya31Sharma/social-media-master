@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 32629,
-    "sha256": "43977bb49ad3528a604aa789032acd67e494e872c9f3316d776bbb1266c2e8d3"
+    "bytes": 32784,
+    "sha256": "02efb8c175c3076ec9e38adc1b0614943df405cd77219b65a72cd963e89da871"
   },
   {
     "path": "app.css",
@@ -96,8 +96,8 @@
   },
   {
     "path": "assets/album-v2/products.json",
-    "bytes": 4500,
-    "sha256": "48b98bd9ab21921b2ed9d72937f7b502ce1e8c076d9e27666211d8b940d668a4"
+    "bytes": 9330,
+    "sha256": "92390fb714009f210ca7583ed7d616fe8e9fbbf13a6c9cda139df972828ce571"
   },
   {
     "path": "assets/album-v2/ragnarsons-shoot.webp",
@@ -226,13 +226,13 @@
   },
   {
     "path": "docs/qa/album-v2-browser.js",
-    "bytes": 4623,
-    "sha256": "3b0969e234c13e843560ec46e41ebd3a39eac7e54bbd7a838be36551f46adc17"
+    "bytes": 5748,
+    "sha256": "833842cda441e34e17123c3a046cd671df30a2ea656c5a97e46fa89e1acb51f6"
   },
   {
     "path": "docs/qa/album-v2.test.mjs",
-    "bytes": 7749,
-    "sha256": "5b6a4ed554997c445bc0a16c7413a32c41af71bff64e1ac1ccbe8d8294f824a9"
+    "bytes": 8900,
+    "sha256": "de038d54e6230f2c9652d2a6c6cccbde142b2c0f8d2c8e76eeb439d7d9f7513d"
   },
   {
     "path": "docs/qa/album.test.mjs",
@@ -501,8 +501,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 45277,
-    "sha256": "4d7bf6a474bf99db8b9dbc739076eefc40bde5b71b9168c789295ebd469f7790"
+    "bytes": 45437,
+    "sha256": "8df477d1bd7fba753925676d01d8c3ba08281fd481d5eb796bf55815243f9e48"
   },
   {
     "path": "lab/frame.html",
@@ -551,23 +551,23 @@
   },
   {
     "path": "lib/album-v2-media.js",
-    "bytes": 4603,
-    "sha256": "84d96d2e69871849bf5510928163a1911bf38ae18bed41e1937645000faea3e0"
+    "bytes": 5105,
+    "sha256": "5038f26e03726d38ba2143306293a85833fb633ed8b924e53e24892ee001ecf1"
   },
   {
     "path": "lib/album-v2-motion.js",
-    "bytes": 3519,
-    "sha256": "13ff040ce2593bb5f3873229380efa73b6f198cb9113d5de8507a98b5bde5827"
+    "bytes": 4335,
+    "sha256": "d041b2bff3b1687161ab416474292d95dfb97ea36d5a2a5cc5b223597b0e4ef4"
   },
   {
     "path": "lib/album-v2-render.js",
-    "bytes": 9106,
-    "sha256": "2061bde0d56ef9f88470a69256a4e40693a1d0e08f2f1db87f098e8a153ce7e9"
+    "bytes": 10128,
+    "sha256": "4fe5d93bf3e49e0171f38c8455df49031b3f166c6be238336973c1b1b2e74768"
   },
   {
     "path": "lib/album-v2-ui.js",
-    "bytes": 14315,
-    "sha256": "1503f2cf767bedb115bd71d1c897b4e06e15acb12dd909dd992f7e0310a50fa8"
+    "bytes": 14844,
+    "sha256": "af0592436abb20a495a47afcdf755d168e56decdf3d3591c031c9cdc1d6e45a5"
   },
   {
     "path": "lib/audio.js",
@@ -3791,8 +3791,8 @@
   },
   {
     "path": "styles/album-v2.css",
-    "bytes": 738,
-    "sha256": "a23e7a91ca78de4dad633ca7c3c97ff8403175013ace2aab1b96c8ff843c4c13"
+    "bytes": 6177,
+    "sha256": "08dcdcffc7eedac5177c2548df0c77422841dea79e3abdf2bc0efd291300abf8"
   },
   {
     "path": "styles/album.css",
@@ -3833,5 +3833,95 @@
     "path": "docs/plans/2026-10-05-album-v2-branding.md",
     "bytes": 1402,
     "sha256": "bc0dbe24c5c76799220ed66bb8ac6898b70a0f2ead620f25e5f5a5e352c2b93e"
+  },
+  {
+    "path": "assets/album-v2/california-love-macro.webp",
+    "bytes": 682786,
+    "sha256": "bd7b788b76362440000232c5a1c8b04c91dd82923dd37416f0587b0483c6b213"
+  },
+  {
+    "path": "assets/album-v2/california-love-man-front.webp",
+    "bytes": 199556,
+    "sha256": "0a8b9cde01b92599d5a57ca14c100c87d1239b80ef00b74dc7df726aff515ba0"
+  },
+  {
+    "path": "assets/album-v2/california-love-woman-front.webp",
+    "bytes": 118700,
+    "sha256": "838935d63e6d65999e55fc59c0f27d6ac3e5d248cba29f238844d8d4a977a10e"
+  },
+  {
+    "path": "assets/album-v2/northumbria-macro.webp",
+    "bytes": 1069986,
+    "sha256": "24c31f51ce8372960ecd53b2b74985f68d709b90114c4a27de91f16aaee70ba0"
+  },
+  {
+    "path": "assets/album-v2/northumbria-man-front.webp",
+    "bytes": 158636,
+    "sha256": "63c8256e5f1c48b16ab46c9b22e3456a9d81f7b872905afee03e6bf3cdb6a803"
+  },
+  {
+    "path": "assets/album-v2/northumbria-woman-front.webp",
+    "bytes": 179300,
+    "sha256": "45113dfa3988ffe8d32c1bbf50898231911b9ca93b98bf199d04ba04aea12f2b"
+  },
+  {
+    "path": "assets/album-v2/ragnarsons-macro.webp",
+    "bytes": 828512,
+    "sha256": "91a926c7775dcd6ad56c4c8b0d31a011547783db51ba731099446254c4580def"
+  },
+  {
+    "path": "assets/album-v2/ragnarsons-man-front.webp",
+    "bytes": 163140,
+    "sha256": "24d8a46eada836b2fb68a2c9268dcd9a146cbe402d078783c0063d87aae535bb"
+  },
+  {
+    "path": "assets/album-v2/ragnarsons-woman-front.webp",
+    "bytes": 125306,
+    "sha256": "cd3cf755b0e18196264afebbd4ffa45184f9852cbd3b441c6cf8fb30625b9584"
+  },
+  {
+    "path": "assets/album-v2/stand-unshaken-macro.webp",
+    "bytes": 714864,
+    "sha256": "9524a82da839faca78d70de0a1c0a9e739048fd4f91710e937d3345175f3a1a1"
+  },
+  {
+    "path": "assets/album-v2/stand-unshaken-man-front.webp",
+    "bytes": 213400,
+    "sha256": "a90cf5f0817edb20171755358662adea51fc0305f3d6adbce98714e3f84c9487"
+  },
+  {
+    "path": "assets/album-v2/stand-unshaken-woman-front.webp",
+    "bytes": 146840,
+    "sha256": "ce0a092beecebf4b7d0ece7b391e5948342419f152133f8e7b3c63d18e9bc828"
+  },
+  {
+    "path": "assets/album-v2/victor-doom-macro.webp",
+    "bytes": 731286,
+    "sha256": "ffd619edd9f6cabec63e15cdae6dae721f194ac248bd346e71b30e57bec4f6c4"
+  },
+  {
+    "path": "assets/album-v2/victor-doom-man-front.webp",
+    "bytes": 115854,
+    "sha256": "61541ffc168517b381595a43ef606857380a0d792035fc82ffd5046d3cccac5e"
+  },
+  {
+    "path": "assets/album-v2/victor-doom-woman-front.webp",
+    "bytes": 141462,
+    "sha256": "11e3f9aa3307ef66a809c0e56a5dac5847cc141bacee913b8485ed32c7a36c09"
+  },
+  {
+    "path": "docs/plans/2026-10-05-album-v2-gallery-polish.md",
+    "bytes": 2074,
+    "sha256": "f63da70122d6f287f8418cecbd90c39e19c24eeea54df97c993b3269abb182f4"
+  },
+  {
+    "path": "lib/album-v2-editor.js",
+    "bytes": 5497,
+    "sha256": "b299bf4dc95321dd01564ce78f6188934ff2e0f49d79be052b3eb7f48fa4fe6f"
+  },
+  {
+    "path": "lib/album-v2-glass.js",
+    "bytes": 3100,
+    "sha256": "dd3c5247b11c09bd8148d1b699fc8ef1c64936f24b667e96b9537a99b4028643"
   }
 ]

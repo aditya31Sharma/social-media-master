@@ -12,7 +12,29 @@
     "glb": "https://tenzen.in/cdn/shop/3d/models/o/9eba67e71a857f7c/unshaken-hoodie-v2.glb",
     "type": "Oversized Hoodie",
     "shoot": "stand-unshaken-shoot.webp",
-    "shootSource": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_212e7314-dfa4-466e-b9ab-7a179264c487.webp?v=1790338307"
+    "shootSource": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_212e7314-dfa4-466e-b9ab-7a179264c487.webp?v=1790338307",
+    "photos": [
+      {
+        "label": "Shoot",
+        "file": "stand-unshaken-shoot.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_212e7314-dfa4-466e-b9ab-7a179264c487.webp?v=1790338307"
+      },
+      {
+        "label": "Macro",
+        "file": "stand-unshaken-macro.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Macro-Front_ff0782bd-ef1a-41a5-b0cd-3230809932a7.webp?v=1790334990"
+      },
+      {
+        "label": "Man front full",
+        "file": "stand-unshaken-man-front.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Man-Front-Full_0003324b-70d5-4bc2-b1d4-6b3f62c78182.webp?v=1790334990"
+      },
+      {
+        "label": "Woman front full",
+        "file": "stand-unshaken-woman-front.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Woman-Front-Full_38aee5c8-e811-4c43-aa06-f86fc097e210.webp?v=1790334990"
+      }
+    ]
   },
   {
     "id": "victor-doom",
@@ -27,7 +49,29 @@
     "glb": "https://tenzen.in/cdn/shop/3d/models/o/35ffbc87fc1a55de/victor-doom-polo-v1.glb",
     "type": "Polo Sweatshirt",
     "shoot": "victor-doom-shoot.webp",
-    "shootSource": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_dfa94a62-9253-426c-ae04-b60077fab16a.webp?v=1790719814"
+    "shootSource": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_dfa94a62-9253-426c-ae04-b60077fab16a.webp?v=1790719814",
+    "photos": [
+      {
+        "label": "Shoot",
+        "file": "victor-doom-shoot.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_dfa94a62-9253-426c-ae04-b60077fab16a.webp?v=1790719814"
+      },
+      {
+        "label": "Macro",
+        "file": "victor-doom-macro.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Macro-Front_dd1ef1e3-11e4-46f8-857f-9788dddef329.webp?v=1790719786"
+      },
+      {
+        "label": "Man front full",
+        "file": "victor-doom-man-front.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Man-Front-Full_377080e9-c1da-467c-8f70-a089e85a1f78.webp?v=1790719816"
+      },
+      {
+        "label": "Woman front full",
+        "file": "victor-doom-woman-front.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Woman-Front-Full_0b88ff88-593f-4789-ac5b-508729143d8c.webp?v=1790719822"
+      }
+    ]
   },
   {
     "id": "california-love",
@@ -42,7 +86,29 @@
     "glb": "https://tenzen.in/cdn/shop/3d/models/o/4995711d95164e05/cali-hoodie-v2.glb",
     "type": "Oversized Hoodie",
     "shoot": "california-love-shoot.webp",
-    "shootSource": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_e0af4922-3d88-4c36-bad3-c4a60ffcaa97.webp?v=1790205965"
+    "shootSource": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_e0af4922-3d88-4c36-bad3-c4a60ffcaa97.webp?v=1790205965",
+    "photos": [
+      {
+        "label": "Shoot",
+        "file": "california-love-shoot.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_e0af4922-3d88-4c36-bad3-c4a60ffcaa97.webp?v=1790205965"
+      },
+      {
+        "label": "Macro",
+        "file": "california-love-macro.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Macro-Front_e851ddd8-22c3-4682-b879-14fb0285f2e5.webp?v=1790205964"
+      },
+      {
+        "label": "Man front full",
+        "file": "california-love-man-front.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Man-Front-Full_98b23f3c-5e92-4f84-be55-94befcd3b28d.webp?v=1790205964"
+      },
+      {
+        "label": "Woman front full",
+        "file": "california-love-woman-front.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Woman-Front-Full_c7edf9f6-34ff-4fa8-ac0a-6078341919e2.webp?v=1790205964"
+      }
+    ]
   },
   {
     "id": "ragnarsons",
@@ -57,7 +123,29 @@
     "glb": "https://tenzen.in/cdn/shop/3d/models/o/9dd6931439f87d0f/the-ragnarsons-polo-v1.glb",
     "type": "Polo Sweatshirt",
     "shoot": "ragnarsons-shoot.webp",
-    "shootSource": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_91cc61b2-60ac-4265-ba1d-69b78abd6dd9.webp?v=1790089745"
+    "shootSource": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_91cc61b2-60ac-4265-ba1d-69b78abd6dd9.webp?v=1790089745",
+    "photos": [
+      {
+        "label": "Shoot",
+        "file": "ragnarsons-shoot.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_91cc61b2-60ac-4265-ba1d-69b78abd6dd9.webp?v=1790089745"
+      },
+      {
+        "label": "Macro",
+        "file": "ragnarsons-macro.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Macro-Front_aa503103-92c8-46c5-a6d7-6ea4b8a67b0f.webp?v=1790097902"
+      },
+      {
+        "label": "Man front full",
+        "file": "ragnarsons-man-front.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Man-Front-Full_07aeaaae-ec0e-4ac7-a3f3-5d98002b6443.webp?v=1790089745"
+      },
+      {
+        "label": "Woman front full",
+        "file": "ragnarsons-woman-front.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Woman-Front-Full.webp?v=1790089745"
+      }
+    ]
   },
   {
     "id": "northumbria",
@@ -72,6 +160,28 @@
     "glb": "https://tenzen.in/cdn/shop/3d/models/o/3ebfb86f9d4255a1/northumbria-sweatshirt-v1.glb",
     "type": "Oversized Sweatshirt",
     "shoot": "northumbria-shoot.webp",
-    "shootSource": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_ff6514e6-1aa0-4239-8266-ff2e87b978d8.webp?v=1789926954"
+    "shootSource": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_ff6514e6-1aa0-4239-8266-ff2e87b978d8.webp?v=1789926954",
+    "photos": [
+      {
+        "label": "Shoot",
+        "file": "northumbria-shoot.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Shoot-1_ff6514e6-1aa0-4239-8266-ff2e87b978d8.webp?v=1789926954"
+      },
+      {
+        "label": "Macro",
+        "file": "northumbria-macro.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Macro-Front_496ca3a6-c80e-4a59-bbcf-d7e1f6a88562.webp?v=1789926954"
+      },
+      {
+        "label": "Man front full",
+        "file": "northumbria-man-front.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Man-Front-Full.webp?v=1789926953"
+      },
+      {
+        "label": "Woman front full",
+        "file": "northumbria-woman-front.webp",
+        "source": "https://cdn.shopify.com/s/files/1/0795/5467/4711/files/Model-Woman-Front-Full_e3a6888c-8b5e-4b72-8a70-72f8ee78f2a4.webp?v=1789926953"
+      }
+    ]
   }
 ]

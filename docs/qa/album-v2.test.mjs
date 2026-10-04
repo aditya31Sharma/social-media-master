@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { galleryScene, galleryCardPose, bagEase, GLASS, BAG, INTRO_DURATION, OUTRO_DURATION, PRODUCT_ORDER } from '../../lib/album-v2-motion.js';
+import { galleryScene, galleryCardPose, bagEase, GLASS, BAG, INTRO_DURATION, OUTRO_DURATION, PRODUCT_DURATION, GALLERY_DURATION, STACK, photoScene, shutterTimes, PRODUCT_ORDER } from '../../lib/album-v2-motion.js';
 import { galleryAudio } from '../../lib/album-v2-media.js';
 import { introLabels, introControls } from '../../lib/album-v2-labels.js';
 import { splitTitle } from '../../lib/shopify.js';
@@ -22,7 +22,7 @@ test('intro is three seconds and labels appear abruptly at 0.5s before receding 
 test('each photo is fitted and stays clear for one second before its glass enters', () => {
   assert.deepEqual(PRODUCT_ORDER, [1, 2, 3, 4, 0]);
   for (let i = 0; i < 5; i++) {
-    const start = 3 + i * 4.6;
+    const start = 3 + i * PRODUCT_DURATION;
     for (const offset of [.55, 1, 1.549]) {
       const scene = galleryScene(start + offset, 3);
       assert.ok(Math.abs(scene.zoom - 1) < 1e-10); assert.equal(scene.glass, 0);
@@ -31,10 +31,10 @@ test('each photo is fitted and stays clear for one second before its glass enter
     assert.equal(galleryScene(start + 1.9, 3).glass, 1);
   }
 });
-test('glass is full width, attached to the bottom and occupies 60 percent', () => {
-  assert.equal(GLASS.w * GLASS.h, .6); assert.equal(GLASS.x, 0);
-  assert.equal(GLASS.y + GLASS.h, 1); assert.equal(GLASS.w, 1);
-  assert.equal(BAG.width * 390, 348); assert.equal(BAG.x * 390, 21);
+test('glass floats with 20px margins and 32px corners at 390px design width', () => {
+  assert.equal(GLASS.x * 390, 20); assert.equal(GLASS.w * 390, 350);
+  assert.ok(Math.abs((1 - GLASS.y - GLASS.h) * 390 * 16 / 9 - 20) < 1e-10);
+  assert.equal(GLASS.radius * 390, 32); assert.equal(GLASS.h, .6);
   assert.equal(BAG.height * 390, 64); assert.equal(BAG.gap * 390, 8);
 });
 test('garments turn slowly and the bag splits without a cursor', () => {
@@ -45,7 +45,7 @@ test('garments turn slowly and the bag splits without a cursor', () => {
 });
 test('every outgoing product settles at the rear while its successor becomes centered', () => {
   for (let index = 0; index < 4; index++) {
-    const before = galleryScene((index + 1) * 4.6 - 1e-7), after = galleryScene((index + 1) * 4.6 + 1e-7);
+    const before = galleryScene((index + 1) * PRODUCT_DURATION - 1e-7), after = galleryScene((index + 1) * PRODUCT_DURATION + 1e-7);
     assert.ok(galleryCardPose(index, before).z < -2.9);
     assert.equal(galleryCardPose(index, after).visible, true);
     for (let order = 0; order < 5; order++) {
@@ -59,7 +59,7 @@ test('intro handoff has continuous product positions and the final product holds
     const before = galleryCardPose(order, galleryScene(3 - 1e-7, 3)), after = galleryCardPose(order, galleryScene(3, 3));
     for (const key of ['x', 'y', 'z', 'rotateX']) assert.ok(Math.abs(before[key] - after[key]) < 1e-5);
   }
-  assert.equal(galleryScene(26, 3).glass, 1); assert.equal(galleryScene(26, 3).index, 4);
+  assert.equal(galleryScene(43, 3).glass, 1); assert.equal(galleryScene(43, 3).index, 4);
 });
 test('product names use the same split as the carousel', () => {
   assert.deepEqual(splitTitle('Victor Doom Polo Sweatshirt Olive', 'Polo Sweatshirt'), ['Victor Doom', 'Polo Sweatshirt Olive']);
@@ -70,7 +70,7 @@ test('live bag easing is bounded and monotonic', () => {
   for (let i = 0; i <= 100; i++) { const n = bagEase(i / 100); assert.ok(n >= prior && n <= 1); prior = n; }
 });
 test('all frame poses remain finite with and without intro at either gallery duration', () => {
-  for (const intro of [0, 3]) for (const duration of [23, 30]) for (let frame = 0; frame <= (intro + duration + OUTRO_DURATION) * 60; frame++) {
+  for (const intro of [0, 3]) for (const duration of [23, 30, 40]) for (let frame = 0; frame <= (intro + duration + OUTRO_DURATION) * 60; frame++) {
     const scene = galleryScene(frame / 60, intro, duration);
     for (const n of Object.values(scene)) if (typeof n === 'number') assert.ok(Number.isFinite(n));
     for (let i = -1; i < 5; i++) for (const n of Object.values(galleryCardPose(i, scene))) if (typeof n === 'number') assert.ok(Number.isFinite(n));
@@ -95,7 +95,7 @@ test('incoming cards build the stack from below, tilted, in reverse showcase ord
     assert.ok(rising.y < -3); assert.ok(rising.rotateX < -.7);
     const settled = galleryCardPose(order, galleryScene(2.99, 3));
     assert.ok(Math.abs(settled.rotateX) < 1e-10); assert.equal(settled.x, 0);
-    assert.ok(Math.abs(settled.z + .75 * order) < 1e-10);
+    assert.ok(Math.abs(settled.z - STACK.z * order) < 1e-10);
   }
   const full = galleryCardPose(-1, galleryScene(1, 3));
   const tiny = galleryCardPose(-1, galleryScene(2.4, 3));
@@ -103,7 +103,7 @@ test('incoming cards build the stack from below, tilted, in reverse showcase ord
 });
 test('ending shrinks the final slide to five percent then fades to black before the logo', () => {
   assert.equal(OUTRO_DURATION, 2.5);
-  for (const duration of [23, 30]) {
+  for (const duration of [23, 30, 40]) {
     const start = 3 + duration;
     const first = galleryScene(start, 3, duration);
     assert.equal(first.scale, 1); assert.equal(first.glass, 1); assert.equal(first.logo, 0);
@@ -125,4 +125,23 @@ test('intro settings contain only main text, logo, logo color and subtext', () =
   assert.equal(galleryAudio({ audio: sound(.4, 10) }, null, 28.5), null);
   const track = galleryAudio({ audio: sound(.4, 10) }, sound(.2, 1), 28.5);
   assert.equal(track.out[0][120000], 0); assert.ok(track.out[0][168000] > .19);
+});
+
+test('each product shows shoot, macro, man and woman, with rightward slides', () => {
+  assert.equal(GALLERY_DURATION, 40); assert.equal(PRODUCT_DURATION, 8);
+  for (let product = 0; product < 5; product++) {
+    const start = 3 + product * PRODUCT_DURATION;
+    for (const [offset, shot] of [[1,0], [2.8,1], [4.2,2], [5.55,3]]) {
+      assert.equal(photoScene(galleryScene(start + offset, 3)).to, shot);
+    }
+    const sliding = photoScene(galleryScene(start + 2.45, 3));
+    assert.equal(sliding.from, 0); assert.equal(sliding.to, 1); assert.ok(sliding.progress > 0 && sliding.progress < 1);
+  }
+});
+test('stack gaps double and exits move upward, tilt and shrink', () => {
+  assert.equal(STACK.y, .44); assert.equal(STACK.z, -1.5);
+  const scene = galleryScene(7.7), pose = galleryCardPose(0, scene);
+  assert.ok(pose.y > 3); assert.ok(pose.rotateX < -.3); assert.ok(pose.scale < .95);
+  assert.ok(shutterTimes(2)[0] - shutterTimes(2).at(-1) > .031);
+  assert.ok(shutterTimes(0).every(time => time === 0));
 });
