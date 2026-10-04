@@ -15,6 +15,7 @@ import { renderToFile, renderThumb, defaultAdjust, isBottoms } from './lib/rende
 import { createEditor } from './lib/editor.js';
 import { createReelUI } from './lib/reel-ui.js';
 import { createAlbumUI } from './lib/album-ui.js';
+import { createAlbumV2UI } from './lib/album-v2-ui.js';
 import { createPhotoPicker, createPhotoAdjust } from './lib/reel-picker.js';
 import { createWorkspace } from './lib/workspace.js';
 import { SHAPES, FIXED_TAGS, buildCaption, captionStats, copyText,
@@ -1010,10 +1011,19 @@ function wireReel() {
     showVideo(blob, name, cover, duration);
   };
   const albumUI = createAlbumUI({ onVideo: receiveVideo('album'), onStatus: message => { $('#status').textContent = message; } });
+  const albumV2UI = createAlbumV2UI({ onVideo: receiveVideo('album-v2'), onStatus: message => { $('#status').textContent = message; } });
+  $('#btnAlbumV2Setup').addEventListener('click', () => albumV2UI.open());
   $('#btnAlbumSetup').addEventListener('click', () => albumUI.open());
   function describeReelTemplate() {
     if (document.body.dataset.tool !== 'reel') return;
-    const album = activeReelTemplate === 'album';
+    const album = activeReelTemplate !== 'outfit';
+    if (activeReelTemplate === 'album-v2') {
+      $('#workspaceDescription').textContent = 'Winter intro. Shoot gallery. 3D product cards.';
+      $('#sheetLabel').textContent = 'Set up Album creator V2';
+      $('#emptyState strong').textContent = 'Album creator V2';
+      $('#emptyState > span:last-child').textContent = 'Five products in a frosted-glass gallery.';
+      return;
+    }
     $('#workspaceDescription').textContent = album ? 'An album intro. Five models in motion.' : 'One outfit. Two garments turning together.';
     $('#sheetLabel').textContent = album ? 'Set up your album reel' : 'Pick a top and a bottom';
     $('#emptyState strong').textContent = album ? 'Five models, in motion' : 'One outfit, in motion';
@@ -1024,6 +1034,7 @@ function wireReel() {
     activeReelTemplate = event.target.value;
     $('#outfitTemplate').hidden = activeReelTemplate !== 'outfit';
     $('#albumTemplate').hidden = activeReelTemplate !== 'album';
+    $('#albumV2Template').hidden = activeReelTemplate !== 'album-v2';
     $('#reelOut video').pause();
     const output = reelOutputs.get(activeReelTemplate);
     $('#reelOut').hidden = !output; $('#emptyState').hidden = !!output;
@@ -1052,7 +1063,7 @@ function wireReel() {
      tap to the input natively and the handler would fire it a second time,
      which is what stopped the cover picker opening on iOS. */
   /* Back into the settings from the finished clip. */
-  $('#btnReelEdit')?.addEventListener('click', () => shownReelTemplate === 'album' ? albumUI.open() : reelUI?.openSetup());
+  $('#btnReelEdit')?.addEventListener('click', () => shownReelTemplate === 'album-v2' ? albumV2UI.open() : shownReelTemplate === 'album' ? albumUI.open() : reelUI?.openSetup());
 
   $('#reelSfxBtn').addEventListener('click', () => $('#reelSfx').click());
   $('#reelMusicBtn').addEventListener('click', () => $('#reelMusic').click());
@@ -1076,7 +1087,8 @@ function wireReel() {
     },
     onAdd(which) {
       openSheet(true);
-      if (which === 'reel' && activeReelTemplate === 'album') albumUI.open();
+      if (which === 'reel' && activeReelTemplate === 'album-v2') albumV2UI.open();
+      else if (which === 'reel' && activeReelTemplate === 'album') albumUI.open();
       else if (which === 'reel' && !$('#reelAfter').hidden) reelUI.openSetup();
       else {
         const input = which === 'reel' ? $('#topInput') : $('#prodInput');

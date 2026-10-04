@@ -462,3 +462,70 @@ with rotation. Photo mode still works. Full1080x1920 H264 export:1200frames,
 20.000s, completed18.247s using AppleM4/ANGLEMetal, zero browser errors.
 SoftwareWebGL QA was much slower; use hardwareMetal on this Mac for full exports.
 Recovery manifest now covers744 shipped files.
+
+
+## Album creator V2 (2026-10-05)
+
+Choose **Reel > Reel template > Album creator V2 > Set up Album creator V2**.
+This is a separate template with independent settings and finished outputs.
+The existing Album showcase and Outfit reel remain available.
+
+The bundled `intro-winter.mp4` plays in full (10.7667 seconds, 720x1280 source),
+with its original audio enabled. Replace the intro, omit it, or mute it in the
+editor. The gallery adds 23 seconds by default, with a 30-second option.
+Gallery music starts after the intro; the intro audio plays once and never loops.
+Default total length is 33.7667 seconds at 60fps.
+
+Five Shopify Shoot-1 photos load automatically, in this order: Victor Doom,
+California Love, The Ragnarsons, Kingdom Of Northumbria, Stand Unshaken.
+Original backgrounds stay in the photos. Each portrait 2:3 card sits in a
+perspective stack on a dark stage. The camera pushes into a photo, holds its
+product detail, pulls back, then flips/drops the current card to reveal the next.
+Seven shutter samples over 60ms blur gallery flips and camera moves.
+
+The centered frosted card is 86% of frame width by 82% of height, occupying
+70.52% of the viewport. It contains the rotating 3D garment, editable product
+name and animated Add to Bag button. Behind it, the shoot photo is blurred,
+desaturated and dimmed. Garments use the existing Dramatic side lighting and
+shared GLB cache, original export textures and three angular blur samples.
+V2 garment canvases are 320x384 in preview and 960x1152 in export. The optional
+size argument in `createAlbumProducts` leaves V1's default dimensions unchanged.
+
+The button visibly receives a cursor click, then becomes an Added/check pill
+and Visit bag pill. Their 30:70 split, 8px-equivalent gap and 0.5-second
+cubic-bezier(.32,.72,0,1) transition follow the live Tenzen product page.
+This is a rendered video animation and sends no cart requests.
+
+Each product can be reordered, renamed, given a replacement shoot photo
+(including HEIC) or a local GLB. Preview playback and scrubbing use the same
+clock as export. Output is 720p or 1080p, 60fps H.264 MP4 with AAC when audio is
+included, plus a PNG cover. Intro seeking is deterministic at 30fps; the final
+MP4 repeats those source frames on its 60fps timeline. The source intro is
+720p and is scaled when exporting 1080p.
+
+Files: `lib/album-v2-{motion,media,render,ui}.js`, `styles/album-v2.css`, and
+`assets/album-v2/` containing five shoot WebPs, intro MP4/AAC and product/source
+metadata. All media is bundled for recovery; GLBs use existing Shopify URLs.
+App, dialog and import-map registration connect V2 without replacing V1.
+Cache key: `20261005-albumv2-1`. No dependencies, services or HQ changes.
+
+Loading failures show Retry and block export. After a failed replacement GLB,
+choose a valid GLB and retry. A failed rebuild cannot export an old preview
+with newly edited product data. Local uploads and settings last for the page
+session, matching the other Reel templates.
+
+V2 verification: 63 unit tests, 15 V2 browser checks, 16 V1 checks, 24 Outfit fit
+checks and 13 workspace checks passed. Layouts verified at 375/768/1024/1440px.
+Full 1080x1920 H.264/AAC export contains 2027 frames (33.7833s video, 33.856s
+including AAC padding), with zero browser errors. All five products and CTA
+states were inspected in exported frames. Intro source frames visibly advance.
+
+Known trap: Python's simple HTTP server does not offer byte-range seeking;
+Chrome can report seek completion while remaining at time zero. Load the intro
+as a complete Blob URL before seeking. The seek loop also rejects an unchanged
+position, preventing an infinite loop. Normal source-frame seeks measured 3-4ms.
+
+Final V2 export took 26.145s on hardware Metal. Seven additional checks passed:
+GLB failure blocks export, Retry recovers, custom intro retains audio, invalid
+replacement blocks stale export, valid replacement restores it, Escape closes,
+and keyboard focus stays in the dialog. Recovery manifest covers 760 files.

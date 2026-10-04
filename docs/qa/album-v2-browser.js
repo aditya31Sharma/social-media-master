@@ -1,0 +1,36 @@
+(async () => {
+  const $ = s => document.querySelector(s), checks = [];
+  const check = (name, ok) => { if (!ok) throw Error(name); checks.push(name); };
+  const wait = async predicate => { for (let i = 0; i < 3000; i++) { if (predicate()) return; await new Promise(r => setTimeout(r, 30)); } throw Error('V2 update timed out'); };
+  const set = (selector, value, event = 'input') => { const el = $(selector); el.value = value; el.dispatchEvent(new Event(event, { bubbles: true })); };
+  $('#tabReel').click(); set('#reelTemplate', 'album-v2', 'change'); $('#btnAlbumV2Setup').click();
+  check('V2 opens independently on the Reel page', !$('#albumV2Setup').hidden && $('#albumSetup').hidden && location.hash === '#reel');
+  await wait(() => !$('#albumV2Setup [data-v2-generate]').disabled);
+  check('All five shoot and garment defaults load', $('[data-v2-count]').textContent === '5 / 5');
+  check('Victor Doom is first and Stand Unshaken is last', $('[data-v2-name="0"]').value.includes('Victor Doom') && $('[data-v2-name="4"]').value.includes('Stand Unshaken'));
+  check('Winter intro and its audio default on', $('[data-v2-intro]').checked && $('[data-v2-intro-audio]').checked);
+  check('Full intro precedes the 23-second gallery', Math.abs(+$('[data-v2-scrub]').max - 33.766667) < .01);
+  set('[data-v2-scrub]', '5'); await wait(() => $('[data-v2-time]').textContent.startsWith('5.0'));
+  const intro = $('#albumV2Setup canvas').toDataURL();
+  set('[data-v2-scrub]', '13'); await wait(() => $('[data-v2-time]').textContent.startsWith('13.0'));
+  check('Scrubbing moves between intro and product card', $('#albumV2Setup canvas').toDataURL() !== intro);
+  const name = $('[data-v2-name="0"]').value;
+  $('[data-v2-move="0"][data-step="1"]').click(); await wait(() => !$('#albumV2Setup [data-v2-generate]').disabled);
+  check('Reordering carries the product and editable name', $('[data-v2-name="1"]').value === name);
+  $('[data-v2-move="1"][data-step="-1"]').click(); await wait(() => !$('#albumV2Setup [data-v2-generate]').disabled);
+  set('[data-v2-name="0"]', 'Victor Doom test');
+  $('[data-v2-intro]').click(); check('Intro can be omitted', +$('[data-v2-scrub]').max === 23);
+  set('[data-v2-duration]', '30', 'change'); check('Gallery duration is independently adjustable', +$('[data-v2-scrub]').max === 30);
+  set('[data-v2-duration]', '23', 'change');
+  $('[data-v2-play]').click(); await new Promise(r => setTimeout(r, 400)); $('[data-v2-play]').click();
+  check('Preview playback advances and stops', +$('[data-v2-scrub]').value > 0 && $('[data-v2-play]').textContent === 'Play');
+  $('[data-v2-close]').click(); await new Promise(r => setTimeout(r, 50));
+  check('Closing restores workspace interaction', !$('#toolWorkspace').inert);
+  set('#reelTemplate', 'outfit', 'change'); check('Outfit template remains available', !$('#outfitTemplate').hidden && $('#albumV2Template').hidden);
+  set('#reelTemplate', 'album', 'change'); check('V1 template remains available', !$('#albumTemplate').hidden && $('#albumV2Template').hidden);
+  set('#reelTemplate', 'album-v2', 'change'); $('#btnAlbumV2Setup').click();
+  check('V2 draft survives template switches', $('[data-v2-name="0"]').value === 'Victor Doom test' && !$('[data-v2-intro]').checked);
+  set('[data-v2-name="0"]', name); $('[data-v2-intro]').click(); $('[data-v2-close]').click();
+  check('Page has no horizontal overflow', document.documentElement.scrollWidth <= innerWidth);
+  return { passed: checks.length, checks };
+})()

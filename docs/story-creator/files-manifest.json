@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 27441,
-    "sha256": "3ce474a91651cba97dfa900a3de3989c6dc488b0450d94ca02b24f52e846e8d6"
+    "bytes": 31455,
+    "sha256": "20efc36f70c4b68ca3aeca6908cedd50c3a1f09c0962ed6e9fe28778ce48344e"
   },
   {
     "path": "app.css",
@@ -16,8 +16,8 @@
   },
   {
     "path": "app.js",
-    "bytes": 42653,
-    "sha256": "40a64df79b77940be7b6e34bb09f9609eb6f89cf852782f6532f581e176aed96"
+    "bytes": 43525,
+    "sha256": "72d7562c9ee81bd98f7e747a295d94296616d2ef271db5446f2519b8cb8180b3"
   },
   {
     "path": "assets/album-defaults/california-love-front.webp",
@@ -73,6 +73,46 @@
     "path": "assets/album-defaults/victor-doom-model.webp",
     "bytes": 293378,
     "sha256": "89927c8a6bdb4f8b248264db386c93fdd273a9bb39a1059c3b3aff3aba751057"
+  },
+  {
+    "path": "assets/album-v2/california-love-shoot.webp",
+    "bytes": 660794,
+    "sha256": "21b8e626d5ab10c94a5a8520f4439dfce0a6c7e428e796cf782743caee905e13"
+  },
+  {
+    "path": "assets/album-v2/intro-winter.m4a",
+    "bytes": 88013,
+    "sha256": "6fa4fa8caba851886ffb99091e03bbd30d186f2b687e48ea1fcd36c1e7e2fbd2"
+  },
+  {
+    "path": "assets/album-v2/intro-winter.mp4",
+    "bytes": 3291831,
+    "sha256": "97be98c106265c113e04f148d1b80a34e9bb982c712def6b042ab0072847a1c7"
+  },
+  {
+    "path": "assets/album-v2/northumbria-shoot.webp",
+    "bytes": 424688,
+    "sha256": "b111184314a47379f68499b204a3fc4520cd33985586c35e6a27f50fec87195d"
+  },
+  {
+    "path": "assets/album-v2/products.json",
+    "bytes": 4500,
+    "sha256": "48b98bd9ab21921b2ed9d72937f7b502ce1e8c076d9e27666211d8b940d668a4"
+  },
+  {
+    "path": "assets/album-v2/ragnarsons-shoot.webp",
+    "bytes": 548241,
+    "sha256": "3450b96da908413f9ce5e033fecb0d8067e3f589914a99ce1612dfec62fc695f"
+  },
+  {
+    "path": "assets/album-v2/stand-unshaken-shoot.webp",
+    "bytes": 877831,
+    "sha256": "57ea1f95fb2731f1cce280e3a7b85d11be501cd2610da570da43607c88035e37"
+  },
+  {
+    "path": "assets/album-v2/victor-doom-shoot.webp",
+    "bytes": 390967,
+    "sha256": "ef0acaa5398f0d207fd9c7bc628a2799982a4c57cf6baa9da211904706e6ca17"
   },
   {
     "path": "assets/apple-touch-icon.png",
@@ -165,9 +205,24 @@
     "sha256": "364aebe06e2ff9d2b3dd882e514fd898980f2bd1bdedddc1385f1ad3de481062"
   },
   {
+    "path": "docs/plans/2026-10-05-album-v2.md",
+    "bytes": 1631,
+    "sha256": "98aa9aac25e75b52d6170375073509f4be889b5c1352e8ac7908e86a587f30bf"
+  },
+  {
     "path": "docs/qa/album-browser.js",
     "bytes": 4930,
     "sha256": "c03cdb1c6183ab3270766b81aacbf5739bd35a8c03932c0966e42416e4e78848"
+  },
+  {
+    "path": "docs/qa/album-v2-browser.js",
+    "bytes": 3495,
+    "sha256": "a5d63519435349ac6000476dec928d6ca62f1af86689b3f38c44197ea0c16f6e"
+  },
+  {
+    "path": "docs/qa/album-v2.test.mjs",
+    "bytes": 3592,
+    "sha256": "a2e87794b90741992cc78d245ad9ee08eec8738740023bc24b002ff4a735adab"
   },
   {
     "path": "docs/qa/album.test.mjs",
@@ -436,8 +491,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 44359,
-    "sha256": "d348b921d90fc342d70ab39d9b6014e8ac955a0cac1875cbe069fe01fb40fc7d"
+    "bytes": 45117,
+    "sha256": "5633bd9f84ed4d21f86e0d32137c368c520afd593c3d5a68d8b4e6a9a9608722"
   },
   {
     "path": "lab/frame.html",
@@ -461,8 +516,8 @@
   },
   {
     "path": "lib/album-product.js",
-    "bytes": 3731,
-    "sha256": "c030b0fa75d75cfa29d905d17c780f05bcb55d4ebe2e45e77f355145bb759105"
+    "bytes": 3878,
+    "sha256": "618da38ddcf5d4301d32128c3b3ffca475f880401c15281984a86367671506bf"
   },
   {
     "path": "lib/album-render.js",
@@ -478,6 +533,26 @@
     "path": "lib/album-ui.js",
     "bytes": 21781,
     "sha256": "72a0aab6a100606d7da1953ebc42bf71f54e099a21c5d529282e562c544d92e8"
+  },
+  {
+    "path": "lib/album-v2-media.js",
+    "bytes": 4553,
+    "sha256": "719445ac28de32a51cb671fe499c4021bb34430044c2f56c3abe0d81915441c3"
+  },
+  {
+    "path": "lib/album-v2-motion.js",
+    "bytes": 2203,
+    "sha256": "82fb002def6805dff77250238ac8e70b047dc9db411e5c6a9f99f9f2a9366f67"
+  },
+  {
+    "path": "lib/album-v2-render.js",
+    "bytes": 8639,
+    "sha256": "5aba2ce17da116a3ac0ffb2690aa1123c754e3a169a554ab55797b16b411f6ee"
+  },
+  {
+    "path": "lib/album-v2-ui.js",
+    "bytes": 14676,
+    "sha256": "0172620faa1ed381789f56ea4dce17d1ce5d3c109524f59ef90f8b2d5e5def72"
   },
   {
     "path": "lib/audio.js",
@@ -496,8 +571,8 @@
   },
   {
     "path": "lib/dialogs.js",
-    "bytes": 2397,
-    "sha256": "5e31eea89d63163c9744d2e8be598d968512f5960188214f9969da4546ca0fd3"
+    "bytes": 2429,
+    "sha256": "0acd102be28962b7080388d9c66038fa392b923356a256e00821592113633f38"
   },
   {
     "path": "lib/editor.js",
@@ -3698,6 +3773,11 @@
     "path": "stories/story.js",
     "bytes": 9670,
     "sha256": "c92611ed89843891d78af30aeb57bc4c5e32a9450b30b8372b337a3c0bdf2635"
+  },
+  {
+    "path": "styles/album-v2.css",
+    "bytes": 528,
+    "sha256": "e5bd8f3f718904ec2022336260dd53f7e8392edc5152b52de7f5f98d94e2c890"
   },
   {
     "path": "styles/album.css",

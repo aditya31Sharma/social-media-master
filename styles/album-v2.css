@@ -1,0 +1,11 @@
+#albumV2Setup { grid-template-columns: minmax(0, 1fr); }
+#albumV2Setup[hidden], #albumV2Template[hidden], #albumV2Setup [data-v2-retry][hidden] { display: none; }
+#albumV2Setup .album-model__thumb { height: 90px; }
+#albumV2Setup [data-v2-scrub] { width: 100%; min-height: 44px; }
+#albumV2Setup .album-preview canvas { background: #080a0d; }
+@media (min-width: 701px) {
+  #albumV2Setup { grid-template-columns: min(1120px, 94vw); }
+}
+@media (max-width: 700px) {
+  #albumV2Setup [data-v2-scrub] { margin: 0; min-height: 30px; }
+}
