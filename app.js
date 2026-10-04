@@ -979,7 +979,7 @@ function miniCombo(input, rows, onPick) {
   window.addEventListener('resize', place);
 }
 
-function showVideo(blob, name, cover) {
+function showVideo(blob, name, cover, duration = 15) {
   const fig = $('#reelOut');
   const video = fig.querySelector('[data-reel-video]');
   const save = fig.querySelector('[data-reel-save]');
@@ -996,7 +996,7 @@ function showVideo(blob, name, cover) {
   coverSave.href = URL.createObjectURL(cover);
   coverSave.download = name.replace(/\.mp4$/i, '-cover.png');
   fig.querySelector('[data-reel-meta]').textContent =
-    `${(blob.size / 1048576).toFixed(1)} MB · 15s · MP4`;
+    `${(blob.size / 1048576).toFixed(1)} MB · ${duration}s · MP4`;
   fig.hidden = false;
   $('#emptyState').hidden = true;
   fig.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -1005,9 +1005,9 @@ function showVideo(blob, name, cover) {
 function wireReel() {
   let activeReelTemplate = 'outfit', shownReelTemplate = 'outfit';
   const reelOutputs = new Map();
-  const receiveVideo = template => (blob, name, cover) => {
-    reelOutputs.set(template, [blob, name, cover]); shownReelTemplate = template;
-    showVideo(blob, name, cover);
+  const receiveVideo = template => (blob, name, cover, duration = 15) => {
+    reelOutputs.set(template, [blob, name, cover, duration]); shownReelTemplate = template;
+    showVideo(blob, name, cover, duration);
   };
   const albumUI = createAlbumUI({ onVideo: receiveVideo('album'), onStatus: message => { $('#status').textContent = message; } });
   $('#btnAlbumSetup').addEventListener('click', () => albumUI.open());

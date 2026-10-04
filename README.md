@@ -393,44 +393,59 @@ Default lighting update: Dramatic side (`lowkey`) is selected initially and used
 ## Album showcase reel
 
 Choose **Reel > Reel template > Album showcase > Set up album reel**. The original
-Outfit reel remains available, with separate drafts and finished outputs when
-switching templates. Album showcase uses five uploaded model photos, not GLBs.
-PNG transparency is preserved. JPG/WebP/HEIC photos can use **Remove background**,
-which reuses the existing free browser matting engine. Nothing is uploaded for
-matting. Model images are capped at2560px on the longest side to limit memory use;
-transparent margins are trimmed for consistent figure sizing. Move photos earlier
-or later to choose the sequence.
+Outfit reel remains available with separate drafts and finished outputs.
 
-The15-second9:16 animation starts on white. The optional square cover appears,
-then the creator, album name and heading. Models form a horizontal lineup, zoom
-to model2, use three staggered horizontal slices with motion blur to reveal model3,
-slide vertically to model4, stack into a vertical lineup, then pan/zoom to model5.
-Turning off every intro element uses the whole15seconds for the model showcase.
+Five cutout photos and their product fronts load automatically: Stand Unshaken,
+Victor Doom, California Love, The Ragnarsons and Kingdom Of Northumbria, in that
+order. The first four use Model-Man-Front-Full; Northumbria uses
+Model-Woman-Front-Full. Exact product titles, handles and source URLs are recorded
+in `assets/album-defaults/products.json`. Ten transparent WebPs are bundled locally
+(3.4MB total), so defaults require neither Shopify access nor runtime matting.
+They load only when the album editor opens. Failed loads can be retried with
+**Load missing SKU photos**. A late default load cannot replace a newer upload.
 
-Each intro label has its own font, size, tracking, line height, color, weight,
-italic style, alignment and X/Y position. Drag text in **Edit intro** to move it;
-center guides snap within8screen pixels. Arrow keys nudge1export pixel, Shift+arrow
-nudges10. Center buttons also work without dragging. **Use local fonts** requests
-browser permission on supported desktop browsers; **Add font file** accepts
-TTF/OTF/WOFF/WOFF2 on other browsers. Font files stay in the current page session.
-The Local Font Access compatibility reference is
-[MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/queryLocalFonts).
+Replace or reorder models as before. JPG/WebP/PNG/HEIC uploads and **Remove
+background** retain the existing free local matting engine. Model images are
+capped at2560px; alpha margins are trimmed for consistent sizing. Product name
+and front image can be edited per slot and follow the model when reordered.
+Replacing a model photo preserves its associated product details.
 
-Playback and the scrubber preview the shared deterministic Canvas renderer.
-Optional local music supports a start offset and volume. Exports are720p or1080p,
-60fps H.264 MP4 with optional AAC audio; the separate PNG cover uses the completed
-intro or final model when the intro is disabled. Preview guides never export.
-The new modules are `lib/album-motion.js`, `album-render.js`, `album-text.js` and
-`album-ui.js`, with scoped `styles/album.css`. All root album assets use release
-key20261005-album1. No new dependencies, server or hosting changes.
+The default45-second9:16 animation begins with all five models centered at the
+same X/Y/scale, first model in front. It expands horizontally and holds for2s,
+then zooms to the first model. Every model gets a4.5s product-detail sequence:
+zoom bottom-left, hold the front-product photo and full name on the right, return
+to the centered full view, then pause before transitioning. Model2 slides in,
+model3 uses the three staggered horizontal slices with motion blur, and model4
+arrives from above. A second centered stack expands vertically, holds for2.3s,
+then zooms to model5 for its detail sequence and final full-view hold.
+**Sound and export > Duration** also offers30s, proportionally scaling the sequence.
 
-Album QA: six timeline/text unit checks plus the existing47tests; eleven browser
-checks for uploads/fonts/text/snapping/playback/template retention. Real Chrome
-exported all900frames at1080x1920, video15.000s, plus AAC audio (15.083s with codec
-padding) and PNG cover, with zero page errors. Actual pointer snapping, background
-removal and375/768/1024/1440 preview/control layout were verified. Reference video
-and QA photos stay outside the repo.
+The intro is off by default. **Album intro > Include intro** restores the optional
+cover and independently editable heading, album and creator labels. It occupies
+three seconds within the selected total duration. Font, size, tracking, line
+height, color, weight, italic, alignment and X/Y controls remain available.
+**Edit intro** supports dragging, center snapping within8screen pixels, arrow-key
+nudges of1export pixel (10 with Shift), and center buttons. Local font discovery
+requires a supported browser and permission; TTF/OTF/WOFF/WOFF2 file import works
+as a fallback. Font files stay in the page session.
 
-Additional album checks passed: optional intro fully disabled, photo reordering, invalid font recovery, real background removal, and all four viewport sizes in both themes.
+Playback and export share one deterministic Canvas renderer. Optional local
+music supports a start offset and volume. Exports are720p or1080p,60fps H.264 MP4
+with optional AAC audio. PNG covers use the finished intro, or the final model
+when the intro is off. Shared output metadata uses the selected duration; the
+original Outfit reel remains15s.
 
-A second full900-frame720p export with every intro element disabled and no music passed at exactly15s. Switching templates restored the correct saved output and Edit target.
+Modules: `lib/album-motion.js`, `album-render.js`, `album-text.js`, `album-ui.js`
+and `album-defaults.js`, with scoped `styles/album.css`. Release key:
+20261005-album2. No new dependencies, server or hosting changes.
+
+Revision QA:55 unit tests and15 album browser checks pass, including exact-stack
+alignment, lineup holds, all five detail/return phases, automatic defaults,
+product reorder, typography and template retention. A complete2700-frame1080p
+H.264 export is exactly45s, with PNG cover and zero browser errors. Responsive
+preview, scrubber and footer checks cover375/768/1024/1440px.
+
+A second full1800-frame720p export with intro and AAC audio passed: video30.000s,
+audio30.080s including codec padding. Network-failure retry and delayed-default
+versus manual-upload races passed. Existing24 fit and13 workspace browser checks
+remain green. Recovery manifest covers743 shipped files.

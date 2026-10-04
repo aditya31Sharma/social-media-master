@@ -18,3 +18,17 @@ Reference: latest Downloads video inspected at21 frames over10.613 seconds. The 
 Timing (seconds at15s total with intro):0-.25 white; .25-.85 cover; .85-1.25 creator;1.25-1.8 album;1.8-2.35 heading;2.35-3 intro fade;3-3.5 model1;3.5-4.2 stack;4.2-5.5 horizontal spread;5.5-6.6 model2 zoom;6.6-7.1 hold;7.1-7.7 three-band cut to model3;7.7-8.6 hold;8.6-9.2 vertical slide to model4;9.2-10 hold;10-10.7 stack;10.7-12.4 vertical spread;12.4-14 pan/zoom model5;14-15 hold. With all intro elements off, showcase starts immediately and uses all15seconds.
 
 Validation boundaries: browser font enumeration requires permission and supporting desktop browser; font file loading covers unsupported environments. Background removal uses existing free local WASM model only when requested. No copied private credentials/reference video in public repo.
+
+## Revision: centered SKU showcase
+
+Supersedes the initial15s timing above. User deferred the intro, requested an
+exactly centered opening stack, longer lineup holds, a bottom-left detail zoom
+with product front/name and return before each transition, and five preset SKUs.
+
+- [x] Package five cutout models plus five cutout product fronts, source map included.
+- [x] Default intro off; retain all intro editing behind an explicit switch.
+- [x]45s timeline with30s option; shared preview/export timing and metadata.
+- [x] Detail starts at7/14/20.8/27.6/39.3s, each lasting4.5s including return.
+- [x] Horizontal hold3-5s, vertical hold34.7-37s; all stacks share X/Y/scale.
+- [x] Preserve manual uploads, background removal, reordering, fonts and audio.
+- [x] Unit/browser/export checks; responsive checks, recovery hashes and release.

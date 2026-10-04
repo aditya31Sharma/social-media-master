@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { albumScene, hasIntro, introOpacity } from '../../lib/album-motion.js';
+import { albumScene, hasIntro, introOpacity, DETAIL_STARTS, ALBUM_DURATION } from '../../lib/album-motion.js';
 import { defaultLabels, snapCenter } from '../../lib/album-text.js';
 import { labelMetrics, labelRect } from '../../lib/album-render.js';
 
@@ -14,32 +14,48 @@ test('album intro is optional independently of its labels', () => {
   state.coverEnabled = false;
   assert.equal(hasIntro(state), false);
   assert.equal(albumScene(0, true).intro, true);
-  assert.equal(albumScene(0, false).models[0].index, 0);
+  assert.equal(albumScene(0, false).models.at(-1).index, 0);
 });
 
-test('showcase follows the five-model sequence with horizontal, sliced and vertical transitions', () => {
-  const first = albumScene(3.4).models;
-  assert.equal(first.length, 1); assert.equal(first[0].index, 0);
-  const horizontal = albumScene(5.49).models;
-  assert.equal(horizontal.length, 5);
-  assert.equal(new Set(horizontal.map(p => p.index)).size, 5);
+test('showcase opens with five exactly centered models and holds both expanded lineups', () => {
+  const stack = albumScene(0).models;
+  assert.equal(stack.length, 5); assert.equal(stack.at(-1).index, 0);
+  assert.ok(stack.every(p => p.x === .5 && p.y === .53 && p.scale === 1 && p.alpha === 1));
+  assert.deepEqual(albumScene(3).models, albumScene(4.9).models);
+  assert.deepEqual(albumScene(34.7).models, albumScene(36.9).models);
+  const horizontal = albumScene(4).models, vertical = albumScene(36).models;
   assert.ok(Math.max(...horizontal.map(p => p.x)) - Math.min(...horizontal.map(p => p.x)) > .79);
-  assert.equal(albumScene(6.8).models[0].index, 1);
-  const slices = albumScene(7.4).models;
+  assert.ok(Math.max(...vertical.map(p => p.y)) - Math.min(...vertical.map(p => p.y)) > .73);
+  const slices = albumScene(19.4).models;
   assert.equal(slices.length, 6);
   assert.deepEqual([...new Set(slices.map(p => p.band))], [0, 1, 2]);
   assert.ok(slices.some(p => p.trailX));
-  assert.equal(albumScene(8).models[0].index, 2);
-  assert.deepEqual(albumScene(8.9).models.map(p => p.index), [2, 3]);
-  assert.equal(albumScene(9.5).models[0].index, 3);
-  const vertical = albumScene(12.39).models;
-  assert.equal(vertical.length, 5);
-  assert.ok(Math.max(...vertical.map(p => p.y)) - Math.min(...vertical.map(p => p.y)) > .73);
-  assert.equal(albumScene(15).models[0].index, 4);
+  assert.deepEqual(albumScene(26.2).models.map(p => p.index), [2, 3]);
+  assert.equal(albumScene(ALBUM_DURATION).models[0].index, 4);
+});
+
+test('every outfit zooms bottom-left, holds its product detail and returns before transitioning', () => {
+  DETAIL_STARTS.forEach((start, index) => {
+    const detail = albumScene(start + 2);
+    assert.equal(detail.detail.index, index); assert.equal(detail.detail.amount, 1);
+    assert.ok(detail.models[0].x < .5 && detail.models[0].y > .53 && detail.models[0].scale > 1);
+    assert.deepEqual(detail, albumScene(start + 3.4));
+    const returned = albumScene(start + 4.5).models;
+    assert.equal(returned.length, 1); assert.equal(returned[0].index, index);
+    assert.equal(returned[0].x, .5); assert.equal(returned[0].scale, 1);
+  });
+});
+
+test('intro can be disabled without erasing labels or cover;30s uses the same choreography', () => {
+  const state = { introEnabled: false, coverEnabled: true, cover: {}, labels: defaultLabels() };
+  assert.equal(hasIntro(state), false); state.introEnabled = true; assert.equal(hasIntro(state), true);
+  assert.deepEqual(albumScene(30, false, 30), albumScene(45));
+  assert.deepEqual(albumScene(8 * 30 / 45, false, 30), albumScene(8));
+  assert.deepEqual(albumScene(3, true), albumScene(0));
 });
 
 test('every export frame has finite transforms with and without an intro', () => {
-  for (const intro of [true, false]) for (let i = 0; i <= 900; i++) {
+  for (const intro of [true, false]) for (let i = 0; i <= ALBUM_DURATION * 60; i++) {
     for (const pose of albumScene(i / 60, intro).models) {
       assert.ok([pose.x, pose.y, pose.scale, pose.alpha].every(Number.isFinite));
       assert.ok(pose.scale > 0 && pose.alpha >= 0 && pose.alpha <= 1);

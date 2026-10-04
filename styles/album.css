@@ -45,3 +45,6 @@
   #albumSetup { grid-template-columns: min(1120px, 94vw); }
   .album-footer { border-radius: 0 0 var(--r-xl) var(--r-xl); }
 }
+
+.album-model__product { grid-column: 2 / -1; min-width: 0; }
+.album-model__product .field { margin: 4px 0; }
