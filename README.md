@@ -50,6 +50,20 @@ original garment entrance/blur, photo arrival, rotation, logo/text fades and
 225-degree gradient from `#F2F2F2` to `#C6C9CC`. The Reel/cover Tenzen logo is
 `#AAAAAA`. These colours are independent of the workspace theme.
 
+## Reel photo-switch timing
+
+Photo switches keep a steady0.20-second cadence after the original introduction
+and settling beat, through second12. From12 to15 seconds the cut frequency eases
+down with a smoothstep curve. Its slope is zero at the start and end of the
+slowdown. The selected closing photos hold through the final frame; a short final
+partial beat is merged so the end cannot flash faster again. All four corners and
+switch sounds share the same timestamps. Garment entrance, rotation, text, logo
+and separate cover behavior stay unchanged.
+
+The schedule lives in `lib/reel.js`, with `DECEL_FROM = 12` in `lib/reel-geom.js`.
+Both modules use the `20261004-timing1` import-map release key. Timing regressions
+are in `docs/qa/reel-timing.test.mjs`.
+
 ## Automatic Reel fit
 
 Selecting topwear applies these defaults. You can adjust them under **The fit**.
@@ -316,3 +330,7 @@ exported24 sampled frames from the900-frame timeline at1080x1920/60fps, plus a
 matching1080x1920 PNG cover, with no page errors. Lighting changes enabled
 regeneration. The entire900-frame MP4 was not re-encoded in this check. Responsive
 preview/control checks covered320,375,768,1024 and1440px widths.
+
+Photo-timing QA:35 Node tests passed. Real Chrome exported all900 frames at60fps
+using540x960 as the QA resolution, with AAC switch audio and a separate cover.
+Video duration is15 seconds; production resolution options remain unchanged.

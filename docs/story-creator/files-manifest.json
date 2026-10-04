@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 18169,
-    "sha256": "8fb4bbfd763ae6b6f24f810b85f7391bf1caf00d64d32edd690e84a863658468"
+    "bytes": 19168,
+    "sha256": "f1343894d68225885fb2e242a21e03d71ba537b041fb03466e01d093e19fbc8e"
   },
   {
     "path": "app.css",
@@ -133,6 +133,11 @@
     "path": "docs/qa/reel-fit.test.mjs",
     "bytes": 4823,
     "sha256": "5e6a56050bd1c711a9178084d332104c8ba6a7beca0ca01a42f21625234b6c84"
+  },
+  {
+    "path": "docs/qa/reel-timing.test.mjs",
+    "bytes": 2152,
+    "sha256": "d94c888ab8c99d094efb4eaa1035c62d26c087c1fa045af2b80615458b17747d"
   },
   {
     "path": "docs/qa/story-retry-check.js",
@@ -347,7 +352,7 @@
   {
     "path": "index.html",
     "bytes": 42349,
-    "sha256": "dca8b6f89e0cbe510287c1ad0192df1fb46a648b95a2625114a9674d0af10189"
+    "sha256": "e3a7819f9d45ffbbb70be2e7484aab0036f5677ac2e4c3f9fbf5bff3769e49f9"
   },
   {
     "path": "lab/frame.html",
@@ -416,8 +421,8 @@
   },
   {
     "path": "lib/reel-geom.js",
-    "bytes": 9186,
-    "sha256": "78254bc8114513990c68f464fab611e40b9d2fc1390d62654000b891aa47e011"
+    "bytes": 8746,
+    "sha256": "7157a2194029dffc3f3758eaa239d02e313f1349d7497141afd9b9179571beeb"
   },
   {
     "path": "lib/reel-lighting.js",
@@ -436,8 +441,8 @@
   },
   {
     "path": "lib/reel.js",
-    "bytes": 16584,
-    "sha256": "176e260a4386ca42f234f227ed965441a52e5f913db29cc6f980c9f0bf7bcbae"
+    "bytes": 15613,
+    "sha256": "7fc676824bafc8b78b013f90e3b36227a5e9341ce0889744cf2c7a465ad4d323"
   },
   {
     "path": "lib/render.js",
