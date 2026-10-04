@@ -96,16 +96,20 @@ changing products, and marks an existing export for regeneration when changed.
 | --- | --- |
 | Defined edges (default) | Directional key and rim with controlled fill |
 | Soft studio | Balanced frontal fill and environment lighting |
-| Golden hour | Low warm key, cool fill and amber rim |
-| Moonlight | Cool overhead key and pale blue rim |
-| Teal & amber | Warm key opposite cyan fill and rim |
-| Neon dusk | Lavender key, pink fill and blue rim |
-| Noir spotlight | Strong side key, minimal fill and pronounced rim |
+| Sculpted side | Low side key to reveal folds, with restrained opposite fill |
+| Overhead | Nearly vertical key with low frontal fill |
+| Rim silhouette | Strong rear light with a weaker front key and fill |
+| Cross light | Two opposing front-side lights, at different strengths |
+| Dramatic side | High side key, very little fill and an opposite rear rim |
 | Original | Previous neutral lighting calibration |
 
-These presets change the lights on the garments. The Figma background gradient,
-Tenzen logo, animation and export resolution stay the same. Explicit user choices
-persist across product changes; missing or unknown preset names use Defined edges.
+All lights are neutral white. The five additional arrangements vary individual
+key/fill/rim positions and strengths while retaining Defined edges exposure,
+tone mapping and environment response. No colored light, tint or filter is used.
+Defined edges remains the default for all models, with its exact existing
+positions/intensities preserved. Explicit user choices persist across product
+changes; missing or unknown preset names use Defined edges. The Figma gradient,
+logo, animation and export resolution stay the same.
 
 Every stage clones its materials before adjusting them. Three.js scene clones
 share materials by default, so modifying them used to increase cached roughness
@@ -120,7 +124,8 @@ their existing resolution choices. Instagram's subsequent compression is outside
 this tool's control; the downloaded MP4 is the quality reference.
 
 Preset values live in `lib/reel-fit.js`; lighting lives in `lib/reel-lighting.js`.
-The UI, stage and lighting use release key `20261004-cinema1`; fit presets and
+Stage and lighting use release key `20261004-neutral1`; the UI retains
+`20261004-cinema1`. Fit presets and
 encoder retain `20261004-light1`. Geometry and photo timing retain
 `20261004-timing1`. These keys live in the root import map.
 
@@ -356,13 +361,14 @@ Photo-timing QA:35 Node tests passed. Real Chrome exported all900 frames at60fps
 using540x960 as the QA resolution, with AAC switch audio and a separate cover.
 Video duration is15 seconds; production resolution options remain unchanged.
 
-Cinematic lighting QA:38 Node tests and24 browser checks cover the shared default,
-all six topwear categories, preserved custom choices and all selectable presets.
-Real Chrome renders all eight presets on light and dark garments; a sampled24-frame
-1080p MP4 and separate cover verify colored lighting through export.
+Neutral lighting QA:42 Node tests cover independent light directions, neutral
+configurations, exact Defined edges calibration, defaults, timing and Story
+behavior. Browser checks cover all six topwear defaults and retained choices.
 
 Story identity QA:40 Node tests plus browser regressions verify blank initial
 profiles, no implicit search selection, assignment after SKU/global scan, global
 saved-user exclusions, distinct draft users, upload updates, failed/exhausted
 scans and stale requests. All600 manual profiles remain; the empty-state option
 is excluded from profile counts. Story/card/render/Drive UI use20261004-users1.
+
+Neutral lighting browser/export QA: all8 presets rendered on white and black garments;24 fit/default/persistence checks passed. Real Chrome exported24 sampled frames from the900-frame timeline to1080p H.264 and a1080p PNG cover with zero page errors. Lighting changes enable regeneration.
