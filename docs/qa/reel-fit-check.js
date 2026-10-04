@@ -20,11 +20,12 @@
   ]) {
     await pick('#topInput', query, handle);
     await wait(() => $('#reelTopScale').value === scale && $('#reelTopY').value === y);
+    check(`${handle} starts with Defined edges`, $('#reelLighting').value === 'contrast');
     check(`${handle} applies size and height`, $('#reelTopScaleOut').textContent === `${scale}%` && $('#reelTopYOut').textContent === `${y}cm`);
     check(`${handle} applies position with neutral preview turn`, $('#reelTopX').value === x && $('#reelTopZ').value === z && $('#reelFitTurn').value === '0');
   }
-  check('Soft studio is the default lighting', $('#reelLighting').value === 'studio');
-  $('#reelLighting').value = 'contrast';
+  check('Defined edges is the default lighting', $('#reelLighting').value === 'contrast');
+  $('#reelLighting').value = 'tealAmber';
   $('#reelLighting').dispatchEvent(new Event('change', { bubbles: true }));
   set('#reelTopX', '8'); set('#reelTopZ', '12'); set('#reelTopY', '-7'); set('#reelTopScale', '94'); set('#reelFitTurn', '90');
   await pick('#botInput', 'angels motor', 'angels-motor-club-loose-fit-sweatpant-black');
@@ -39,6 +40,6 @@
   await pick('#topInput', 'california love', 'california-love-oversized-hoodie-white');
   await wait(() => $('#reelTopScale').value === '105');
   check('Choosing a new top resets its fit and inspection angle', $('#reelTopY').value === '-4' && ['#reelTopX', '#reelTopZ', '#reelFitTurn'].every(id => $(id).value === '0'));
-  check('Lighting persists across garment and tool changes', $('#reelLighting').value === 'contrast');
+  check('Lighting persists across garment and tool changes', $('#reelLighting').value === 'tealAmber');
   return { passed: checks.length, checks };
 })()

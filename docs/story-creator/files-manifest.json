@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 19168,
-    "sha256": "f1343894d68225885fb2e242a21e03d71ba537b041fb03466e01d093e19fbc8e"
+    "bytes": 20174,
+    "sha256": "3b019b34d1d90a72fa8dd3f1ddfee5a9adbf73d5724df415f6418e140ee9a20c"
   },
   {
     "path": "app.css",
@@ -126,13 +126,18 @@
   },
   {
     "path": "docs/qa/reel-fit-check.js",
-    "bytes": 3512,
-    "sha256": "16b0b75b4712ad427a32f3b25c2ad7b0348b4a36ab1a4a8c0b875c12dad54b68"
+    "bytes": 3609,
+    "sha256": "6e35883918f84939bc7330450e5b4a173ab9d5bb399ecab50ac970ce7d0badc2"
   },
   {
     "path": "docs/qa/reel-fit.test.mjs",
     "bytes": 4823,
     "sha256": "5e6a56050bd1c711a9178084d332104c8ba6a7beca0ca01a42f21625234b6c84"
+  },
+  {
+    "path": "docs/qa/reel-lighting.test.mjs",
+    "bytes": 1077,
+    "sha256": "0d01dbf1716a89b6b6c247f6625387bd1a3c4743bd0a6ece2f26b98a5fe45a02"
   },
   {
     "path": "docs/qa/reel-timing.test.mjs",
@@ -351,8 +356,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 42349,
-    "sha256": "e3a7819f9d45ffbbb70be2e7484aab0036f5677ac2e4c3f9fbf5bff3769e49f9"
+    "bytes": 42667,
+    "sha256": "f914753adf7302fa27a30b811afc5a6467314af7a7ad110887c0ec11f8fda89a"
   },
   {
     "path": "lab/frame.html",
@@ -426,8 +431,8 @@
   },
   {
     "path": "lib/reel-lighting.js",
-    "bytes": 598,
-    "sha256": "9d0eb8a2937b489a4ac389f03610d7e96e6861228ebc5fb10ccb62518122c07c"
+    "bytes": 1596,
+    "sha256": "53adeedebdd7e1d91219bf3b811fd132c3ffba1fea4ade8fa8ccd4de0a0824e7"
   },
   {
     "path": "lib/reel-picker.js",
@@ -436,8 +441,8 @@
   },
   {
     "path": "lib/reel-ui.js",
-    "bytes": 24088,
-    "sha256": "7c17242dea8625b4bc0baf74306af260fa151b89a2fd5b3f82313293d2c43d94"
+    "bytes": 24151,
+    "sha256": "37fc9dbf3f73b8a868e02f6349185dbced3cc3f51ab9e3c7276cd57c622608f8"
   },
   {
     "path": "lib/reel.js",
@@ -456,8 +461,8 @@
   },
   {
     "path": "lib/stage3d.js",
-    "bytes": 11519,
-    "sha256": "a0aa28f8778d3b996edf53cd684f5c17cbd61444db1e3836b2f6e6d49441c748"
+    "bytes": 11574,
+    "sha256": "10b7d201a1bb30d648a5970a05234a74f76834f53c2d3397b0da77aea2a9eb13"
   },
   {
     "path": "lib/theme.js",

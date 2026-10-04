@@ -88,11 +88,24 @@ starting pose; negative values move left and backward. These adjustments affect
 the preview, MP4 and separate cover. The bottom stays anchored, and the original
 entrance and turning animation remain unchanged.
 
-**Lighting** under **The fit** offers Soft studio (default), Defined edges and
-Original. It affects both garments in the preview, MP4 and separate cover, persists
-when changing products, and marks an existing export for regeneration when changed.
-Soft studio adds front fill and environment lighting to reveal fabric on dark
-clothes. Original retains the previous lighting calibration.
+**Lighting** under **The fit** defaults to **Defined edges** for every garment.
+It affects both garments in the preview, MP4 and separate cover, persists when
+changing products, and marks an existing export for regeneration when changed.
+
+| Preset | Lighting |
+| --- | --- |
+| Defined edges (default) | Directional key and rim with controlled fill |
+| Soft studio | Balanced frontal fill and environment lighting |
+| Golden hour | Low warm key, cool fill and amber rim |
+| Moonlight | Cool overhead key and pale blue rim |
+| Teal & amber | Warm key opposite cyan fill and rim |
+| Neon dusk | Lavender key, pink fill and blue rim |
+| Noir spotlight | Strong side key, minimal fill and pronounced rim |
+| Original | Previous neutral lighting calibration |
+
+These presets change the lights on the garments. The Figma background gradient,
+Tenzen logo, animation and export resolution stay the same. Explicit user choices
+persist across product changes; missing or unknown preset names use Defined edges.
 
 Every stage clones its materials before adjusting them. Three.js scene clones
 share materials by default, so modifying them used to increase cached roughness
@@ -107,8 +120,9 @@ their existing resolution choices. Instagram's subsequent compression is outside
 this tool's control; the downloaded MP4 is the quality reference.
 
 Preset values live in `lib/reel-fit.js`; lighting lives in `lib/reel-lighting.js`.
-The UI, stage, presets and encoder use release key `20261004-light1` in the root
-import map. Geometry remains shared and unchanged.
+The UI, stage and lighting use release key `20261004-cinema1`; fit presets and
+encoder retain `20261004-light1`. Geometry and photo timing retain
+`20261004-timing1`. These keys live in the root import map.
 
 ## Story Creator and review folders
 
@@ -334,3 +348,8 @@ preview/control checks covered320,375,768,1024 and1440px widths.
 Photo-timing QA:35 Node tests passed. Real Chrome exported all900 frames at60fps
 using540x960 as the QA resolution, with AAC switch audio and a separate cover.
 Video duration is15 seconds; production resolution options remain unchanged.
+
+Cinematic lighting QA:38 Node tests and24 browser checks cover the shared default,
+all six topwear categories, preserved custom choices and all selectable presets.
+Real Chrome renders all eight presets on light and dark garments; a sampled24-frame
+1080p MP4 and separate cover verify colored lighting through export.
