@@ -32,3 +32,14 @@ with product front/name and return before each transition, and five preset SKUs.
 - [x] Horizontal hold3-5s, vertical hold34.7-37s; all stacks share X/Y/scale.
 - [x] Preserve manual uploads, background removal, reordering, fonts and audio.
 - [x] Unit/browser/export checks; responsive checks, recovery hashes and release.
+
+## Revision: faster motion and rotating garments
+
+User replaces static detail photos with transparent rotating GLBs, stronger blur,
+faster cuts and sequence2/3/4/5/1, preserving model1 at the front of openingstack.
+Plan:20s default;0.4s cuts;0.5s lineupholds;2.5s details. Nine temporal shutter
+samples cover all2D motion,3angular samples cover rotating garments. Reuse
+OutfitStage loading/material/lighting and separate single-garment camera layout.
+Lazy low-res preview and full-quality export contexts, visible retry on failures.
+Keep previous photo-detail mode available; default3D for bundledSKUs. Verify
+timeline, render transparency/rotation, full MP4, mobile and original workflows.

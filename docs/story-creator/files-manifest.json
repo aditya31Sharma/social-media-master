@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 26547,
-    "sha256": "b91914c8d90fcc5abe3e4a20059305b35513233c4eca4b9a7593298b4213061d"
+    "bytes": 27441,
+    "sha256": "3ce474a91651cba97dfa900a3de3989c6dc488b0450d94ca02b24f52e846e8d6"
   },
   {
     "path": "app.css",
@@ -41,8 +41,8 @@
   },
   {
     "path": "assets/album-defaults/products.json",
-    "bytes": 2964,
-    "sha256": "f2530cdfc6f98aa98120e9dde93e9e0f7b25869c7110b62db01bd75012bcc0e2"
+    "bytes": 3599,
+    "sha256": "0a8279b25dc31dc5662799410624afa7a52932a44b63ea32e2d4201badf7210c"
   },
   {
     "path": "assets/album-defaults/ragnarsons-front.webp",
@@ -161,18 +161,18 @@
   },
   {
     "path": "docs/plans/2026-10-05-album-reel.md",
-    "bytes": 4293,
-    "sha256": "6ae1de3afbf0556b610f5f894908026af35269de2da79037f149977742337497"
+    "bytes": 4985,
+    "sha256": "364aebe06e2ff9d2b3dd882e514fd898980f2bd1bdedddc1385f1ad3de481062"
   },
   {
     "path": "docs/qa/album-browser.js",
-    "bytes": 4787,
-    "sha256": "ad21ce2d55dd51cc4e8c7b0f045310c57caf3852e5299e0455f27b67b3ffa138"
+    "bytes": 4930,
+    "sha256": "c03cdb1c6183ab3270766b81aacbf5739bd35a8c03932c0966e42416e4e78848"
   },
   {
     "path": "docs/qa/album.test.mjs",
-    "bytes": 4451,
-    "sha256": "43ea14a3bbae060aba7c85cbdabc90eac264b701fb8ed00f9fa2dc9002ffc5b2"
+    "bytes": 5239,
+    "sha256": "965dd98414ad254443b3a1df1068ba3c03dc75279e3e32a3abf03abad92ea878"
   },
   {
     "path": "docs/qa/carousel-check.js",
@@ -436,8 +436,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 44285,
-    "sha256": "5fa5032c47fc6b4059d49dac0abe131f6741afd9b3b88c70beb0c1844e53bfe6"
+    "bytes": 44359,
+    "sha256": "d348b921d90fc342d70ab39d9b6014e8ac955a0cac1875cbe069fe01fb40fc7d"
   },
   {
     "path": "lab/frame.html",
@@ -451,18 +451,23 @@
   },
   {
     "path": "lib/album-defaults.js",
-    "bytes": 1215,
-    "sha256": "6c86936845880b8b2e557ad5445b250d3d294016cd1438811301b3dddacbb68b"
+    "bytes": 1271,
+    "sha256": "068743c068b31d55a6f557c15b0fcc8e052d9bc1482d3990c04dcb6b1e407903"
   },
   {
     "path": "lib/album-motion.js",
-    "bytes": 3811,
-    "sha256": "60f646c8652759bf3b0b7277efd753f91590e6aef4939adcb602d0152f75a639"
+    "bytes": 3931,
+    "sha256": "08b95f5315903419a58bdda2c426376dce2bef7a39c60de82dbc96c9935dbe3d"
+  },
+  {
+    "path": "lib/album-product.js",
+    "bytes": 3731,
+    "sha256": "c030b0fa75d75cfa29d905d17c780f05bcb55d4ebe2e45e77f355145bb759105"
   },
   {
     "path": "lib/album-render.js",
-    "bytes": 5514,
-    "sha256": "26124584a8c60f0f6d8b5dd0fef9fc3c16a601acadf06eeafb665172c9180293"
+    "bytes": 6275,
+    "sha256": "22fe5dcdf4292be8c3150e96a72fbdf554b80b9651ccbc1792ff3e3632f4d8a3"
   },
   {
     "path": "lib/album-text.js",
@@ -471,8 +476,8 @@
   },
   {
     "path": "lib/album-ui.js",
-    "bytes": 18644,
-    "sha256": "7e1b5b0bd9f29823b21fea0c7da36295058d963036c89a79a96602b61d37da01"
+    "bytes": 21781,
+    "sha256": "72a0aab6a100606d7da1953ebc42bf71f54e099a21c5d529282e562c544d92e8"
   },
   {
     "path": "lib/audio.js",
@@ -3696,8 +3701,8 @@
   },
   {
     "path": "styles/album.css",
-    "bytes": 3852,
-    "sha256": "f5964fb17dbadd83adb8f003365939179c5d2ab05dc3a65e5a21a71d98635301"
+    "bytes": 3957,
+    "sha256": "589c2ec66edf453cddb79a89ba0dbaa30446b69e1af103611f768fa62d41611b"
   },
   {
     "path": "styles/fonts.css",

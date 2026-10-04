@@ -400,7 +400,7 @@ Victor Doom, California Love, The Ragnarsons and Kingdom Of Northumbria, in that
 order. The first four use Model-Man-Front-Full; Northumbria uses
 Model-Woman-Front-Full. Exact product titles, handles and source URLs are recorded
 in `assets/album-defaults/products.json`. Ten transparent WebPs are bundled locally
-(3.4MB total), so defaults require neither Shopify access nor runtime matting.
+(3.4MB total), so photo defaults require neither Shopify access nor runtime matting.
 They load only when the album editor opens. Failed loads can be retried with
 **Load missing SKU photos**. A late default load cannot replace a newer upload.
 
@@ -410,15 +410,26 @@ capped at2560px; alpha margins are trimmed for consistent sizing. Product name
 and front image can be edited per slot and follow the model when reordered.
 Replacing a model photo preserves its associated product details.
 
-The default45-second9:16 animation begins with all five models centered at the
-same X/Y/scale, first model in front. It expands horizontally and holds for2s,
-then zooms to the first model. Every model gets a4.5s product-detail sequence:
-zoom bottom-left, hold the front-product photo and full name on the right, return
-to the centered full view, then pause before transitioning. Model2 slides in,
-model3 uses the three staggered horizontal slices with motion blur, and model4
-arrives from above. A second centered stack expands vertically, holds for2.3s,
-then zooms to model5 for its detail sequence and final full-view hold.
-**Sound and export > Duration** also offers30s, proportionally scaling the sequence.
+The default20-second9:16 animation begins with all five models at identical
+X/Y/scale, Stand Unshaken in front. After the horizontal expansion it zooms to
+Victor Doom first, then California Love, Ragnarsons, Northumbria and finally
+Stand Unshaken. Cuts take0.4s; horizontal and vertical lineups hold for0.5s.
+Each outfit gets a2.5s detail sequence: fast bottom-left zoom, rotating3D garment
+and full product name on the right, then a return and brief full-view pause.
+There is no white product panel. **Sound and export > Duration** retains30s/45s
+options, proportionally scaling the same choreography.
+
+All moving layers share nine temporal shutter samples over85ms, producing
+visible directional motion blur on spreads, zooms, slices and slides. Three
+angular samples add rotational blur to the actual3D garments. Stationary holds
+and text remain sharp. The transparent garment stage uses Dramatic side lighting,
+shared cached GLB loading and cloned fabric materials from the existing Outfit
+renderer. One context serves all five garments. Preview uses240x360 and512px
+texture copies; export uses480x720 and original textures, with1024px shadows.
+The preview loads lazily after photos appear. Export waits for3D readiness;
+failed3D downloads have a retry button. **Choose3D garment** accepts a localGLB.
+The previous front-image workflow remains available in each Product detail
+selector, but the bundled SKUs default to rotating3D.
 
 The intro is off by default. **Album intro > Include intro** restores the optional
 cover and independently editable heading, album and creator labels. It occupies
@@ -436,16 +447,18 @@ when the intro is off. Shared output metadata uses the selected duration; the
 original Outfit reel remains15s.
 
 Modules: `lib/album-motion.js`, `album-render.js`, `album-text.js`, `album-ui.js`
-and `album-defaults.js`, with scoped `styles/album.css`. Release key:
-20261005-album2. No new dependencies, server or hosting changes.
+`album-defaults.js` and `album-product.js`, with scoped `styles/album.css`. Release key:
+20261005-album3. No new dependencies, server or hosting changes.
 
-Revision QA:55 unit tests and15 album browser checks pass, including exact-stack
-alignment, lineup holds, all five detail/return phases, automatic defaults,
-product reorder, typography and template retention. A complete2700-frame1080p
-H.264 export is exactly45s, with PNG cover and zero browser errors. Responsive
-preview, scrubber and footer checks cover375/768/1024/1440px.
+Current revision QA:56 unit tests pass, covering centered stack, new2/3/4/5/1
+order,20s duration, detail rotation/return, holds and temporal shutter width.
+Real Chrome rendered every garment and choreography phase without page errors.
+Full export, browser regression and release checks are recorded below.
 
-A second full1800-frame720p export with intro and AAC audio passed: video30.000s,
-audio30.080s including codec padding. Network-failure retry and delayed-default
-versus manual-upload races passed. Existing24 fit and13 workspace browser checks
-remain green. Recovery manifest covers743 shipped files.
+Release QA:16 actual3D browser checks and375/768/1024/1440px layout checks pass,
+plus24 original fit and13 workspace checks. GLB failure blocks export, Retry
+recovers, transparent-corner pixels remain alpha0, and rendered pixels change
+with rotation. Photo mode still works. Full1080x1920 H264 export:1200frames,
+20.000s, completed18.247s using AppleM4/ANGLEMetal, zero browser errors.
+SoftwareWebGL QA was much slower; use hardwareMetal on this Mac for full exports.
+Recovery manifest now covers744 shipped files.

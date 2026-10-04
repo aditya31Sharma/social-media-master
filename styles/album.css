@@ -48,3 +48,5 @@
 
 .album-model__product { grid-column: 2 / -1; min-width: 0; }
 .album-model__product .field { margin: 4px 0; }
+
+.album-model [data-photo-controls][hidden], .album-model [data-glb-controls][hidden] { display: none; }
