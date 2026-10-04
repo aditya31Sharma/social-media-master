@@ -4,7 +4,7 @@
  const wait=async fn=>{for(let i=0;i<150;i++){if(fn())return;await new Promise(r=>setTimeout(r,20));}throw Error('Timed out');};
  await wait(()=>!$('#randomProfile').disabled);
  const users=await(await fetch('stories/profiles/users.json')).json();
- check('600 profiles in data and picker',users.length===600&&$('#profile').options.length===600);
+ check('600 profiles in data and picker',users.length===600&&[...$('#profile').options].filter(o => o.value).length===600);
  check('600 unique usernames',new Set(users.map(u=>u.username.toLowerCase())).size===600);
  let next=0,decoded=0;const failures=[];
  await Promise.all(Array.from({length:12},async()=>{
@@ -20,6 +20,6 @@
  $('#profileSearch').value=users[100].username;$('#profileSearch').dispatchEvent(new Event('input'));
  check('First new Indian account is searchable',[...$('#profile').options].some(o=>o.value===users[100].username));
  $('#profileSearch').value='';$('#profileSearch').dispatchEvent(new Event('input'));
- check('All600 profiles restored after search',$('#profile').options.length===600&&$('#profileCount').textContent==='600 of 600 profiles');
+ check('All600 profiles restored after search',[...$('#profile').options].filter(o => o.value).length===600&&$('#profileCount').textContent==='600 of 600 profiles');
  return{passed:checks.length,decoded,failures,checks};
 })()

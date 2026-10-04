@@ -10,16 +10,46 @@ const $ = selector => root.querySelector(selector);
 
 const stories = [];
 let assets = null, users = [], active = null, exporting = false;
-let savedUsers = null;
+let savedUsers = null, selectedProduct = null;
 let driveUI;
 // Load before wiring listeners so a failed mount can be retried cleanly.
 const response = await fetch(new URL('profiles/users.json', import.meta.url), { signal: AbortSignal.timeout(15000) });
 if (!response.ok) throw new Error('Profiles could not load.');
 users = await response.json();
 assets = await loadAssets();
-const randomChoices = () => users.filter(user => user.username !== active?.username && !savedUsers?.has(normalizeUsername(user.username)));
-function setSavedUsers(usernames) {
+const randomChoices = () => {
+  if (!selectedProduct || !savedUsers) return [];
+  const reserved = new Set(stories.map(story => normalizeUsername(story.username)));
+  return users.filter(user => !reserved.has(normalizeUsername(user.username)) && !savedUsers.has(normalizeUsername(user.username)));
+};
+function assignUser(story) {
+  const choices = randomChoices();
+  if (!choices.length) return;
+  story.setProfile(choices[Math.floor(Math.random() * choices.length)]);
+}
+function assignBlankStories() {
+  let assigned = false;
+  for (const story of stories) if (!story.username) {
+    assignUser(story);
+    assigned ||= !!story.username;
+  }
+  if (assigned) $('#profileSearch').value = '';
+  filterProfiles();
+}
+function setProduct(product) {
+  selectedProduct = product;
+  for (const story of stories) story.setProfile(null);
+  assignBlankStories();
+  refresh(active);
+}
+function setSavedUsers(usernames, { source = 'scan' } = {}) {
   savedUsers = usernames;
+  if (source !== 'upload') {
+    for (const story of stories) {
+      if (!usernames || usernames.has(normalizeUsername(story.username))) story.setProfile(null);
+    }
+    assignBlankStories();
+  }
   $('#randomProfileNote').textContent = usernames
     ? `${usernames.size} saved ${usernames.size === 1 ? 'user' : 'users'} excluded from Randomize across all products.`
     : 'Connect Google Drive and complete the global check to randomize unused users.';
@@ -50,14 +80,14 @@ function refresh(story) {
 function showUnits() {
   root.querySelectorAll('[data-unit]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.unit === active?.unit)));
 }
-function filterProfiles(selectFirst = true) {
+function filterProfiles() {
   const query = $('#profileSearch').value.trim().toLowerCase().replace(/^@/, '');
   const matches = users.filter(user => user.username.toLowerCase().includes(query));
-  $('#profile').replaceChildren(...matches.map(user => new Option(`@${user.username}`, user.username)));
-  if (!matches.length) $('#profile').add(new Option('No matching profiles', ''));
+  const placeholder = new Option(matches.length ? 'Select a profile' : 'No matching profiles', '');
+  placeholder.disabled = true;
+  $('#profile').replaceChildren(placeholder, ...matches.map(user => new Option(`@${user.username}`, user.username)));
   $('#profile').disabled = !matches.length;
-  if (matches.some(user => user.username === active?.username)) $('#profile').value = active.username;
-  else if (selectFirst && matches.length) active?.setProfile(matches[0]);
+  $('#profile').value = matches.some(user => user.username === active?.username) ? active.username : '';
   $('#profileCount').textContent = `${matches.length} of ${users.length} profiles`;
 }
 function select(story) {
@@ -71,12 +101,12 @@ function select(story) {
   $('#timeValue').value = story.time; $('#format').value = story.canvas.height;
   $('#photoRatio').value = story.ratio;
   $('#progress').value = $('#progressValue').value = story.progress;
-  $('#profileSearch').value = ''; filterProfiles(false); showUnits(); refresh(story);
+  $('#profileSearch').value = ''; filterProfiles(); showUnits(); refresh(story);
 }
 function addStory() {
   const height = Number($('#format').value);
   const story = createStory(stories.length + 1, { assets, onSelect: select, onChange: refresh, onDownload: download, say, root });
-  stories.push(story); story.setHeight(height); select(story); story.setProfile(users[0]);
+  stories.push(story); story.setHeight(height); select(story); assignUser(story); filterProfiles();
   if (stories.length > 1) story.element.scrollIntoView({ block: 'nearest', inline: 'end' });
   say(`Story ${story.id}: paste or upload a review photo.`);
 }
@@ -99,11 +129,8 @@ $('#profileSearch').addEventListener('input', () => filterProfiles());
 $('#profile').addEventListener('change', () => active?.setProfile(users.find(user => user.username === $('#profile').value)));
 $('#randomProfile').addEventListener('click', () => {
   if (!active) return;
-  const choices = savedUsers ? randomChoices() : [];
-  if (!choices.length) return;
-  const user = choices[Math.floor(Math.random() * choices.length)];
-  active.setProfile(user);
-  $('#profileSearch').value = ''; filterProfiles(false);
+  assignUser(active);
+  $('#profileSearch').value = ''; filterProfiles();
 });
 window.addEventListener('paste', event => {
   if (!isActive() || event.target.closest?.('input, textarea, [contenteditable=true]')) return;
@@ -149,7 +176,7 @@ root.querySelectorAll('[data-unit]').forEach(button => button.addEventListener('
   if (!active) return;
   active.unit = button.dataset.unit; showUnits(); active.paint();
 }));
-driveUI = setupDrive(() => stories, setSavedUsers, root);
+driveUI = setupDrive(() => stories, setSavedUsers, root, setProduct);
 $('#zoom').addEventListener('input', () => active?.framer.setZoom(Number($('#zoom').value)));
 $('#resetPhoto').addEventListener('click', () => active?.framer.reset());
 $('#format').addEventListener('change', () => active?.setHeight(Number($('#format').value)));

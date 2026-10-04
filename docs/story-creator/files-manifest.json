@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 20174,
-    "sha256": "3b019b34d1d90a72fa8dd3f1ddfee5a9adbf73d5724df415f6418e140ee9a20c"
+    "bytes": 20925,
+    "sha256": "325f21da5ca68912ecb22f813ae0bc8b719b1ec329a4a8eebead06088519159e"
   },
   {
     "path": "app.css",
@@ -146,18 +146,18 @@
   },
   {
     "path": "docs/qa/story-retry-check.js",
-    "bytes": 1353,
-    "sha256": "b24df1ed4463f7bdaccc457b600bd8ec62a8bb6b04ea7367126809be2d8a910a"
+    "bytes": 1387,
+    "sha256": "216877f618a88dd70810474c82c215dd2f38197c3d59a49afdb563d45d498a07"
   },
   {
     "path": "docs/qa/story-setup-check.js",
-    "bytes": 3636,
-    "sha256": "01d7a904c931ef862fc678a2a7801ee25c8c615f32841d0224a49778f0e11dff"
+    "bytes": 3696,
+    "sha256": "84d186faae3c9ebfea0f0cf5500450bf1e6d50be45b9d7d916ec0c26a992e6c8"
   },
   {
     "path": "docs/qa/workspace-check.js",
-    "bytes": 2613,
-    "sha256": "e6ab694297e30b093ac54022f38cae1210cfc069c49c798c7459538470d229de"
+    "bytes": 2673,
+    "sha256": "3884c855c0cf3592f2e19fcce821c5ec6b577762eb61e592550cdd7fd75f21b9"
   },
   {
     "path": "docs/qa/workspace-input-check.js",
@@ -291,8 +291,13 @@
   },
   {
     "path": "docs/story-creator/qa/india-check.js",
-    "bytes": 1939,
-    "sha256": "5d988b7c9229ea98796ea19e8755b1112f9ab42281f399eec8933b3325d3f1d9"
+    "bytes": 1991,
+    "sha256": "b5d14f374bfe1118086db382fd00ce1cb11c9affd26f27af95735d4eb09281a8"
+  },
+  {
+    "path": "docs/story-creator/qa/profile-lifecycle.test.mjs",
+    "bytes": 2212,
+    "sha256": "cddd597f3c16b23cd84c2981a124a51d2fe9b2d2db93171a27bc8d41d23d0499"
   },
   {
     "path": "docs/story-creator/qa/progress-check.js",
@@ -306,13 +311,13 @@
   },
   {
     "path": "docs/story-creator/qa/random-user-check.js",
-    "bytes": 1848,
-    "sha256": "e35362fc3ff96d94259541d761cb24bd89ac486c74d2d4f471e043d34e88721e"
+    "bytes": 1874,
+    "sha256": "08d320b0765a6bd8a107bfc6951802df16cddf682b7809449edff0de375e7b58"
   },
   {
     "path": "docs/story-creator/qa/saved-users-check.js",
-    "bytes": 5592,
-    "sha256": "33c7541fcc3254cb8fd2434e9c143bcab739eb281d089db931e29ff456b462ee"
+    "bytes": 8935,
+    "sha256": "2022fec6ea437a2e3a8af64f09a2d4c4a5aaff59f094bba77f9a2a5dbeca837e"
   },
   {
     "path": "docs/story-creator/qa/saved-users.test.mjs",
@@ -356,8 +361,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 42667,
-    "sha256": "f914753adf7302fa27a30b811afc5a6467314af7a7ad110887c0ec11f8fda89a"
+    "bytes": 42801,
+    "sha256": "8bcd0e0b5656ec910b667039c4444f67243cfb9a1f185f8d4441707edd441235"
   },
   {
     "path": "lab/frame.html",
@@ -506,8 +511,8 @@
   },
   {
     "path": "stories/card.js",
-    "bytes": 4622,
-    "sha256": "1b97a19215f689199a6dd4ff7efe9dab7a7415a44b6a0a8b7e3d23c0f5ffd556"
+    "bytes": 4629,
+    "sha256": "e3f71bdd311551ef7fb382aed837da84404c91f0bbacb58898f4c331a3520c1d"
   },
   {
     "path": "stories/crop.js",
@@ -536,8 +541,8 @@
   },
   {
     "path": "stories/drive-ui.js",
-    "bytes": 7820,
-    "sha256": "196f75bf7e2fb212360f95f99a1778580ccc91a7084482b4c4e053abd3b94489"
+    "bytes": 8232,
+    "sha256": "65eb6563fe03ae38ad27fd3a630d0549aed0759e1ced47c840551836958d70b8"
   },
   {
     "path": "stories/entry.js",
@@ -3566,8 +3571,8 @@
   },
   {
     "path": "stories/render.js",
-    "bytes": 2809,
-    "sha256": "c1e36c7982216ea891c6bdd2bb53418fb15f78978da5d5a65acd1f1d933049f5"
+    "bytes": 2831,
+    "sha256": "83af5ebc1bd8cd096f731a5cf6a03ed2ec1293e9dc5d3c28cb694bd0b2d42ea0"
   },
   {
     "path": "stories/saved-users.js",
@@ -3581,8 +3586,8 @@
   },
   {
     "path": "stories/story.js",
-    "bytes": 8863,
-    "sha256": "d548a0030fbf524243fc4ea363fee5107363fb7c9adf58d5ddbfc7d759d156ef"
+    "bytes": 9670,
+    "sha256": "c92611ed89843891d78af30aeb57bc4c5e32a9450b30b8372b337a3c0bdf2635"
   },
   {
     "path": "styles/fonts.css",

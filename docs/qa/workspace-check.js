@@ -7,7 +7,7 @@
   };
   const origin = performance.timeOrigin;
   $('#tabStory').click();
-  await wait(() => $('#profile')?.options.length === 600);
+  await wait(() => [...($('#profile')?.options || [])].filter(o => o.value).length === 600);
   const canvas = $('.story-canvas');
   $('#timeValue').value = '17'; $('#timeValue').dispatchEvent(new Event('change'));
   const frame = canvas.toDataURL();
@@ -21,7 +21,7 @@
   check('Tabs do not navigate or embed another page', performance.timeOrigin === origin && !document.querySelector('iframe[src*="stories"]'));
   const ids = [...document.querySelectorAll('[id]')].map(element => element.id);
   check('Combined document has unique IDs', ids.length === new Set(ids).size);
-  check('Drive, HEIC, bulk download and profile controls retained', !!$('#driveSave') && $('.story-file').accept.includes('.heic') && !!$('#downloadAll') && $('#profile').options.length === 600);
+  check('Drive, HEIC, bulk download and profile controls retained', !!$('#driveSave') && $('.story-file').accept.includes('.heic') && !!$('#downloadAll') && [...$('#profile').options].filter(o => o.value).length === 600);
   $('#tabCarousel').click();
   check('Carousel input survives switching', $('#prodInput').value === before);
   check('Build action belongs to its composer', $('#btnBuild').closest('#rail'));

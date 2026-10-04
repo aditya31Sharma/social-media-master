@@ -51,9 +51,9 @@ export function createStory(id, { assets, onSelect, onChange, onDownload, say, r
     else paint();
   };
   story.setProfile = async user => {
-    if (!user) return;
     const request = ++avatarRequest;
-    story.username = user.username; story.avatar = null; paint();
+    story.username = user?.username || ''; story.avatar = null; paint();
+    if (!user) return;
     try {
       const avatar = await loadImage(new URL(`profiles/${user.photo}`, import.meta.url));
       if (request !== avatarRequest) return;

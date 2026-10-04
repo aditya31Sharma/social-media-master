@@ -14,7 +14,7 @@
     if ($('.story-editor')) throw new Error('Partial editor left behind after failure');
     window.fetch = original;
     $('#retryStory').click();
-    await wait(() => $('#profile')?.options.length === 600);
+    await wait(() => [...($('#profile')?.options || [])].filter(o => o.value).length === 600);
     if (document.querySelectorAll('.story-editor').length !== 1 || document.querySelectorAll('.story-card').length !== 1) throw new Error('Retry duplicated the editor');
     $('#addStory').click();
     if (document.querySelectorAll('.story-card').length !== 2) throw new Error('Retry duplicated event listeners');

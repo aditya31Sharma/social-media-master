@@ -8,13 +8,19 @@
     throw new Error('Timed out waiting for Drive scan');
   };
   const users = await (await fetch('stories/profiles/users.json')).json();
-  const excluded = users.slice(1, 26).map(user => user.username);
+  const excluded = users.slice(0, 25).map(user => user.username);
   const product = $('#driveProduct');
   await wait(() => product.options.length > 1);
   const selectedId = product.options[1].value;
   if (product.value) throw new Error('Test requires no selected product');
+  if ($('#profile').value || !$('canvas').getAttribute('aria-label').includes('Story 1: ,')) throw new Error('Initial story has a default user');
+  $('#profileSearch').value = users[0].username; $('#profileSearch').dispatchEvent(new Event('input'));
+  if ($('#profile').value || !$('canvas').getAttribute('aria-label').includes('Story 1: ,')) throw new Error('Search assigned a profile');
+  $('#profileSearch').value = ''; $('#profileSearch').dispatchEvent(new Event('input'));
+  product.selectedIndex = 1; product.dispatchEvent(new Event('change'));
+  if ($('#profile').value || !$('#randomProfile').disabled) throw new Error('SKU assigned an unchecked user before Drive scan');
   const originalGoogle = window.google;
-  let failScan = false, scanRequests = 0;
+  let failScan = false, scanRequests = 0, holdNextScan = false, releaseOldScan;
   const mockGoogle = { accounts: { oauth2: { initTokenClient: config => ({ requestAccessToken: () => config.callback({ access_token: 'test-token' }) }) } } };
   window.google = mockGoogle;
   const originalFetch = window.fetch;
@@ -32,14 +38,20 @@
       scanRequests++;
       if (failScan && group[1] === '5') return Response.json({ error: { message: 'Folder unavailable' } }, { status: 403 });
       const offset = (Number(group[1]) - 1) * 5;
-      return Response.json({ files: excluded.slice(offset, offset + 5).map((name, i) => ({ id: `file${offset + i}`, name: `story-${i + 1}-${name}-12m.webp`, mimeType: 'image/webp' })) });
+      const files = excluded.slice(offset, Number(group[1]) === 5 ? undefined : offset + 5).map((name, i) => ({ id: `file${offset + i}`, name: `story-${i + 1}-${name}-12m.webp`, mimeType: 'image/webp' }));
+      if (holdNextScan && group[1] === '5') {
+        holdNextScan = false;
+        await new Promise(resolve => { releaseOldScan = resolve; });
+      }
+      return Response.json({ files });
     }
     throw new Error(`Unexpected Drive request ${url}`);
   };
   $('#driveConnect').click();
   await wait(() => !$('#randomProfile').disabled);
-  if ($('#profile').options.length !== 600) throw new Error('Manual picker lost profiles');
+  if ([...$('#profile').options].filter(o => o.value).length !== 600) throw new Error('Manual picker lost profiles');
   if (!$('#driveConnectionNote').textContent.includes('25 saved WebPs across Tenzen Reviews')) throw new Error('Saved count missing');
+  if (!$('#profile').value || excluded.includes($('#profile').value)) throw new Error('SKU did not auto-assign an unused profile after scan');
   const random = Math.random;
   try {
     Math.random = () => 0;
@@ -54,7 +66,9 @@
   const newUser = users[40].username;
   product.selectedIndex = 1;
   product.dispatchEvent(new Event('change'));
-  if ($('#randomProfile').disabled || scanRequests !== 5) throw new Error('Product selection changed global exclusions');
+  if ($('#profile').value || !$('#randomProfile').disabled) throw new Error('SKU switch retained a profile before its check');
+  await wait(() => !$('#randomProfile').disabled);
+  if (excluded.includes($('#profile').value) || scanRequests !== 10) throw new Error('SKU selection failed to recheck global exclusions');
   $('#profile').value = newUser;
   $('#profile').dispatchEvent(new Event('change'));
   const photo = document.createElement('canvas');
@@ -70,18 +84,44 @@
   $('#driveSave').click();
   await wait(() => $('#driveStatus').textContent.startsWith('Saved 1 WebPs'));
   if (!$('#randomProfileNote').textContent.startsWith('26 saved users')) throw new Error('New save did not update exclusions');
+  excluded.push(newUser);
   product.selectedIndex = 2; product.dispatchEvent(new Event('change'));
+  await wait(() => !$('#randomProfile').disabled);
   $('#driveSearch').value = 'no-such-product'; $('#driveSearch').dispatchEvent(new Event('input'));
-  if ($('#randomProfile').disabled || scanRequests !== 5) throw new Error('Switching or clearing product reset global exclusions');
+  if (!$('#randomProfile').disabled || $('#profile').value) throw new Error('Clearing SKU did not clear the profile');
+  $('#driveSearch').value = ''; $('#driveSearch').dispatchEvent(new Event('input'));
+  product.selectedIndex = 1; product.dispatchEvent(new Event('change'));
+  await wait(() => !$('#randomProfile').disabled);
   const chosen = new Set([...excluded, newUser]);
   for (let i = 0; i < 25; i++) {
     $('#randomProfile').click();
     if (chosen.has($('#profile').value)) throw new Error('Randomize selected a saved username after upload');
   }
+  const assigned = $('#profile').value;
+  $('#addStory').click();
+  if (!$('#profile').value || $('#profile').value === assigned || chosen.has($('#profile').value)) throw new Error('New story repeated a saved or open-draft user');
   failScan = true; window.google = mockGoogle; $('#driveConnect').click();
-  if (!$('#randomProfile').disabled) throw new Error('Reconnect reused stale exclusions');
+  if (!$('#randomProfile').disabled || $('#profile').value) throw new Error('Reconnect reused stale exclusions or profile');
   await wait(() => !$('#driveConnect').disabled);
   if (!$('#randomProfile').disabled || !$('#driveSave').disabled || !$('#driveConnectionNote').textContent.includes('Could not check all saved stories')) throw new Error('Partial global scan enabled randomize or hid failure');
+  failScan = false;
+  product.value = ''; product.dispatchEvent(new Event('change'));
+  window.google = mockGoogle; $('#driveConnect').click();
+  await wait(() => !$('#driveConnect').disabled);
+  if ($('#profile').value || !$('#randomProfile').disabled) throw new Error('Connecting without a SKU auto-assigned a user');
+  holdNextScan = true;
+  product.selectedIndex = 1; product.dispatchEvent(new Event('change'));
+  await wait(() => releaseOldScan);
+  excluded.push(users[90].username);
+  product.selectedIndex = 2; product.dispatchEvent(new Event('change'));
+  await wait(() => $('#randomProfileNote').textContent.startsWith('27 saved users'));
+  const latestUser = $('#profile').value;
+  releaseOldScan(); await new Promise(resolve => setTimeout(resolve, 100));
+  if (!$('#randomProfileNote').textContent.startsWith('27 saved users') || $('#profile').value !== latestUser) throw new Error('An older SKU scan replaced the latest result');
+  excluded.splice(0, excluded.length, ...users.map(user => user.username));
+  product.selectedIndex = 1; product.dispatchEvent(new Event('change'));
+  await wait(() => $('#randomProfileNote').textContent.startsWith('600 saved users'));
+  if ($('#profile').value || !$('#randomProfile').disabled || !$('#driveSave').disabled) throw new Error('Exhausted profile pool fell back to a used user');
   window.fetch = originalFetch; window.google = originalGoogle;
-  return { result: 'PASS', folders: 5, priorSavedCount: 25, excludedAfterSave: 26, randomClicks: 50, productIndependent: true, partialScanBlocked: true, manualProfiles: $('#profile').options.length };
+  return { result: 'PASS', folders: 5, priorSavedCount: 25, excludedAfterSave: 26, randomClicks: 50, productIndependent: true, partialScanBlocked: true, manualProfiles: [...$('#profile').options].filter(o => o.value).length, blankInitialUser: true, skuAutoAssignment: true, uniqueDrafts: true, connectionWithoutSkuBlank: true, exhaustedPoolBlank: true, staleScanIgnored: true };
 })()

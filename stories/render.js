@@ -46,7 +46,8 @@ export function drawStory(canvas, state, assets) {
   while (ctx.measureText(state.username).width > 605 && size > 28) ctx.font = `700 ${--size}px StoryRoboto`;
   ctx.fillText(state.username, 168, 120);
   const timeX = 168 + ctx.measureText(state.username).width + 28;
-  ctx.font = '400 42px StoryRoboto'; ctx.fillText(`${state.time} ${state.unit}`, timeX, 120);
+  ctx.font = '400 42px StoryRoboto';
+  if (state.username) ctx.fillText(`${state.time} ${state.unit}`, timeX, 120);
   const footer = ctx.createLinearGradient(0, h - 26, 0, h - 324);
   footer.addColorStop(0, 'rgba(0,0,0,.2)'); footer.addColorStop(.35729, 'rgba(0,0,0,.1)'); footer.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = footer; ctx.fillRect(0, h - 324, 1080, 298);

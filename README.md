@@ -136,13 +136,20 @@ and account status visible. Product search and selection are first in the left
 controls. On phones the order is connection, product, previews, then editing.
 Save to Drive sits beside the preview download actions.
 Connecting Drive scans saved WebPs across every product folder in `Tenzen Reviews`,
-including nested folders and paginated results. Randomize excludes usernames found
-in earlier filenames or upload metadata across all SKUs. It works without a
-selected product after the complete scan succeeds. Selecting, filtering or
-refreshing products does not reset exclusions; the product only chooses the save
-destination. Each successful upload immediately extends the global exclusion list.
-The connection strip shows total saved WebPs and excluded users. Reconnect to pick
-up saves from another session. Randomize stays disabled if any folder scan fails.
+including nested folders and paginated results. New stories start with no username
+or DP. Selecting a SKU triggers a fresh global scan and then assigns unused random
+profiles. Selecting the SKU before connecting waits for the successful connection
+scan. Connecting without a SKU leaves profiles blank. Filtering the profile list
+never selects a user implicitly.
+
+Automatic assignment and Randomize exclude saved usernames across ALL SKUs,
+including earlier filenames and upload metadata, plus usernames already assigned
+to other open stories. Adding another story uses this same checked pool. Clearing
+the SKU clears the profiles. A failed or incomplete scan, or an exhausted pool,
+leaves unassigned stories blank and Randomize disabled. Older scan/avatar requests
+cannot overwrite newer selections. Each completed upload extends the exclusions
+immediately while retaining the identity displayed on the saved card.
+
 All 600 accounts remain in the manual profile picker.
 HEIC and HEIF iPhone photos are accepted. A pinned browser decoder loads only when
 the browser cannot open one natively; conversion stays in the browser.
@@ -353,3 +360,9 @@ Cinematic lighting QA:38 Node tests and24 browser checks cover the shared defaul
 all six topwear categories, preserved custom choices and all selectable presets.
 Real Chrome renders all eight presets on light and dark garments; a sampled24-frame
 1080p MP4 and separate cover verify colored lighting through export.
+
+Story identity QA:40 Node tests plus browser regressions verify blank initial
+profiles, no implicit search selection, assignment after SKU/global scan, global
+saved-user exclusions, distinct draft users, upload updates, failed/exhausted
+scans and stale requests. All600 manual profiles remain; the empty-state option
+is excluded from profile counts. Story/card/render/Drive UI use20261004-users1.

@@ -15,7 +15,7 @@
   check('DP matches chosen username',expected.every((value,i)=>Math.abs(value-actual[i])<=1));
   $('#profileSearch').value='no-such-user';$('#profileSearch').dispatchEvent(new Event('input'));
   $('#randomProfile').click();await wait(()=>!$('#download').disabled);
-  check('Clears search and restores full profile list',$('#profileSearch').value==='' && $('#profile').options.length===600);
+  check('Clears search and restores full profile list',$('#profileSearch').value==='' && [...$('#profile').options].filter(o => o.value).length===600);
   const first=$('canvas').toDataURL();$('#addStory').click();$('#randomProfile').click();
   check('Other story remains unchanged',$('[data-story-id="1"] canvas').toDataURL()===first);
   let previous=$('#profile').value;

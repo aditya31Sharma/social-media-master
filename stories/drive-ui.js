@@ -3,7 +3,7 @@ import { storyWebP } from './download.js';
 import { connectDrive } from './drive-auth.js';
 import { DRIVE_ACCOUNT } from './drive-api.js';
 
-export function setupDrive(getStories, onSavedUsers, root = document) {
+export function setupDrive(getStories, onSavedUsers, root = document, onProductSelected = () => {}) {
   const $ = selector => root.querySelector(selector);
   let products = [], selected = null, drive = null, busy = false, loadingProducts = false, scanVersion = 0;
   let savedUsers = null, savedFileCount = 0;
@@ -63,6 +63,7 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
     $('#driveProduct').value = matches.some(product => product.id === selected?.id) ? selected.id : '';
     $('#driveProduct').disabled = !matches.length;
     if (!$('#driveProduct').value) {
+      if (selected) onProductSelected(null);
       selected = null; $('#driveFolderLink').hidden = true;
       status('Select a product folder before saving.');
     }
@@ -88,7 +89,7 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
       status(selected ? `Stories will save to ${selected.title}.` : `${products.length} products. Choose a folder before saving.`);
     } catch (error) {
       if (request !== productsRequest) return;
-      products = []; selected = null; $('#driveSearch').disabled = true;
+      products = []; selected = null; onProductSelected(null); $('#driveSearch').disabled = true;
       $('#driveFolderLink').hidden = true; filter();
       status(`Products could not load: ${error.message}`, true);
     }
@@ -99,7 +100,12 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
     selected = products.find(product => product.id === $('#driveProduct').value) || null;
     $('#driveFolderLink').hidden = true;
     status(selected ? `Stories will save to ${selected.title}.` : 'Select a product folder before saving.');
+    // Recheck the whole review library before assigning a user to a new SKU.
+    // Starting the scan first invalidates the old exclusions synchronously.
+    const scan = drive && selected ? scanSavedUsers() : Promise.resolve();
+    onProductSelected(selected);
     showProductFolder(); refresh();
+    scan.finally(refresh);
   });
   $('#driveRefresh').addEventListener('click', loadProducts);
   $('#driveConnect').addEventListener('click', async () => {
@@ -134,7 +140,7 @@ export function setupDrive(getStories, onSavedUsers, root = document) {
         savedUsers.add(file.username.toLowerCase());
         savedFileCount++;
         globalSummary();
-        onSavedUsers(new Set(savedUsers));
+        onSavedUsers(new Set(savedUsers), { source: 'upload' });
         saved++; status(`Saved ${saved} of ${files.length} to ${selected.title}.`);
       }
       const skipped = getStories().length - ready.length;

@@ -6,7 +6,7 @@
     for (let i = 0; i < 200; i++) { if (predicate()) return; await new Promise(resolve => setTimeout(resolve, 50)); }
     throw new Error('Story setup did not settle');
   };
-  await wait(() => $('#profile')?.options.length === 600 && $('#driveProduct').options.length > 1);
+  await wait(() => [...($('#profile')?.options || [])].filter(o => o.value).length === 600 && $('#driveProduct').options.length > 1);
   check('App icon replaces Tenzen in header', !!$('.topbar .workspace-brand-icon') && !$('.topbar .brand__mark') && !$('.topbar').textContent.includes('Tenzen'));
   check('Google Reel icon has matching normalized outline', $('#i-reel').dataset.source === 'google-material-symbols' && (60 + Number($('#i-reel').getAttribute('stroke-width'))) / 40 === Number($('#i-carousel').getAttribute('stroke-width')));
   check('Connection is above both editor columns', $('#driveConnection').parentElement.classList.contains('story-editor') && !$('#driveConnect').closest('.story-controls'));
@@ -22,7 +22,7 @@
     answer({ error: 'access_denied' });
     await wait(() => $('#driveConnection').dataset.state === 'error');
     check('Failed connection offers retry without enabling randomize', !$('#driveConnect').disabled && $('#randomProfile').disabled && $('#driveSave').disabled && $('#driveConnectionNote').textContent.includes('access_denied'));
-    check('Manual profiles remain available after connection failure', !$('#profile').disabled && $('#profile').options.length === 600);
+    check('Manual profiles remain available after connection failure', !$('#profile').disabled && [...$('#profile').options].filter(o => o.value).length === 600);
   } finally { window.google = previousGoogle; }
   const track = $('#storyTrack');
   for (let i = 0; i < 4; i++) $('#addStory').click();
