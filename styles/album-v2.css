@@ -1,3 +1,5 @@
+@font-face { font-family: Geist; src: url('../assets/fonts/geist-latin.woff2') format('woff2'); font-weight: 100 900; font-style: normal; font-display: swap; }
+#albumV2Setup { font-family: Geist, sans-serif; }
 #albumV2Setup { grid-template-columns: minmax(0, 1fr); }
 #albumV2Setup[hidden], #albumV2Template[hidden], #albumV2Setup [data-v2-retry][hidden] { display: none; }
 #albumV2Setup .album-model__thumb { height: 90px; }

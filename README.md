@@ -464,68 +464,76 @@ SoftwareWebGL QA was much slower; use hardwareMetal on this Mac for full exports
 Recovery manifest now covers744 shipped files.
 
 
-## Album creator V2 (2026-10-05)
+## Album creator V2 (revised 2026-10-05)
 
 Choose **Reel > Reel template > Album creator V2 > Set up Album creator V2**.
-This is a separate template with independent settings and finished outputs.
-The existing Album showcase and Outfit reel remain available.
+V2 has its own settings and finished outputs. Original Album showcase and Outfit
+reel behavior remain unchanged.
 
-The bundled `intro-winter.mp4` plays in full (10.7667 seconds, 720x1280 source),
-with its original audio enabled. Replace the intro, omit it, or mute it in the
-editor. The gallery adds 23 seconds by default, with a 30-second option.
-Gallery music starts after the intro; the intro audio plays once and never loops.
-Default total length is 33.7667 seconds at 60fps.
+The winter intro is exactly three seconds, using the first three seconds of the
+bundled video and its audio. Shorter replacement videos hold their final frame;
+shorter audio does not loop. Gallery music starts at three seconds. The gallery
+adds 23 seconds by default, with a 30-second option. Default total is 26 seconds.
+The intro can be replaced, disabled or muted.
 
-Five Shopify Shoot-1 photos load automatically, in this order: Victor Doom,
-California Love, The Ragnarsons, Kingdom Of Northumbria, Stand Unshaken.
-Original backgrounds stay in the photos. Each portrait 2:3 card sits in a
-perspective stack on a dark stage. The camera pushes into a photo, holds its
-product detail, pulls back, then flips/drops the current card to reveal the next.
-Seven shutter samples over 60ms blur gallery flips and camera moves.
+The intro is the first physical card in the stack. **Tenzen Presents** appears
+abruptly at 0.5 seconds, alongside the **Tenzen Angels** creator label. These
+labels remain attached to the video as it zooms out from 1.9 to 2.35 seconds and
+moves to the back by three seconds. The intro is then completely hidden.
+**Intro text** restores V1's heading, album and creator editors: text, font,
+size, spacing, line height, color, weight, alignment and position. **Edit intro**
+supports dragging, center snapping and keyboard nudging through the shared V1
+text editor. Local font discovery and font-file import remain available.
 
-The centered frosted card is 86% of frame width by 82% of height, occupying
-70.52% of the viewport. It contains the rotating 3D garment, editable product
-name and animated Add to Bag button. Behind it, the shoot photo is blurred,
-desaturated and dimmed. Garments use the existing Dramatic side lighting and
-shared GLB cache, original export textures and three angular blur samples.
-V2 garment canvases are 320x384 in preview and 960x1152 in export. The optional
-size argument in `createAlbumProducts` leaves V1's default dimensions unchanged.
+Five bundled Shoot-1 photos load in order: Victor Doom, California Love,
+The Ragnarsons, Kingdom Of Northumbria, Stand Unshaken. Photos retain their
+backgrounds and sit on portrait 2:3 cards. Each card fits fully within the frame
+in 0.55 seconds, then holds clear for one second before its product panel enters.
+The panel leaves before the photo zooms out. The outgoing photo dips forward,
+recedes in depth and settles at the rear of the circular stack; the next card
+then fits into view. No product cards are removed from the stack. The final
+product holds. The 30-second gallery option proportionally lengthens these holds.
 
-The button visibly receives a cursor click, then becomes an Added/check pill
-and Visit bag pill. Their 30:70 split, 8px-equivalent gap and 0.5-second
-cubic-bezier(.32,.72,0,1) transition follow the live Tenzen product page.
-This is a rendered video animation and sends no cart requests.
+The frosted panel is attached to the screen bottom, full width and 60% height.
+It contains the garment, product name and garment type/color on separate lines,
+using the same `splitTitle` helper as Carousel. The default font is **Geist**,
+self-hosted in `assets/fonts/geist-latin.woff2` from the live Tenzen site. The
+shoot background is blurred, desaturated and dimmed only when the panel appears.
 
-Each product can be reordered, renamed, given a replacement shoot photo
-(including HEIC) or a local GLB. Preview playback and scrubbing use the same
-clock as export. Output is 720p or 1080p, 60fps H.264 MP4 with AAC when audio is
-included, plus a PNG cover. Intro seeking is deterministic at 30fps; the final
-MP4 repeats those source frames on its 60fps timeline. The source intro is
-720p and is scaled when exporting 1080p.
+Garments rotate at 36 degrees/second (one turn per 10 seconds at default timing).
+Gallery motion uses five temporal samples over 8ms; garments use three angular
+samples at +/-0.012 radians. V1 retains its previous blur and rotation settings.
+V2 garment rendering uses 360x360 previews and 1000x1000 export canvases, original
+export textures and existing Dramatic side lighting.
 
-Files: `lib/album-v2-{motion,media,render,ui}.js`, `styles/album-v2.css`, and
-`assets/album-v2/` containing five shoot WebPs, intro MP4/AAC and product/source
-metadata. All media is bundled for recovery; GLBs use existing Shopify URLs.
-App, dialog and import-map registration connect V2 without replacing V1.
-Cache key: `20261005-albumv2-1`. No dependencies, services or HQ changes.
+There is no cursor. Add to Bag has an implicit press, then becomes Added/check
+and Visit bag. The row matches the live mobile site's measured proportions:
+348px wide in a 390px viewport, 21px side margins, 64px height and an 8px split
+gap, scaled to the export width. The split retains the site's 30:70 ratio and
+0.5-second cubic-bezier(.32,.72,0,1). It is a video animation, with no cart calls.
 
-Loading failures show Retry and block export. After a failed replacement GLB,
-choose a valid GLB and retry. A failed rebuild cannot export an old preview
-with newly edited product data. Local uploads and settings last for the page
-session, matching the other Reel templates.
+Each product can be reordered, renamed or given a replacement shoot photo
+(including HEIC) or local GLB. Playback and export share the deterministic
+renderer. Output is 720p/1080p 60fps H.264 MP4 with optional AAC, plus a PNG cover.
+The intro source is 720x1280 at 30fps and is scaled for 1080p exports. Uploads,
+font selections and settings last for the page session.
 
-V2 verification: 63 unit tests, 15 V2 browser checks, 16 V1 checks, 24 Outfit fit
-checks and 13 workspace checks passed. Layouts verified at 375/768/1024/1440px.
-Full 1080x1920 H.264/AAC export contains 2027 frames (33.7833s video, 33.856s
-including AAC padding), with zero browser errors. All five products and CTA
-states were inspected in exported frames. Intro source frames visibly advance.
+Modules: `lib/album-v2-{motion,media,render,ui,labels}.js`, scoped
+`styles/album-v2.css`, bundled `assets/album-v2/` media/source metadata and Geist.
+Relative URLs support both published addresses. Cache key: `20261005-albumv2-2`.
+No new dependencies, services, original-template animation changes or HQ edits.
 
-Known trap: Python's simple HTTP server does not offer byte-range seeking;
-Chrome can report seek completion while remaining at time zero. Load the intro
-as a complete Blob URL before seeking. The seek loop also rejects an unchanged
-position, preventing an infinite loop. Normal source-frame seeks measured 3-4ms.
+Known trap: hosts without HTTP range support can report successful video seeks
+while remaining at time zero. Always load the intro into a complete Blob URL
+before seeking, and reject a seek that does not reach its target. GLB failures
+block export and expose Retry; invalid replacements cannot export stale data.
 
-Final V2 export took 26.145s on hardware Metal. Seven additional checks passed:
-GLB failure blocks export, Retry recovers, custom intro retains audio, invalid
-replacement blocks stale export, valid replacement restores it, Escape closes,
-and keyboard focus stays in the dialog. Recovery manifest covers 760 files.
+Revision QA: 66 unit tests, 18 V2 browser checks, 16 V1 checks and 24 Outfit fit
+checks passed with zero page errors. Four viewport sizes (375/768/1024/1440px)
+have no overflow. Intro onset, clean-photo timing, circular handoff continuity,
+60% panel area, title splitting and trimmed audio are covered by tests.
+
+Final revision export: 1560 H.264 frames at 1080x1920, exactly 26.000s video
+plus AAC padding to 26.0693s; completed in 19.328s on hardware Metal. Real intro
+label dragging, center alignment and local font-file import also passed.
+Recovery verification covers 763 shipped files.
