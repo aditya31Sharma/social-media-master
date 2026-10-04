@@ -20,11 +20,11 @@
   ]) {
     await pick('#topInput', query, handle);
     await wait(() => $('#reelTopScale').value === scale && $('#reelTopY').value === y);
-    check(`${handle} starts with Defined edges`, $('#reelLighting').value === 'contrast');
+    check(`${handle} starts with Dramatic side`, $('#reelLighting').value === 'lowkey');
     check(`${handle} applies size and height`, $('#reelTopScaleOut').textContent === `${scale}%` && $('#reelTopYOut').textContent === `${y}cm`);
     check(`${handle} applies position with neutral preview turn`, $('#reelTopX').value === x && $('#reelTopZ').value === z && $('#reelFitTurn').value === '0');
   }
-  check('Defined edges is the default lighting', $('#reelLighting').value === 'contrast');
+  check('Dramatic side is the default lighting', $('#reelLighting').value === 'lowkey');
   $('#reelLighting').value = 'backlit';
   $('#reelLighting').dispatchEvent(new Event('change', { bubbles: true }));
   set('#reelTopX', '8'); set('#reelTopZ', '12'); set('#reelTopY', '-7'); set('#reelTopScale', '94'); set('#reelFitTurn', '90');

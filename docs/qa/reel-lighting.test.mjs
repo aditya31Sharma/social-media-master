@@ -4,9 +4,9 @@ import { readFileSync } from 'node:fs';
 import { LIGHTING, lightingFor, lightPosition } from '../../lib/reel-lighting.js';
 import { LIGHT, FABRIC } from '../../lib/reel-geom.js';
 
-test('missing and unknown lighting resolve to Defined edges', () => {
+test('missing and unknown lighting resolve to Dramatic side', () => {
   for (const name of [undefined, null, '', 'unknown', '__proto__']) {
-    assert.equal(lightingFor(name), LIGHTING.contrast);
+    assert.equal(lightingFor(name), LIGHTING.lowkey);
   }
 });
 
@@ -14,12 +14,12 @@ test('the Original lighting calibration remains available', () => {
   assert.deepEqual(lightingFor('original'), { ...LIGHT, envMat: FABRIC.envMat });
 });
 
-test('every lighting preset is selectable and Defined edges is selected initially', () => {
+test('every lighting preset is selectable and Dramatic side is selected initially', () => {
   const html = readFileSync(new URL('../../index.html', import.meta.url), 'utf8');
   const select = html.match(/<select id="reelLighting"[\s\S]*?<\/select>/)[0];
   const options = [...select.matchAll(/<option value="([^"]+)"/g)].map(match => match[1]);
   assert.deepEqual(options.sort(), Object.keys(LIGHTING).sort());
-  assert.match(select, /<option value="contrast" selected>/);
+  assert.match(select, /<option value="lowkey" selected>/);
 });
 
 
@@ -47,5 +47,5 @@ test('Defined edges retains its original light positions and intensities', () =>
   assert.deepEqual(lightPosition(LIGHTING.contrast, 'key'), [Math.sin(az) * Math.cos(el) * 300, Math.sin(el) * 300, Math.cos(az) * Math.cos(el) * 300]);
   assert.deepEqual(lightPosition(LIGHTING.contrast, 'fill'), [-Math.sin(az) * 300 * .7, 40, Math.cos(az) * 300 * .7 + 120]);
   assert.deepEqual(lightPosition(LIGHTING.contrast, 'rim'), [Math.sin(az + Math.PI) * 300, 90, -240]);
-  for (const name of ['golden', 'moonlight', 'tealAmber', 'neon', 'noir']) assert.equal(lightingFor(name), LIGHTING.contrast);
+  for (const name of ['golden', 'moonlight', 'tealAmber', 'neon', 'noir']) assert.equal(lightingFor(name), LIGHTING.lowkey);
 });

@@ -88,27 +88,27 @@ starting pose; negative values move left and backward. These adjustments affect
 the preview, MP4 and separate cover. The bottom stays anchored, and the original
 entrance and turning animation remain unchanged.
 
-**Lighting** under **The fit** defaults to **Defined edges** for every garment.
+**Lighting** under **The fit** defaults to **Dramatic side** for every garment.
 It affects both garments in the preview, MP4 and separate cover, persists when
 changing products, and marks an existing export for regeneration when changed.
 
 | Preset | Lighting |
 | --- | --- |
-| Defined edges (default) | Directional key and rim with controlled fill |
+| Defined edges | Directional key and rim with controlled fill |
 | Soft studio | Balanced frontal fill and environment lighting |
 | Sculpted side | Low side key to reveal folds, with restrained opposite fill |
 | Overhead | Nearly vertical key with low frontal fill |
 | Rim silhouette | Strong rear light with a weaker front key and fill |
 | Cross light | Two opposing front-side lights, at different strengths |
-| Dramatic side | High side key, very little fill and an opposite rear rim |
+| Dramatic side (default) | High side key, very little fill and an opposite rear rim |
 | Original | Previous neutral lighting calibration |
 
 All lights are neutral white. The five additional arrangements vary individual
 key/fill/rim positions and strengths while retaining Defined edges exposure,
 tone mapping and environment response. No colored light, tint or filter is used.
-Defined edges remains the default for all models, with its exact existing
-positions/intensities preserved. Explicit user choices persist across product
-changes; missing or unknown preset names use Defined edges. The Figma gradient,
+Dramatic side is the default for all models. Defined edges remains available
+with its existing positions and intensities. Explicit user choices persist across product
+changes; missing or unknown preset names use Dramatic side. The Figma gradient,
 logo, animation and export resolution stay the same.
 
 Every stage clones its materials before adjusting them. Three.js scene clones
@@ -386,3 +386,5 @@ texture clones otherwise share image data. Stage/UI/preview modules and styleshe
 use20261004-preview1. Model downloads are still the original Shopify GLBs.
 
 Preview QA:47 Node tests;24 browser fit/default checks; real Chrome confirms one renderer across12 slider updates and8 lighting choices, network-failure Retry recovery, plus sampled24-frame1080p H.264 and1080p PNG cover export with zero page errors.
+
+Default lighting update: Dramatic side (`lowkey`) is selected initially and used for missing/unknown presets. Lighting import-map key20261004-default2; custom choices still persist across garment selections.

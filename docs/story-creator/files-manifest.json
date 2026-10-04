@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 22565,
-    "sha256": "3bbbfbdc5dde0ccb9da76ab9147a68298156e027c8f1fe766276591367b6ab31"
+    "bytes": 22789,
+    "sha256": "9b1aa7bfbea11497e8dacce7f5e23553e4e64ddb340304fc91b5ac5c34b430dc"
   },
   {
     "path": "app.css",
@@ -126,8 +126,8 @@
   },
   {
     "path": "docs/qa/reel-fit-check.js",
-    "bytes": 3605,
-    "sha256": "6df73d119378b69157ed4c9122706c18373d6b96e53f572f5a8289b7180a089b"
+    "bytes": 3601,
+    "sha256": "2869ffc207be3e7dbf47ad28a73122498b9b465a08fac3ef05658c3d7f03299a"
   },
   {
     "path": "docs/qa/reel-fit.test.mjs",
@@ -136,8 +136,8 @@
   },
   {
     "path": "docs/qa/reel-lighting.test.mjs",
-    "bytes": 2865,
-    "sha256": "d17c4086d1bcdc02d806944ce2c07842ce8cd0fda757b7d6564cb303f2a2d8de"
+    "bytes": 2859,
+    "sha256": "f428cb52e68114613ddbbd9a3cc4bda3f6679601cdc07c42da79281ee1ec1a83"
   },
   {
     "path": "docs/qa/reel-preview.test.mjs",
@@ -367,7 +367,7 @@
   {
     "path": "index.html",
     "bytes": 43157,
-    "sha256": "d501fe60f3c065ff22c6b1da92d1cab0c356bc16fe012b1c8bec22ac84d5877d"
+    "sha256": "70a0c61d0a5503eac51a9eae4cda4913b9ecec77e99df425c4a2c123435ffab3"
   },
   {
     "path": "lab/frame.html",
@@ -441,8 +441,8 @@
   },
   {
     "path": "lib/reel-lighting.js",
-    "bytes": 2246,
-    "sha256": "016e2025b4d0694eb13ff6a1a2a732c932e846f168caa8d45206666d893d868a"
+    "bytes": 2244,
+    "sha256": "e14aa95dc8dd9716740cc068f265fffe625cf90c50cbcbc696083787780e9a36"
   },
   {
     "path": "lib/reel-picker.js",
