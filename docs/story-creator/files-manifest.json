@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 32058,
-    "sha256": "7e0859d81a1c6d3c140ca1810a1555eb6855daa15513cd5a092372450eb82a23"
+    "bytes": 32629,
+    "sha256": "43977bb49ad3528a604aa789032acd67e494e872c9f3316d776bbb1266c2e8d3"
   },
   {
     "path": "app.css",
@@ -226,13 +226,13 @@
   },
   {
     "path": "docs/qa/album-v2-browser.js",
-    "bytes": 4126,
-    "sha256": "fa471ae629f1877009e8be14252d61fc41d3d5e399b89e7db928bd0340a3a6f1"
+    "bytes": 4623,
+    "sha256": "3b0969e234c13e843560ec46e41ebd3a39eac7e54bbd7a838be36551f46adc17"
   },
   {
     "path": "docs/qa/album-v2.test.mjs",
-    "bytes": 5364,
-    "sha256": "8d604f80448e3b4590854dd2641916c621a20020b260e94d4504cc93d35f3271"
+    "bytes": 7749,
+    "sha256": "5b6a4ed554997c445bc0a16c7413a32c41af71bff64e1ac1ccbe8d8294f824a9"
   },
   {
     "path": "docs/qa/album.test.mjs",
@@ -501,8 +501,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 45198,
-    "sha256": "ad351239dbd2b8e1b91aca77bc822f3d8d5418c658d12f702716370ded85c5ba"
+    "bytes": 45277,
+    "sha256": "4d7bf6a474bf99db8b9dbc739076eefc40bde5b71b9168c789295ebd469f7790"
   },
   {
     "path": "lab/frame.html",
@@ -546,28 +546,28 @@
   },
   {
     "path": "lib/album-v2-labels.js",
-    "bytes": 2634,
-    "sha256": "2563d7bae099babcceb5b7ee34c5e5234ed461bd2097f416515848be96cda30a"
+    "bytes": 1666,
+    "sha256": "9c0e6b172fe90f0e74d962d936ef5cf5f0886f46a2126825f36da638d56f9c65"
   },
   {
     "path": "lib/album-v2-media.js",
-    "bytes": 4602,
-    "sha256": "9b5656e1dcc0537ae3a41144adb0a126deec88b23b639e6d975c1ffc688663bd"
+    "bytes": 4603,
+    "sha256": "84d96d2e69871849bf5510928163a1911bf38ae18bed41e1937645000faea3e0"
   },
   {
     "path": "lib/album-v2-motion.js",
-    "bytes": 2509,
-    "sha256": "5d1f9437e27004e47a816e76136a4a6f538cb297913e3cbaed9173367f6af6dc"
+    "bytes": 3519,
+    "sha256": "13ff040ce2593bb5f3873229380efa73b6f198cb9113d5de8507a98b5bde5827"
   },
   {
     "path": "lib/album-v2-render.js",
-    "bytes": 8409,
-    "sha256": "1b7a88374bfb82eabbde62219e879001c28b82f803a8ddf4c18f456089cd939d"
+    "bytes": 9106,
+    "sha256": "2061bde0d56ef9f88470a69256a4e40693a1d0e08f2f1db87f098e8a153ce7e9"
   },
   {
     "path": "lib/album-v2-ui.js",
-    "bytes": 15816,
-    "sha256": "a98eb07eca6bcbf961c89add3f2aba71d55c754a7633dc17420c3102fe3ecbd8"
+    "bytes": 14315,
+    "sha256": "1503f2cf767bedb115bd71d1c897b4e06e15acb12dd909dd992f7e0310a50fa8"
   },
   {
     "path": "lib/audio.js",
@@ -3813,5 +3813,25 @@
     "path": "styles/workspace.css",
     "bytes": 27577,
     "sha256": "8088a688e0cfb58c1cd3b3250bd8c58d04e1573b6d8081ffb41b27441ce429a8"
+  },
+  {
+    "path": "assets/album-v2/tenzen-wordmark.svg",
+    "bytes": 4104,
+    "sha256": "b59af25739084a990bd3b6e11d63a27b8712c1470d81abc79ae8fe6dc221d230"
+  },
+  {
+    "path": "assets/album-v2/tenzen-asterisk.svg",
+    "bytes": 960,
+    "sha256": "f4c4cc786c4c41f332c1716940d9c882d669d6821f5dec5e59dc5cacfc7906b6"
+  },
+  {
+    "path": "lib/album-v2-brand.js",
+    "bytes": 1287,
+    "sha256": "5e83907ec1f0d7b76da6f24dc7ba98d213e2dc86167b6ac3538e26eeaa2d78bb"
+  },
+  {
+    "path": "docs/plans/2026-10-05-album-v2-branding.md",
+    "bytes": 1402,
+    "sha256": "bc0dbe24c5c76799220ed66bb8ac6898b70a0f2ead620f25e5f5a5e352c2b93e"
   }
 ]

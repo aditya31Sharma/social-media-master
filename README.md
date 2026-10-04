@@ -470,29 +470,37 @@ Choose **Reel > Reel template > Album creator V2 > Set up Album creator V2**.
 V2 has its own settings and finished outputs. Original Album showcase and Outfit
 reel behavior remain unchanged.
 
-The winter intro is exactly three seconds, using the first three seconds of the
-bundled video and its audio. Shorter replacement videos hold their final frame;
-shorter audio does not loop. Gallery music starts at three seconds. The gallery
-adds 23 seconds by default, with a 30-second option. Default total is 26 seconds.
-The intro can be replaced, disabled or muted.
+The winter intro uses the first three seconds of the bundled video and is muted.
+Its only settings are **Main text**, **Tenzen logo**, **Logo color**, and **Subtext**.
+Logo choices use the original SVGs: wordmark with Japanese text, full wordmark,
+and asterisk. Main text defaults to Tenzen Presents; subtext to Tenzen Angels.
+Both use fixed Geist typography and automatically fit their allotted space.
+The three elements appear abruptly at 0.5 seconds and stay attached to the intro.
+V2 no longer exposes font, position, upload, duration, enable or audio controls
+for the intro. Original Album showcase retains its full text editor.
 
-The intro is the first physical card in the stack. **Tenzen Presents** appears
-abruptly at 0.5 seconds, alongside the **Tenzen Angels** creator label. These
-labels remain attached to the video as it zooms out from 1.9 to 2.35 seconds and
-moves to the back by three seconds. The intro is then completely hidden.
-**Intro text** restores V1's heading, album and creator editors: text, font,
-size, spacing, line height, color, weight, alignment and position. **Edit intro**
-supports dragging, center snapping and keyboard nudging through the shared V1
-text editor. Local font discovery and font-file import remain available.
+The intro shrinks centrally to 5% from 1.7 to 2.3 seconds. Five new product cards
+rise from below, tilted toward the viewer, at 0.16-second stagger intervals.
+Each straightens and settles in front of earlier arrivals. The last arriving
+card is the first selected gallery product, preserving the selected SKU order.
+The assembled stack briefly holds before that card zooms to fill 9:16.
+This replaces the earlier prebuilt stack and downward intro exit.
+
+Gallery music begins at three seconds. The gallery lasts 23 seconds by default,
+with a 30-second option. A fixed 2.5-second ending follows, making total lengths
+28.5 or 35.5 seconds. The last product panel dismisses, its photo scales to 5%,
+then fades completely into pitch black. The selected logo and color fade in and
+hold. The default white logo is visible against black; color selection is shared
+between intro and ending.
 
 Five bundled Shoot-1 photos load in order: Victor Doom, California Love,
 The Ragnarsons, Kingdom Of Northumbria, Stand Unshaken. Photos retain their
-backgrounds and sit on portrait 2:3 cards. Each card fits fully within the frame
-in 0.55 seconds, then holds clear for one second before its product panel enters.
+backgrounds and sit on portrait 2:3 cards. Each card zooms to cover the entire 9:16 frame
+in 0.55 seconds, cropping its sides without stretching, then holds clear for one second before its product panel enters.
 The panel leaves before the photo zooms out. The outgoing photo dips forward,
 recedes in depth and settles at the rear of the circular stack; the next card
-then fits into view. No product cards are removed from the stack. The final
-product holds. The 30-second gallery option proportionally lengthens these holds.
+then fills the screen. No product cards are removed from the stack. The final
+product holds before the closing sequence. The 30-second gallery option proportionally lengthens these holds.
 
 The frosted panel is attached to the screen bottom, full width and 60% height.
 It contains the garment, product name and garment type/color on separate lines,
@@ -516,11 +524,11 @@ Each product can be reordered, renamed or given a replacement shoot photo
 (including HEIC) or local GLB. Playback and export share the deterministic
 renderer. Output is 720p/1080p 60fps H.264 MP4 with optional AAC, plus a PNG cover.
 The intro source is 720x1280 at 30fps and is scaled for 1080p exports. Uploads,
-font selections and settings last for the page session.
+logo selections and settings last for the page session.
 
-Modules: `lib/album-v2-{motion,media,render,ui,labels}.js`, scoped
+Modules: `lib/album-v2-{motion,media,render,ui,labels,brand}.js`, scoped
 `styles/album-v2.css`, bundled `assets/album-v2/` media/source metadata and Geist.
-Relative URLs support both published addresses. Cache key: `20261005-albumv2-2`.
+Relative URLs support both published addresses. Cache key: `20261005-albumv2-3`.
 No new dependencies, services, original-template animation changes or HQ edits.
 
 Known trap: hosts without HTTP range support can report successful video seeks
@@ -528,12 +536,10 @@ while remaining at time zero. Always load the intro into a complete Blob URL
 before seeking, and reject a seek that does not reach its target. GLB failures
 block export and expose Retry; invalid replacements cannot export stale data.
 
-Revision QA: 66 unit tests, 18 V2 browser checks, 16 V1 checks and 24 Outfit fit
+Revision QA: 69 unit tests, 19 V2 browser checks, 16 V1 checks and 24 Outfit fit
 checks passed with zero page errors. Four viewport sizes (375/768/1024/1440px)
-have no overflow. Intro onset, clean-photo timing, circular handoff continuity,
-60% panel area, title splitting and trimmed audio are covered by tests.
-
-Final revision export: 1560 H.264 frames at 1080x1920, exactly 26.000s video
-plus AAC padding to 26.0693s; completed in 19.328s on hardware Metal. Real intro
-label dragging, center alignment and local font-file import also passed.
-Recovery verification covers 763 shipped files.
+have no overflow. Tests cover entrance direction, stack continuity, exact 5%
+ending scale, black before logo, simplified controls and muted intro audio.
+Full export: 1710 H.264 frames at 1080x1920, exactly 28.500 seconds, with no audio
+track by default; generated in 23.325 seconds on hardware Metal. Opening and
+closing frames were visually inspected. Recovery verification covers 767 files.
