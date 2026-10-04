@@ -14,6 +14,7 @@ import { warm } from './lib/cutout.js';
 import { renderToFile, renderThumb, defaultAdjust, isBottoms } from './lib/render.js';
 import { createEditor } from './lib/editor.js';
 import { createReelUI } from './lib/reel-ui.js';
+import { createAlbumUI } from './lib/album-ui.js';
 import { createPhotoPicker, createPhotoAdjust } from './lib/reel-picker.js';
 import { createWorkspace } from './lib/workspace.js';
 import { SHAPES, FIXED_TAGS, buildCaption, captionStats, copyText,
@@ -1002,13 +1003,40 @@ function showVideo(blob, name, cover) {
 }
 
 function wireReel() {
+  let activeReelTemplate = 'outfit', shownReelTemplate = 'outfit';
+  const reelOutputs = new Map();
+  const receiveVideo = template => (blob, name, cover) => {
+    reelOutputs.set(template, [blob, name, cover]); shownReelTemplate = template;
+    showVideo(blob, name, cover);
+  };
+  const albumUI = createAlbumUI({ onVideo: receiveVideo('album'), onStatus: message => { $('#status').textContent = message; } });
+  $('#btnAlbumSetup').addEventListener('click', () => albumUI.open());
+  function describeReelTemplate() {
+    if (document.body.dataset.tool !== 'reel') return;
+    const album = activeReelTemplate === 'album';
+    $('#workspaceDescription').textContent = album ? 'An album intro. Five models in motion.' : 'One outfit. Two garments turning together.';
+    $('#sheetLabel').textContent = album ? 'Set up your album reel' : 'Pick a top and a bottom';
+    $('#emptyState strong').textContent = album ? 'Five models, in motion' : 'One outfit, in motion';
+    $('#emptyState > span:last-child').textContent = album ? 'Add your model photos and edit the album intro.' : 'Pick a top and a bottom, then choose your photos and sound.';
+  }
+  $('#reelTemplate').addEventListener('change', event => {
+    if (!$('#reelWorking').hidden) { event.target.value = activeReelTemplate; return; }
+    activeReelTemplate = event.target.value;
+    $('#outfitTemplate').hidden = activeReelTemplate !== 'outfit';
+    $('#albumTemplate').hidden = activeReelTemplate !== 'album';
+    $('#reelOut video').pause();
+    const output = reelOutputs.get(activeReelTemplate);
+    $('#reelOut').hidden = !output; $('#emptyState').hidden = !!output;
+    if (output) { shownReelTemplate = activeReelTemplate; showVideo(...output); }
+    describeReelTemplate();
+  });
   const picker = createPhotoPicker($('#photoPicker'));
   const adjust = createPhotoAdjust($('#photoAdjust'));
 
   reelUI = createReelUI({
     catalogue: () => state.catalogue,
     onStatus: m => { $('#status').textContent = m; },
-    onVideo: showVideo,
+    onVideo: receiveVideo('outfit'),
     /* Straight through: reel-ui already built the adjust callback with the
        right corner and somewhere to keep the framing. */
     openPicker: opts => picker.open(opts),
@@ -1024,7 +1052,7 @@ function wireReel() {
      tap to the input natively and the handler would fire it a second time,
      which is what stopped the cover picker opening on iOS. */
   /* Back into the settings from the finished clip. */
-  $('#btnReelEdit')?.addEventListener('click', () => reelUI?.openSetup());
+  $('#btnReelEdit')?.addEventListener('click', () => shownReelTemplate === 'album' ? albumUI.open() : reelUI?.openSetup());
 
   $('#reelSfxBtn').addEventListener('click', () => $('#reelSfx').click());
   $('#reelMusicBtn').addEventListener('click', () => $('#reelMusic').click());
@@ -1043,11 +1071,13 @@ function wireReel() {
       $('#emptyState > span:last-child').textContent = which === 'reel'
         ? 'Pick a top and a bottom, then choose your photos and sound.'
         : 'Pick a product, add a cover shot, then build your carousel.';
+      describeReelTemplate();
       relayout();
     },
     onAdd(which) {
       openSheet(true);
-      if (which === 'reel' && !$('#reelAfter').hidden) reelUI.openSetup();
+      if (which === 'reel' && activeReelTemplate === 'album') albumUI.open();
+      else if (which === 'reel' && !$('#reelAfter').hidden) reelUI.openSetup();
       else {
         const input = which === 'reel' ? $('#topInput') : $('#prodInput');
         input.scrollIntoView({ block: 'center', behavior: 'smooth' }); input.focus({ preventScroll: true });

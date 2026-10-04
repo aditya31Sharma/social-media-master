@@ -1,0 +1,47 @@
+#albumSetup { grid-template-columns: minmax(0, 1fr); }
+.album-body, .album-footer { background: var(--card); }
+.album-body { min-height: 0; overflow: auto; display: grid; grid-template-columns: minmax(260px, .9fr) minmax(360px, 1.1fr); gap: var(--gutter); padding: var(--gutter); }
+.album-preview { position: sticky; top: 0; align-self: start; display: grid; justify-items: center; gap: 8px; background: var(--card); border-radius: var(--r-lg); z-index: 2; }
+.album-preview canvas { width: auto; max-width: 100%; height: min(53dvh, calc(90dvh - 280px), 580px); aspect-ratio: 9 / 16; background: #fff; border: 1px solid var(--line); border-radius: var(--r-sm); touch-action: none; }
+.album-preview [data-scrub] { width: 100%; min-height: 44px; }
+.album-playback { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+.album-playback output { font-size: var(--fs-13); font-variant-numeric: tabular-nums; }
+.album-controls { min-width: 0; margin: 0; padding: 0; border: 0; display: grid; align-content: start; gap: var(--gutter); }
+.album-controls details { border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--gutter); display: block; }
+.album-controls summary { min-height: 44px; cursor: pointer; font-weight: 700; }
+.album-controls summary span { float: right; font-size: var(--fs-13); color: var(--ink-2); }
+.album-controls .field { margin: 10px 0; }
+.album-controls .field > span { font-size: var(--fs-13); color: var(--ink-2); }
+.album-controls .input { width: 100%; min-width: 0; min-height: 44px; font-size: 16px; }
+.album-controls textarea { resize: vertical; }
+.album-controls input[type=color] { padding: 5px; }
+.album-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+.album-button-row, .album-cover-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-block: 8px; }
+.album-upload { position: relative; overflow: hidden; cursor: pointer; }
+.album-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.album-upload:focus-within { box-shadow: var(--focus); }
+.album-model { display: grid; grid-template-columns: 20px 60px 1fr 44px; align-items: center; gap: 8px; padding: 10px 0; border-top: 1px solid var(--line); }
+.album-model__number { font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.album-model__thumb { width: 60px; height: 80px; border-radius: var(--r-sm); background: var(--card-2); overflow: hidden; }
+.album-model__actions, .album-order { display: grid; gap: 4px; }
+.album-model .btn { min-height: 44px; padding: 6px 8px; font-size: var(--fs-12); }
+.album-footer { padding: 12px var(--gutter); border-top: 1px solid var(--line); display: flex; align-items: center; gap: var(--gutter); }
+.album-footer .note { flex: 1; margin: 0; }
+.album-footer .btn { min-height: 54px; flex-shrink: 0; }
+#albumSetup[hidden], #outfitTemplate[hidden], #albumTemplate[hidden] { display: none; }
+@media (max-width: 700px) {
+  .album-body { display: block; padding: 0 var(--gutter) var(--gutter); }
+  .album-preview { padding: 8px 0; border-bottom: 1px solid var(--line); border-radius: 0; margin-bottom: 8px; }
+  .album-preview canvas { height: clamp(140px, 25dvh, 220px); }
+  .album-playback { gap: 8px; }
+  .album-playback .btn { min-height: 44px; padding: 6px 12px; }
+  .album-preview [data-scrub] { margin: 0; min-height: 30px; }
+  .album-footer { flex-wrap: wrap; gap: 6px; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+  .album-footer .note { flex-basis: 100%; font-size: var(--fs-12); }
+  .album-footer .btn { width: 100%; }
+}
+
+@media (min-width: 701px) {
+  #albumSetup { grid-template-columns: min(1120px, 94vw); }
+  .album-footer { border-radius: 0 0 var(--r-xl) var(--r-xl); }
+}

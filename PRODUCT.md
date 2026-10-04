@@ -2,7 +2,7 @@
 
 An internal tool for one person. It turns a cover shot and a Tenzen product
 link into six 3:4 Carousel slides and a caption, two garments into a turning
-Reel and its cover, and review photos into Instagram-style Stories. All three
+Reel and its cover, five model photos into an Album showcase reel, and review photos into Instagram-style Stories. All three
 tools live in one workspace and keep their drafts when switching tabs.
 
 **Register: product.** Design serves the task. The tool should disappear into

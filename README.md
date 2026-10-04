@@ -388,3 +388,49 @@ use20261004-preview1. Model downloads are still the original Shopify GLBs.
 Preview QA:47 Node tests;24 browser fit/default checks; real Chrome confirms one renderer across12 slider updates and8 lighting choices, network-failure Retry recovery, plus sampled24-frame1080p H.264 and1080p PNG cover export with zero page errors.
 
 Default lighting update: Dramatic side (`lowkey`) is selected initially and used for missing/unknown presets. Lighting import-map key20261004-default2; custom choices still persist across garment selections.
+
+
+## Album showcase reel
+
+Choose **Reel > Reel template > Album showcase > Set up album reel**. The original
+Outfit reel remains available, with separate drafts and finished outputs when
+switching templates. Album showcase uses five uploaded model photos, not GLBs.
+PNG transparency is preserved. JPG/WebP/HEIC photos can use **Remove background**,
+which reuses the existing free browser matting engine. Nothing is uploaded for
+matting. Model images are capped at2560px on the longest side to limit memory use;
+transparent margins are trimmed for consistent figure sizing. Move photos earlier
+or later to choose the sequence.
+
+The15-second9:16 animation starts on white. The optional square cover appears,
+then the creator, album name and heading. Models form a horizontal lineup, zoom
+to model2, use three staggered horizontal slices with motion blur to reveal model3,
+slide vertically to model4, stack into a vertical lineup, then pan/zoom to model5.
+Turning off every intro element uses the whole15seconds for the model showcase.
+
+Each intro label has its own font, size, tracking, line height, color, weight,
+italic style, alignment and X/Y position. Drag text in **Edit intro** to move it;
+center guides snap within8screen pixels. Arrow keys nudge1export pixel, Shift+arrow
+nudges10. Center buttons also work without dragging. **Use local fonts** requests
+browser permission on supported desktop browsers; **Add font file** accepts
+TTF/OTF/WOFF/WOFF2 on other browsers. Font files stay in the current page session.
+The Local Font Access compatibility reference is
+[MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/queryLocalFonts).
+
+Playback and the scrubber preview the shared deterministic Canvas renderer.
+Optional local music supports a start offset and volume. Exports are720p or1080p,
+60fps H.264 MP4 with optional AAC audio; the separate PNG cover uses the completed
+intro or final model when the intro is disabled. Preview guides never export.
+The new modules are `lib/album-motion.js`, `album-render.js`, `album-text.js` and
+`album-ui.js`, with scoped `styles/album.css`. All root album assets use release
+key20261005-album1. No new dependencies, server or hosting changes.
+
+Album QA: six timeline/text unit checks plus the existing47tests; eleven browser
+checks for uploads/fonts/text/snapping/playback/template retention. Real Chrome
+exported all900frames at1080x1920, video15.000s, plus AAC audio (15.083s with codec
+padding) and PNG cover, with zero page errors. Actual pointer snapping, background
+removal and375/768/1024/1440 preview/control layout were verified. Reference video
+and QA photos stay outside the repo.
+
+Additional album checks passed: optional intro fully disabled, photo reordering, invalid font recovery, real background removal, and all four viewport sizes in both themes.
+
+A second full900-frame720p export with every intro element disabled and no music passed at exactly15s. Switching templates restored the correct saved output and Edit target.

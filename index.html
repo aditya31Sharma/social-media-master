@@ -28,6 +28,7 @@
 <link rel="stylesheet" href="./styles/workspace.css?v=20261004-light1">
 <script src="./lib/theme.js?v=20261004-reel2"></script>
 <script src="coi-serviceworker.js"></script>
+<link rel="stylesheet" href="./styles/album.css?v=20261005-album1">
 </head>
 <body data-tool="carousel">
 
@@ -300,6 +301,8 @@
       </div><!-- /carousel panel -->
 
       <div data-panel="reel" hidden>
+        <label class="field"><span class="field__label">Reel template</span><select class="input" id="reelTemplate"><option value="outfit">Outfit reel</option><option value="album">Album showcase</option></select></label>
+        <div id="outfitTemplate">
         <section class="sec">
           <div class="sec__head">
             <svg class="sec__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tune"/></svg>
@@ -323,6 +326,8 @@
           <button type="button" class="btn btn--primary btn--full" id="btnSetup">Set up reel</button>
           <p class="note">Shots, fit, text and sound come next.</p>
         </div>
+      </div><!-- /outfit template -->
+        <div id="albumTemplate" hidden><section class="sec"><h2 class="sec__title">Album showcase</h2><p class="note">An album intro and five model photos in motion.</p><button type="button" id="btnAlbumSetup" class="btn btn--primary btn--full">Set up album reel</button></section></div>
       </div><!-- /reel panel -->
     </div>
 
@@ -712,7 +717,13 @@
     "./lib/reel-lighting.js": "./lib/reel-lighting.js?v=20261004-default2",
     "./lib/encode.js": "./lib/encode.js?v=20261004-light1",
     "./lib/reel-ui.js": "./lib/reel-ui.js?v=20261004-preview1",
-    "./lib/workspace.js": "./lib/workspace.js?v=20261004-reel2",
+    "./lib/dialogs.js": "./lib/dialogs.js?v=20261005-album1",
+    "./lib/album-ui.js": "./lib/album-ui.js?v=20261005-album1",
+    "./lib/album-text.js": "./lib/album-text.js?v=20261005-album1",
+    "./lib/album-motion.js": "./lib/album-motion.js?v=20261005-album1",
+    "./lib/album-render.js": "./lib/album-render.js?v=20261005-album1",
+    "./lib/cutout.js": "./lib/cutout.js?v=20261005-album1",
+    "./lib/workspace.js": "./lib/workspace.js?v=20261005-album1",
     "./stories/card.js": "./stories/card.js?v=20261004-users1",
     "./stories/render.js": "./stories/render.js?v=20261004-users1",
     "./stories/story.js": "./stories/story.js?v=20261004-users1",
@@ -721,6 +732,6 @@
   }
 }
 </script>
-<script type="module" src="app.js?v=20261004-reel2"></script>
+<script type="module" src="./app.js?v=20261005-album1"></script>
 </body>
 </html>
