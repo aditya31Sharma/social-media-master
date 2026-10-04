@@ -89,3 +89,38 @@ test('repeated previews do not change cached garment materials', async () => {
     assert.equal(mesh.material.roughness, .5);
   }
 });
+
+
+test('preview texture resizing leaves full-quality cached images untouched', () => {
+  context.THREE.Source = class { constructor(data) { this.data = data; } };
+  context.OffscreenCanvas = class {
+    constructor(width, height) { Object.assign(this, { width, height }); }
+    getContext() { return { drawImage() {} }; }
+  };
+  class Texture {
+    constructor(source) { this.source = source; }
+    get image() { return this.source.data; }
+    set image(value) { this.source.data = value; }
+    clone() { return new Texture(this.source); }
+  }
+  const original = new Texture(new context.THREE.Source({ width: 2048, height: 1024 }));
+  const s = Object.create(context.Stage.prototype); s.textures = new Map();
+  const preview = s.previewTexture(original);
+  assert.equal(preview.image.width, 512);
+  assert.equal(preview.image.height, 256);
+  assert.equal(original.image.width, 2048);
+  assert.notEqual(preview.source, original.source);
+  assert.equal(s.previewTexture(original), preview);
+});
+
+test('a rejected model request can be retried', async () => {
+  let calls = 0;
+  context.GLTFLoader = class {
+    setDRACOLoader() {}
+    async loadAsync() { if (++calls === 1) throw new Error('offline'); return { scene: 'loaded' }; }
+  };
+  context.DRACOLoader = class { setDecoderPath() {} };
+  await assert.rejects(vm.runInContext("loadModel('retry.glb')", context), /offline/);
+  assert.equal(await vm.runInContext("loadModel('retry.glb')", context), 'loaded');
+  assert.equal(calls, 2);
+});

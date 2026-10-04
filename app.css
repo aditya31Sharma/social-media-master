@@ -1506,3 +1506,13 @@ body.is-locked { overflow: hidden; }
     padding: 18px 20px 20px;
   }
 }
+
+/* The loading message stays inside the preview without moving the controls. */
+.fitprev { position: relative; }
+.fitprev__status {
+  position: absolute; inset: 0; display: grid; place-content: center;
+  justify-items: center; gap: 12px; padding: 16px; text-align: center;
+  color: var(--muted); background: var(--surface, #fff);
+  font-size: 13px;
+}
+.fitprev__status[hidden] { display: none; }

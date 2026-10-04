@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preload" href="./assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="app.css?v=20261004-preview1">
 <link rel="stylesheet" href="./stories/story.css">
 <link rel="stylesheet" href="./styles/fonts.css">
 <link rel="stylesheet" href="./styles/tokens.css?v=20261004-reel2">
@@ -375,7 +375,10 @@
               <svg class="fold__chev" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-down"/></svg>
             </summary>
             <div class="fold__body reel-fit-layout">
-            <div class="fitprev"><canvas id="reelFitCv" width="520" height="924"></canvas></div>
+            <div class="fitprev">
+              <canvas id="reelFitCv" width="320" height="568" aria-label="Low-resolution 3D fit preview"></canvas>
+              <div id="reelFitStatus" class="fitprev__status" role="status"><span>Loading 3D preview…</span><button id="reelFitRetry" class="btn" type="button" hidden>Retry</button></div>
+            </div>
             <div class="reel-fit-controls">
             <label class="row" for="reelLighting">
               <span class="row__label">Lighting</span>
@@ -703,11 +706,12 @@
     "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
     "./lib/reel.js": "./lib/reel.js?v=20261004-timing1",
     "./lib/reel-geom.js": "./lib/reel-geom.js?v=20261004-timing1",
-    "./lib/stage3d.js": "./lib/stage3d.js?v=20261004-neutral1",
+    "./lib/reel-preview.js": "./lib/reel-preview.js?v=20261004-preview1",
+    "./lib/stage3d.js": "./lib/stage3d.js?v=20261004-preview1",
     "./lib/reel-fit.js": "./lib/reel-fit.js?v=20261004-light1",
-    "./lib/reel-lighting.js": "./lib/reel-lighting.js?v=20261004-neutral1",
+    "./lib/reel-lighting.js": "./lib/reel-lighting.js?v=20261004-preview1",
     "./lib/encode.js": "./lib/encode.js?v=20261004-light1",
-    "./lib/reel-ui.js": "./lib/reel-ui.js?v=20261004-cinema1",
+    "./lib/reel-ui.js": "./lib/reel-ui.js?v=20261004-preview1",
     "./lib/workspace.js": "./lib/workspace.js?v=20261004-reel2",
     "./stories/card.js": "./stories/card.js?v=20261004-users1",
     "./stories/render.js": "./stories/render.js?v=20261004-users1",

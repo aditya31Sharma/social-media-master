@@ -372,3 +372,17 @@ scans and stale requests. All600 manual profiles remain; the empty-state option
 is excluded from profile counts. Story/card/render/Drive UI use20261004-users1.
 
 Neutral lighting browser/export QA: all8 presets rendered on white and black garments;24 fit/default/persistence checks passed. Real Chrome exported24 sampled frames from the900-frame timeline to1080p H.264 and a1080p PNG cover with zero page errors. Lighting changes enable regeneration.
+
+
+Fit preview performance: the setup view uses a320x568 canvas,512px texture copies
+and512px shadow maps. It retains one WebGL scene across fit and lighting changes;
+slider input is coalesced per animation frame. Garment downloads start on product
+selection and both garments load concurrently. Originals remain cached at full
+quality for video/cover exports. The preview shows loading feedback and a Retry
+button after a failure; failed GLB requests are evicted from the shared cache.
+`lib/reel-preview.js` owns the preview lifecycle and ignores stale product loads.
+Preview texture Sources must be separate from cached original Sources: Three.js
+texture clones otherwise share image data. Stage/UI/preview modules and stylesheet
+use20261004-preview1. Model downloads are still the original Shopify GLBs.
+
+Preview QA:47 Node tests;24 browser fit/default checks; real Chrome confirms one renderer across12 slider updates and8 lighting choices, network-failure Retry recovery, plus sampled24-frame1080p H.264 and1080p PNG cover export with zero page errors.

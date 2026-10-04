@@ -6,13 +6,13 @@
   },
   {
     "path": "README.md",
-    "bytes": 21508,
-    "sha256": "2d89275d47bc7f5213d4011cd36161d8f68614d1111b36f67bb2ade3c40c5026"
+    "bytes": 22565,
+    "sha256": "3bbbfbdc5dde0ccb9da76ab9147a68298156e027c8f1fe766276591367b6ab31"
   },
   {
     "path": "app.css",
-    "bytes": 58388,
-    "sha256": "a0f5b3335a28a2515c3e64b8123c122162fd8df76c6991acfe5507d71a2db560"
+    "bytes": 58784,
+    "sha256": "84b74b3970350ab6ed7d357efe8c845a90a3085cdef30a04ed6550ed4f0ea6e3"
   },
   {
     "path": "app.js",
@@ -131,13 +131,18 @@
   },
   {
     "path": "docs/qa/reel-fit.test.mjs",
-    "bytes": 4823,
-    "sha256": "5e6a56050bd1c711a9178084d332104c8ba6a7beca0ca01a42f21625234b6c84"
+    "bytes": 6313,
+    "sha256": "bee00836de7025284fd2600333ee44a6476d91e1579e2cc7ffc4e0aad6df4254"
   },
   {
     "path": "docs/qa/reel-lighting.test.mjs",
     "bytes": 2865,
     "sha256": "d17c4086d1bcdc02d806944ce2c07842ce8cd0fda757b7d6564cb303f2a2d8de"
+  },
+  {
+    "path": "docs/qa/reel-preview.test.mjs",
+    "bytes": 3157,
+    "sha256": "34135dff3cc90c2f861cb8db839d62963f7a0b8db5a6eb317116ee2ed38bf9eb"
   },
   {
     "path": "docs/qa/reel-timing.test.mjs",
@@ -361,8 +366,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 42801,
-    "sha256": "d7fea2fcc17f97a606e31162cd65d2946f95465039045370b19805a9395882fe"
+    "bytes": 43157,
+    "sha256": "d501fe60f3c065ff22c6b1da92d1cab0c356bc16fe012b1c8bec22ac84d5877d"
   },
   {
     "path": "lab/frame.html",
@@ -445,9 +450,14 @@
     "sha256": "47e26eed1e5d4abec21369af0dbe5b36c165bc40daf1886e1676a2af119a65cb"
   },
   {
+    "path": "lib/reel-preview.js",
+    "bytes": 2047,
+    "sha256": "f28ee88b1f34faa2fe0c4e4d83cd583790329f43c40ad4b9e1d72cb28a1d8eac"
+  },
+  {
     "path": "lib/reel-ui.js",
-    "bytes": 24151,
-    "sha256": "37fc9dbf3f73b8a868e02f6349185dbced3cc3f51ab9e3c7276cd57c622608f8"
+    "bytes": 23884,
+    "sha256": "f3215e0cedba7a4e499a614223d68cf117c65dd74183349cb59a82d1da1574e7"
   },
   {
     "path": "lib/reel.js",
@@ -466,8 +476,8 @@
   },
   {
     "path": "lib/stage3d.js",
-    "bytes": 11287,
-    "sha256": "dd1056b67405e4a0cf64148d95a928d4b6ef6ce12530c90aac9c816ba5046c66"
+    "bytes": 13435,
+    "sha256": "af4573510c78b004cdeae39f2f28ca40e0c19bb261e2d93c35458316a0071c33"
   },
   {
     "path": "lib/theme.js",
