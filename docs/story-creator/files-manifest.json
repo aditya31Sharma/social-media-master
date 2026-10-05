@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 42845,
-    "sha256": "3be07434e057cd91c10bf2baaf5a8a4841e87a9b258f7d43ea9472a8f9f18f48"
+    "bytes": 44620,
+    "sha256": "ab86d8593e373d424e25923f08d781b0a08d8e71f67111fac486a1af1d40b565"
   },
   {
     "path": "app.css",
@@ -231,8 +231,8 @@
   },
   {
     "path": "docs/qa/album-v2.test.mjs",
-    "bytes": 21967,
-    "sha256": "301ab1241524c829bf9927496094c5293ce1218559977ff42f2dcca69ddb1125"
+    "bytes": 21948,
+    "sha256": "f5db9edfc173ee0f9c0554d4604803c578f98d53065e8be4ddaeb6a17c69955e"
   },
   {
     "path": "docs/qa/album.test.mjs",
@@ -501,8 +501,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 46676,
-    "sha256": "39f59dc8bb169a82e3881cc3f14c743b80da8d573ba76f257df05ee83fe781f2"
+    "bytes": 46816,
+    "sha256": "7d2e3cd0b3f6c2302abacbeaa1623014e8626e89f9d1af775fcc462880d04b56"
   },
   {
     "path": "lab/frame.html",
@@ -551,8 +551,8 @@
   },
   {
     "path": "lib/album-v2-media.js",
-    "bytes": 5315,
-    "sha256": "07b07b6249e0b68b2b5e6ec711afbe576bf48e28aa2d468a0bb3e910ffaf468a"
+    "bytes": 4044,
+    "sha256": "89faa5b88cdfd70ae904dfe858d625d779b7f29dfaf05aa0cdde3c8138b79b34"
   },
   {
     "path": "lib/album-v2-motion.js",
@@ -566,8 +566,8 @@
   },
   {
     "path": "lib/album-v2-ui.js",
-    "bytes": 19756,
-    "sha256": "5ff94b614c604a6a941051094ec55e3357ebc42136f44e20d9c5dc6c5c263122"
+    "bytes": 19205,
+    "sha256": "fe9cddcab9a02716f3b6af9158bd0d8c7ad928a257a810b713fa2c2309433c87"
   },
   {
     "path": "lib/audio.js",
@@ -3791,8 +3791,8 @@
   },
   {
     "path": "styles/album-v2.css",
-    "bytes": 11709,
-    "sha256": "e4afdf5f60999f887be44d80a3fe2c1e5b0552494836449a31183357672598d0"
+    "bytes": 12794,
+    "sha256": "aca14be5315313b863c9f9dea9c9fb2011afcc5e2767259ef413ef6a358133a1"
   },
   {
     "path": "styles/album.css",
@@ -4248,5 +4248,20 @@
     "path": "scripts/build-editor-previews.py",
     "bytes": 4671,
     "sha256": "ba7002c5033c1c1cc4ec7bdc1befe1b177bfb4208f7dd97a2837333880a1079a"
+  },
+  {
+    "path": "lib/album-v2-audio.js",
+    "bytes": 2205,
+    "sha256": "06c05ce10944a1ed79a137ceaa2d04550a6afe490d8b33d9a063fff9707e469d"
+  },
+  {
+    "path": "lib/album-v2-audio-ui.js",
+    "bytes": 8104,
+    "sha256": "9b00c3c6c31acf5688c27eda710f150021f41d7db0364286420c644863ac1e7e"
+  },
+  {
+    "path": "docs/qa/album-v2-audio.test.mjs",
+    "bytes": 3602,
+    "sha256": "f5051969653719655c987278edd8efc2db6e8f8b5031bd93f7f8f0dc67923c7c"
   }
 ]

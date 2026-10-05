@@ -74,12 +74,12 @@ test('all frame poses remain finite with and without intro at either gallery dur
   }
 });
 const sound = (value, duration) => ({ duration, sampleRate: 48000, numberOfChannels: 1, getChannelData: () => new Float32Array(48000 * duration).fill(value) });
-test('intro audio cuts after the intro transition and music begins there, without looping short intros', () => {
+test('only selected music plays throughout the reel, regardless of legacy intro audio settings', () => {
   const intro = { duration: 10, audio: sound(.4, 10) }, music = sound(.2, 1);
   const mixed = galleryAudio(intro, music, 6, { gain: .5, introSound: true });
-  assert.ok(Math.abs(mixed.out[0][120000] - .4) < 1e-6);
+  assert.ok(Math.abs(mixed.out[0][120000] - .1) < 1e-6);
   assert.ok(Math.abs(mixed.out[1][249600] - .1) < 1e-6);
-  assert.equal(galleryAudio({ duration: 1, audio: sound(.4, 1) }, null, 5, { introSound: true }).out[0][72000], 0);
+  assert.equal(galleryAudio({ duration: 1, audio: sound(.4, 1) }, null, 5, { introSound: true }), null);
   assert.equal(galleryAudio(intro, null, 5, { introSound: false }), null);
   assert.ok(galleryAudio(intro, music, 6, { introEnabled: false }).out[0][24000] > .19);
 });

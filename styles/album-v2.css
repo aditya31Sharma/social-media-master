@@ -119,3 +119,18 @@
 
 #albumV2Setup .v2-animation { padding: 10px 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; }
 #albumV2Setup .v2-animation > summary { min-height: 36px; font-size: 13px; font-weight: 500; }
+
+/* Music controls retain exact values and touch-friendly waveform selection. */
+.v2-audio { min-width:0; margin:16px 0; padding:16px; border:1px solid var(--line); border-radius:16px; display:grid; gap:12px; }
+.v2-audio legend { padding:0 6px; font-weight:600; }
+.v2-audio .trim { gap:0; }
+.v2-audio canvas { touch-action:none; cursor:grab; }
+.v2-audio .trim__win { border-color:var(--accent, #8b5cf6); }
+.v2-audio-playhead { position:absolute; top:0; height:64px; width:2px; background:var(--ink); pointer-events:none; }
+.v2-audio-value { display:grid; grid-template-columns:1fr 78px; gap:4px 12px; align-items:center; min-width:0; }
+.v2-audio-value > span { grid-column:1 / -1; font-size:13px; }
+.v2-audio-value input[type=range] { width:100%; min-width:0; min-height:44px; margin:0; }
+.v2-audio-value .input { min-width:0; padding:8px; min-height:44px; font-variant-numeric:tabular-nums; }
+.v2-audio-actions { display:flex; flex-wrap:wrap; gap:8px; }
+.v2-audio-loop { display:flex; align-items:center; gap:8px; font-size:13px; min-height:44px; }
+.v2-audio:disabled { opacity:.5; }

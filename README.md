@@ -696,3 +696,31 @@ Network trace confirms all five original GLBs plus full photos/intro during expo
 Cover SHA256 unchanged; full video SSIM1.000000 to six decimals against prior
 export. No dependencies, paid services, domain/CI changes, deletion or HQ edits.
 Recovery verifier covers850 shipped files,1876 archive entries and600profiles.
+
+## Album V2 music editor (2026-10-06)
+
+In Reel > Album creator V2 > Export, upload music to open the waveform editor.
+Drag the waveform selection, or use Start/End sliders and exact seconds. Match
+reel length selects a section as long as the reel when the source permits it.
+Volume, fade-in and fade-out have sliders and exact values. Loop selected section
+is on by default; turning it off leaves silence after the selected section ends.
+Preview auditions the full reel soundtrack, including its fades. The main Play
+button uses the same mix with the visual timeline and follows the audio clock.
+
+The selected song starts at frame zero and covers the intro, gallery and ending.
+All source video audio is unconditionally muted and excluded from exports.
+Without music, the reel is silent. Legacy introSound flags cannot restore source
+audio. The intro M4A remains archived but is no longer fetched or decoded.
+
+lib/album-v2-audio.js owns range normalization and cached stereo48kHz mixing.
+lib/album-v2-audio-ui.js owns waveform selection and a reusable audio player.
+Waveform data is drawn once per upload; PCM and playback buffers are reused until
+music settings or reel duration change. No new dependencies. Audio cache key:
+20261006-audio1. The prior lightweight editing/full-quality export paths remain.
+
+Audio validation:102 unit tests pass,23 dedicated browser checks pass across
+375/768/1024/1440 layouts, and94 existing animation/V2/V1/Outfit browser checks
+pass with zero page errors. Real1080x1920 H.26460fps export:41.8s video and
+48kHz stereo AAC. Measured880Hz selected section throughout intro/middle/ending;
+unselected440Hz section excluded, volume and fades verified. No intro M4A
+request. Existing AAC encoder priming/padding remains approximately44ms/77ms.
