@@ -9,8 +9,14 @@
   check('All five shoot and garment defaults load', $('[data-v2-count]').textContent === '5 / 5');
   check('Victor Doom is first and Stand Unshaken is last', $('[data-v2-name="0"]').value.includes('Victor Doom') && $('[data-v2-name="4"]').value.includes('Stand Unshaken'));
   check('Intro has complete text controls and both text layers', !!$('[data-font-upload]') && $('[data-layer]').options.length === 2);
-  check('Full reel defaults to exactly 40 seconds', +$('[data-v2-scrub]').max === 40);
-  check('Geist is loaded and intro heading defaults correctly', document.fonts.check('500 44px Geist') && $('[data-text-text]').value === 'Tenzen Presents');
+  check('Intro layers expose one focused inspector', $('#v2IntroEditor [data-layer-id="heading"]').getAttribute('aria-selected') === 'true' && $('#v2IntroEditor [data-art-scale]').closest('.v2-style-group').hidden);
+  check('Every numeric property has a real slider', [...document.querySelectorAll('#albumV2Setup input[type=number]')].every(input => input.parentElement.querySelector('input[type=range]')));
+  $('#v2IntroEditor [data-layer-id="brand"]').click();
+  check('Logo selection exposes screenshot defaults', !$('#v2IntroEditor [data-art-scale]').closest('.v2-style-group').hidden && $('#v2IntroEditor [data-art-scale]').value === '40' && $('#v2IntroEditor [data-art-y]').value === '35');
+  $('#v2IntroEditor [data-layer-id="heading"]').click();
+  check('Native heading font and precise line height are valid', document.fonts.check('400 220px CarolGothic') && $('[data-text-lineHeight]').checkValidity());
+  check('Full reel defaults to 41.8 seconds', +$('[data-v2-scrub]').max === 41.8);
+  check('Geist is loaded and intro heading defaults correctly', document.fonts.check('500 44px Geist') && $('[data-text-text]').value === 'Winter is\nComing');
   set('[data-v2-scrub]', '1'); await wait(() => $('[data-v2-time]').textContent.startsWith('1.0'));
   const intro = $('#albumV2Setup canvas').toDataURL();
   set('[data-v2-scrub]', '13'); await wait(() => $('[data-v2-time]').textContent.startsWith('13.0'));
@@ -21,7 +27,7 @@
   set('[data-text-color]', '#ff0000'); set('[data-text-x]', '32'); $('[data-center-x]').click();
   check('Text centers horizontally', $('[data-text-x]').value === '50');
   set('[data-layer]', 'creator', 'change');
-  check('Subtext is independently editable', $('[data-text-text]').value === 'Tenzen Angels');
+  check('Subtext is independently editable', $('[data-text-text]').value === "Fall-Winter '26");
   set('[data-text-text]', 'Winter 2026');
   set('[data-layer]', 'heading', 'change');
   check('Typography persists independently per text layer', $('[data-text-size]').value === '86' && $('[data-text-spacing]').value === '6');
@@ -37,9 +43,9 @@
   check('Three original SVG variants render differently', new Set(logos).size === 3);
   set('[data-v2-logo-color]', '#ff0000'); await new Promise(r => setTimeout(r, 100));
   check('Logo color changes the rendered preview', $('#albumV2Setup canvas').toDataURL() !== logos[2]);
-  set('[data-v2-logo-color]', '#ffffff'); set('[data-v2-logo]', 'japanese');
-  set('[data-text-text]', 'Tenzen Presents'); set('[data-font]', 'Geist', 'change'); set('[data-text-size]', '68'); set('[data-text-spacing]', '0'); set('[data-text-lineHeight]', '1.2'); set('[data-text-color]', '#ffffff');
-  set('[data-layer]', 'creator', 'change'); set('[data-text-text]', 'Tenzen Angels'); set('[data-layer]', 'heading', 'change');
+  set('[data-v2-logo-color]', '#ffffff'); set('[data-v2-logo]', 'wordmark');
+  set('[data-text-text]', 'Winter is\nComing'); set('[data-font]', 'CarolGothic', 'change'); set('[data-text-size]', '220'); set('[data-text-spacing]', '0'); set('[data-text-lineHeight]', '.92'); set('[data-text-color]', '#ffffff');
+  set('[data-layer]', 'creator', 'change'); set('[data-text-text]', "Fall-Winter '26"); set('[data-layer]', 'heading', 'change');
   $('#v2-tab-1').click();
   check('Products has its own focused settings pane', !$('#v2-panel-1').hidden && $('#v2-panel-0').hidden && $('#v2-panel-2').hidden);
   check('Three photos per product are available', document.querySelectorAll('#albumV2Setup .v2-photo canvas').length === 15);
@@ -70,7 +76,7 @@
   set('[data-v2-ending="gap"]', '-20'); await new Promise(r => setTimeout(r, 100));
   check('Centering restores the default final composition', $('#albumV2Setup canvas').toDataURL() === ending);
   $('#v2-tab-3').click();
-  set('[data-v2-duration]', '30', 'change'); check('Gallery duration includes fixed intro and ending', +$('[data-v2-scrub]').max === 38);
+  set('[data-v2-duration]', '30', 'change'); check('Gallery duration includes fixed intro and ending', +$('[data-v2-scrub]').max === 39.8);
   set('[data-v2-duration]', '32', 'change');
   $('[data-v2-play]').click(); await new Promise(r => setTimeout(r, 400)); $('[data-v2-play]').click();
   check('Preview playback advances and stops', +$('[data-v2-scrub]').value > 0 && $('[data-v2-play]').textContent === 'Play');
@@ -79,7 +85,7 @@
   set('#reelTemplate', 'outfit', 'change'); check('Outfit template remains available', !$('#outfitTemplate').hidden && $('#albumV2Template').hidden);
   set('#reelTemplate', 'album', 'change'); check('V1 template remains available', !$('#albumTemplate').hidden && $('#albumV2Template').hidden);
   set('#reelTemplate', 'album-v2', 'change'); $('#btnAlbumV2Setup').click();
-  check('V2 draft survives template switches', $('[data-v2-name="0"]').value === 'Victor Doom test' && $('[data-text-text]').value === 'Tenzen Presents');
+  check('V2 draft survives template switches', $('[data-v2-name="0"]').value === 'Victor Doom test' && $('[data-text-text]').value === 'Winter is\nComing');
   set('[data-v2-name="0"]', name); $('[data-v2-close]').click();
   check('Page has no horizontal overflow', document.documentElement.scrollWidth <= innerWidth);
   return { passed: checks.length, checks };

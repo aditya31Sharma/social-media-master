@@ -1,4 +1,5 @@
 @font-face { font-family: Geist; src: url('../assets/fonts/geist-latin.woff2') format('woff2'); font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: CarolGothic; src: url('../assets/fonts/carol-gothic.otf') format('opentype'); font-weight: 400; font-style: normal; font-display: swap; }
 #albumV2Setup { font-family: Geist, sans-serif; }
 #albumV2Setup { grid-template-columns: minmax(0, 1fr); }
 #albumV2Setup[hidden], #albumV2Template[hidden], #albumV2Setup [data-v2-retry][hidden] { display: none; }
@@ -14,9 +15,9 @@
 
 /* Album V2 editing surface: persistent preview beside one focused settings pane. */
 #albumV2Setup { --v2-space: 8px; --v2-touch: 44px; --v2-wide: 1240px; --v2-thumb: 44px; }
-#albumV2Setup .album-body { overflow: hidden; padding: 0; gap: 0; grid-template-columns: minmax(0, 1fr) minmax(360px, .95fr); }
+#albumV2Setup .album-body { overflow: hidden; padding: 0; gap: 0; grid-template-columns: minmax(0, 1fr) minmax(340px, 400px); }
 #albumV2Setup .album-preview { position: relative; align-self: stretch; align-content: center; padding: var(--gutter); border-radius: 0; background: var(--card-2); gap: var(--v2-space); }
-#albumV2Setup .album-preview canvas { height: min(60dvh, calc(90dvh - 370px)); border-radius: var(--r-md); box-shadow: var(--shadow-card); }
+#albumV2Setup .album-preview canvas { height: min(68dvh, calc(90dvh - 340px)); border-radius: var(--r-md); box-shadow: var(--shadow-card); }
 #albumV2Setup .v2-preview-title { margin: 0; max-width: 100%; color: var(--ink-2); font-size: var(--fs-13); font-weight: 600; text-align: center; }
 #albumV2Setup .album-controls { min-height: 0; overflow: auto; display: block; padding: var(--gutter); overscroll-behavior: contain; }
 #albumV2Setup .album-controls > details { border: 0; padding: var(--v2-space) 0; }
@@ -73,3 +74,45 @@
 #albumV2Setup .album-font-option:hover, #albumV2Setup .album-font-option:focus-visible { background: var(--card-2); }
 #albumV2Setup .album-font-option span { font-size: 18px; overflow: hidden; text-overflow: ellipsis; }
 #albumV2Setup .album-font-option small { flex-shrink: 0; color: var(--ink-2); font-size: 12px; }
+
+/* Select a layer on the canvas, then adjust its compact property inspector. */
+#albumV2Setup [hidden] { display: none !important; }
+#albumV2Setup .album-controls { border-left: 1px solid var(--line); padding: 12px 16px; }
+#albumV2Setup .v2-sections { top: -12px; }
+#albumV2Setup .v2-layer-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+#albumV2Setup .v2-layer-list button { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 10px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--ink-2); text-align: left; font: inherit; font-size: 13px; cursor: pointer; }
+#albumV2Setup .v2-layer-list button span { width: 16px; text-align: center; }
+#albumV2Setup .v2-layer-list button:hover { background: var(--card-2); }
+#albumV2Setup .v2-layer-list button[aria-selected=true] { color: var(--ink); background: var(--card-2); border-color: var(--accent); }
+#albumV2Setup .v2-style-group { margin: 0; padding: 12px 0; border: 0; border-radius: 0; }
+#albumV2Setup .v2-style-group > summary { display: none; }
+#albumV2Setup .album-controls .field { margin: 6px 0; gap: 5px; }
+#albumV2Setup .album-controls .input { min-height: 38px; padding: 8px 10px; border-radius: 8px; font-size: 14px; }
+#albumV2Setup .album-controls .field > span { font-size: 12px; }
+#albumV2Setup .album-controls .check { min-height: 36px; font-size: 13px; }
+#albumV2Setup .album-grid { gap: 0 12px; }
+#albumV2Setup .album-button-row { gap: 6px; }
+#albumV2Setup .album-button-row .btn { min-height: 36px; padding: 7px 10px; border-radius: 8px; font-size: 12px; }
+#albumV2Setup .v2-number-field { display: grid; grid-template-columns: minmax(0, 1fr) 58px; align-items: center; }
+#albumV2Setup .v2-number-field > span { grid-column: 1; }
+#albumV2Setup .v2-number-field > input[type=number] { grid-column: 2; width: 58px; padding: 5px; min-height: 32px; text-align: right; font-variant-numeric: tabular-nums; appearance: textfield; -moz-appearance: textfield; }
+#albumV2Setup input[type=number]::-webkit-inner-spin-button, #albumV2Setup input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+#albumV2Setup .v2-value-slider { grid-column: 1 / -1; width: 100%; min-width: 0; height: 24px; min-height: 24px; margin: 0; cursor: ew-resize; }
+#albumV2Setup .album-font-picker > button { font-size: 15px; }
+#albumV2Setup .album-controls .note { font-size: 12px; line-height: 1.45; }
+#albumV2Setup .album-preview canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 700px) {
+  #albumV2Setup .album-controls { padding: 8px 12px; border-left: 0; border-top: 1px solid var(--line); }
+  #albumV2Setup .v2-sections { top: -8px; }
+  #albumV2Setup .v2-layer-list { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 8px 0; }
+  #albumV2Setup .v2-layer-list button { min-height: 44px; gap: 4px; padding: 6px; font-size: 12px; }
+  #albumV2Setup .album-controls .input, #albumV2Setup .album-button-row .btn, #albumV2Setup .v2-number-field > input[type=number] { min-height: 44px; }
+  #albumV2Setup .v2-value-slider { height: 36px; }
+  #albumV2Setup .album-preview { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; padding: 8px 12px; }
+  #albumV2Setup .v2-preview-title { grid-column: 1 / -1; }
+  #albumV2Setup .album-preview canvas { grid-column: 1; grid-row: 2 / 5; height: clamp(180px, 27dvh, 270px); max-height: 290px; }
+  #albumV2Setup .album-playback { grid-column: 2; flex-wrap: wrap; gap: 4px; }
+  #albumV2Setup .album-preview [data-v2-scrub] { grid-column: 2; }
+  #albumV2Setup .v2-chapters { grid-column: 2; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #albumV2Setup .v2-chapters button:last-child { grid-column: 1 / -1; }
+}

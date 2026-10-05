@@ -464,19 +464,20 @@ SoftwareWebGL QA was much slower; use hardwareMetal on this Mac for full exports
 Recovery manifest now covers744 shipped files.
 
 
-## Album creator V2 (artwork and font editors, 2026-10-05)
+## Album creator V2 (direct canvas editor, 2026-10-05)
 
 Open Reel > Reel template > Album creator V2 > Set up Album creator V2.
 Intro, Products, Ending and Export tabs retain keyboard navigation. The preview stays
 visible while controls scroll independently on mobile and desktop. Defaults,
 photo replacement including HEIC, editable product names, order, GLB uploads,
 music and 720p/1080p export remain. Original Album showcase and Outfit animations
-are unchanged. This revision is localhost only, not published.
+are unchanged. Release is authorized on both existing hosting addresses.
 
-The default total is exactly 40 seconds: 3-second muted winter intro, 0.5-second
-stack hold, 32-second gallery and 4.5-second ending. Gallery duration options
+The default total is exactly 41.8 seconds: the muted winter intro holds full-screen
+through 3.5s, then transitions over 1.3s, followed by a 0.5-second stack hold,
+32-second gallery and 4.5-second ending. Gallery duration options
 remain internally 22/23/30/32/40/45 seconds, labeled by complete reel lengths of
-30/31/38/40/48/53 seconds. The default is 40 seconds. Export is 60fps H.264 MP4, optional AAC music, plus a PNG
+31.8/32.8/39.8/41.8/49.8/54.8 seconds. The default is 41.8 seconds. Export is 60fps H.264 MP4, optional AAC music, plus a PNG
 cover taken during the first product detail. Music starts after the intro.
 
 ### Intro text and logo
@@ -485,8 +486,10 @@ Heading and Creator have full text tools: font selection, local font access
 where supported, TTF/OTF/WOFF/WOFF2 uploads, size, tracking, line height, color,
 alignment, visibility, X/Y positions, drag,
 keyboard nudging, horizontal/vertical center buttons and snapping guides.
-Defaults are Tenzen Presents at x50/y50% and Tenzen Angels at x50/y56%, in
-Geist Regular. The logo sits above at x50/y42%, at25% of its previous size. Text is rendered at
+Reference defaults: heading "Winter is\nComing", CarolGothic Regular220px,
+line height.92 at x50/y49%; subheading "Fall-Winter '26", Geist Regular36px,
+tracking0, line height1.2 at x50/y62.3%. The white full wordmark sits above
+at x50/y35%, size40%. CarolGothic is bundled from the owner's installed font. Text is rendered at
 its chosen size without silently shrinking it. Editing jumps to the unscaled
 intro at one second. Guides appear only in the editor and never in the export.
 Font uploads are named per scoped editor to avoid intro/outro/V1 collisions.
@@ -498,7 +501,7 @@ Font menus fit within the settings viewport; Escape closes the menu first.
 
 Original logo choices and color controls remain. Both intro and ending expose
 SVG size, visibility, X/Y position and axis-centering controls. Intro logos
-default to25% of the previous75% baseline (18.75% of their initial size). Text/logo appear at 0.5 seconds and remain attached as the intro
+default to40% of the existing75% baseline. Text/logo appear at 0.5 seconds and remain attached as the intro
 shrinks. Incoming slides rise with perspective tilt; after the extra half-second
 hold the first slide fills 9:16. Stack vertical spacing is .475 per layer, exactly
 half the previous .95; depth remains -1.5 and overview distance remains 8.8.
@@ -530,7 +533,7 @@ the720x720 garment render is centered at x754 and y770, fitting the right
 column without clipping its sleeves, and exactly aligned with
 the product text (moved16px left from x770), and sits behind the person, so
 sleeves are occluded where their silhouettes overlap. Product name and type/color
-sit below the garment using Carousel's title split: H1 is Geist Regular 400 with
+sit70px below the garment canvas, halving the previous140px gap, using Carousel's title split: H1 is Geist Regular 400 with
 -3% letter spacing; H2 is Geist Thin 100 with -2% letter spacing. There is no glass,
 card outline, Add to Bag, Added or Visit bag animation. The old glass source file
 is retained for recovery but is no longer imported by the active V2 renderer.
@@ -554,7 +557,8 @@ cutouts then appear individually at .55, .85, 1.15, 1.45, 1.75s, each fading in 
 They remain closely packed and alternate M/W/M/W/M in current product order.
 The lineup stays visible through the final frame. Black Become and the
 75%-sized TENZEN wordmark appear above it; the supplied globe/tenzen.in SVG
-sits below. Branding fades in at 3.15-3.75s and holds to 4.5s. The outro
+sits below. Branding appears abruptly at3.15s and holds to4.5s. It paints once after the
+temporal samples, so motion blur cannot soften the first visible branding frame. The outro
 always uses the white background and black foreground, independently of intro
 logo variant and color.
 
@@ -569,16 +573,29 @@ The ending also has the complete scoped text editor for Become and optional
 subtext, including local fonts, color, size, spacing, line height, alignment,
 dragging, keyboard nudging, snapping and visibility. Its wordmark and globe
 link each have independent SVG transforms and color. Intro/outro edits remain
-independent. The default Become label is regular weight; branding stays black
-on white and the five models remain present.
+independent. Default Become: Geist Regular52px, tracking-1.5, line height1.2, x50/y25.6%.
+The black full wordmark is size75%, x50/y30%; globe link remains x50/y74%.
+Branding stays black on white and the five models remain present.
+
+### Direct canvas editing
+
+Intro and Ending show a compact layer list and one selected property inspector.
+Click or touch text/SVG artwork directly to select it, then drag freely. Corner
+handles resize text and SVGs; arrow keys move1px, Shift+arrow10px. Center guides
+snap within8screen pixels; Alt bypasses snapping. The ending model group can
+also be dragged, carrying its text and SVGs together. All numeric properties
+have real range sliders plus precise numeric entry without spinner arrows.
+Intro opens at1s so every layer is immediately visible and editable. Preview,
+playback and timeline stay visible while the settings pane scrolls independently.
+Mobile retains44px controls. Selection outlines and guides never enter export.
 
 ### Modules and recovery
 
-V2: lib/album-v2-{motion,media,render,ui,labels,brand,editor,lineup,detail,ending,artwork}.js and
+V2: lib/album-v2-{motion,media,render,ui,labels,brand,editor,lineup,detail,ending,artwork,inspector,canvas-editor}.js and
 styles/album-v2.css. Native font families use lib/album-font-picker.js. Shared text markup is lib/album-text-controls.js; behavior
 remains in lib/album-text.js. lib/album-product.js adds a zero-blur fast path;
 V1 continues using its original angular blur. Assets remain in assets/album-v2/
-and assets/album-defaults/. Cache key: 20261005-albumv2-9. Relative URLs support
+and assets/album-defaults/. Cache key: 20261005-albumv2-10. Relative URLs support
 both hosting addresses. No new dependencies, paid services or Tenzen HQ edits.
 
 Known traps: intro loads as a complete Blob for deterministic seeking; media/GLB
@@ -587,13 +604,15 @@ foreground must update together; current product order chooses gender. Model
 foreground always paints after the garment. Do not reintroduce angular shutter
 samples in the V2 rotation. Local-font loading temporarily disables export.
 
-Validation:80/80 unit tests,32/32 V2 browser checks,16/16 V1 checks and24/24
-Outfit checks. Targeted editor QA additionally covered50 faces grouped under
-one family, native face loading, logo size/position, individual gap edits,
-independent outro text, real intro/outro pointer dragging and center snapping.
-Menus stay inside the editor and Escape preserves the enclosing dialog.
-375/768/1024/1440 layouts have no horizontal overflow. No page errors.
-A real1080x1920 H.264 export has2400frames at60fps and exactly40.000seconds;
-generation took30.009seconds. Encoded intro, all five detail views and the final
-lineup were inspected. Recovery verifier covers802 shipped files,1876 archive
-entries and600 profiles. Local only.
+Validation:82/82 unit tests,36 V2 browser checks,16 original Album checks,
+24 Outfit checks,7 Carousel checks,6 workspace-input checks and13 Story setup
+checks pass. Direct manipulation verified with real pointer events: SVG/text
+selection, dragging, SVG resizing, snapping, nudging, globe and lineup movement,
+and sliders. Layout checks cover375/768/1024/1440 widths and dark mode.
+No page errors. All14 changed/new JavaScript files pass node --check. Actual1080x1920 H.264 export:2508frames,
+60fps,41.800seconds, generated in34.579seconds. Encoded intro, all five detail
+views, sequential lineup and abrupt branding onset inspected. No new dependencies,
+paid services, CI changes, file deletions or Tenzen HQ edits.
+Recovery verifier covers806 shipped files,1876 archive entries and600 unique
+profiles/photos. The public Pages deployment is the release source; the Tenzen HQ
+route uses the same app and requires login. No Tenzen HQ source changes.
