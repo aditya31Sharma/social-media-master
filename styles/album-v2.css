@@ -39,7 +39,7 @@
 #albumV2Setup .v2-product-title small { font-size: var(--fs-12); font-weight: 400; }
 #albumV2Setup .album-model__thumb { width: var(--v2-thumb); height: 60px; }
 #albumV2Setup .v2-product-body { padding: var(--v2-space); border-top: 1px solid var(--line); }
-#albumV2Setup .v2-photos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--v2-space); }
+#albumV2Setup .v2-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--v2-space); }
 #albumV2Setup .v2-photo { min-width: 0; }
 #albumV2Setup .v2-photo > button { width: 100%; padding: 0; border: 0; border-radius: var(--r-sm); background: var(--card-2); color: var(--ink); overflow: hidden; cursor: pointer; }
 #albumV2Setup .v2-photo canvas { width: 100%; height: auto; display: block; }

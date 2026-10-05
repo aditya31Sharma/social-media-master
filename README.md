@@ -464,102 +464,101 @@ SoftwareWebGL QA was much slower; use hardwareMetal on this Mac for full exports
 Recovery manifest now covers744 shipped files.
 
 
-## Album creator V2 (revised 2026-10-05)
+## Album creator V2 (30-second revision, 2026-10-05)
 
-Choose **Reel > Reel template > Album creator V2 > Set up Album creator V2**.
-The editor has Intro, Products and Export tabs with keyboard navigation. A
-persistent preview stays visible while settings scroll independently, on phone
-and desktop. Chapter buttons jump to the intro, each product or the logo ending.
-Products expand individually, with four labeled thumbnails that preview their
-place in the reel. Each image can be replaced independently, including HEIC.
-Product names, order, 3D garment uploads, gallery music and export settings remain.
-Original Album showcase and Outfit reel behavior are unchanged.
+Open Reel > Reel template > Album creator V2 > Set up Album creator V2.
+Intro, Products and Export tabs retain keyboard navigation. The preview stays
+visible while controls scroll independently on mobile and desktop. Defaults,
+photo replacement including HEIC, editable product names, order, GLB uploads,
+music and 720p/1080p export remain. Original Album showcase and Outfit animations
+are unchanged. This revision is localhost only, not published.
 
-Intro settings are only Main text, Tenzen logo, Logo color and Subtext. The
-three-second winter intro is muted. Main text defaults to Tenzen Presents,
-subtext to Tenzen Angels, with fixed Geist typography and automatic text fitting.
-Original SVG choices are Japanese wordmark, full wordmark and asterisk. Text and
-logo appear at 0.5 seconds, attached to the video as it shrinks to 5% centrally.
-Five cards rise tilted from below, straighten and build the stack in reverse
-showcase order. After an extra fixed 0.5-second stack hold, the last arriving card zooms to fill
-the 9:16 output. Intro logos render at 75% of their previous size.
+The default total is exactly 30 seconds: 3-second muted winter intro, 0.5-second
+stack hold, 22-second gallery and 4.5-second ending. Gallery duration options
+remain internally 22/23/30/40/45 seconds, labeled by complete reel lengths of
+30/31/38/48/53 seconds. Export is 60fps H.264 MP4, optional AAC music, plus a PNG
+cover taken during the first product detail. Music starts after the intro.
 
-Default SKU order: Victor Doom, California Love, The Ragnarsons, Kingdom Of
-Northumbria, Stand Unshaken. Every SKU has four bundled photos in sequence:
-Shoot-1, Macro-Front, Model-Man-Front-Full, Model-Woman-Front-Full. Original CDN
-URLs are recorded in assets/album-v2/products.json. Fifteen extra WebPs add 5.4MB.
-Photos fill the frame through cover cropping without stretching or black bars.
+### Intro text and logo
 
-The default gallery is 45 seconds: nine seconds per product. Faster 23-, 30-
-and 40-second choices remain and scale the same timeline. Each product zooms in
-for 0.7 seconds. Photos slide left at local times 2.25, 3.8 and 6.1 seconds, with
-0.6-second transitions. Only after the second-last photo (Man front full) settles
-does the glass enter, at 4.6-5.0 seconds. It remains over the final photo and leaves
-at 7.1-7.5 seconds. The photo zooms out at 7.5-8.15, then exits through the top
-with matching -0.95-radian X perspective tilt and a slight scale reduction.
-It recycles behind the stack only when offscreen. Vertical separation increases
-from .44 to .95 per layer; depth stays -1.5. Overview camera distance 8.8 keeps
-the taller stack in frame. Every card stays centered.
+Heading and Creator now have the full shared V1 text editor: font selection,
+local font access where supported, TTF/OTF/WOFF/WOFF2 uploads, size, tracking,
+line height, color, weight, italic, alignment, visibility, X/Y positions, drag,
+keyboard nudging, horizontal/vertical center buttons and snapping guides.
+Defaults remain Tenzen Presents and Tenzen Angels in Geist. Text is rendered at
+its chosen size without silently shrinking it. Editing jumps to the unscaled
+intro at one second. Guides appear only in the editor and never in the export.
+Font uploads are named per editor to avoid V1/V2 font collisions.
 
-The floating glass card has 20px left/right/bottom margins and a 48px radius,
-measured in a 390px-wide design viewport and scaled proportionally for export.
-Its height is 60% of the viewport. It contains the rotating garment, name plus
-product type/color using Carousel's splitTitle, and animated Add to Bag controls.
-Button height and split proportions follow the live mobile store; row width fits
-inside the new floating card. There is no cursor and no real cart request.
+Original logo choices and color controls remain. Intro logos use 75% of their
+original size. Text/logo appear at 0.5 seconds and remain attached as the intro
+shrinks. Incoming slides rise with perspective tilt; after the extra half-second
+hold the first slide fills 9:16. Stack vertical spacing is .475 per layer, exactly
+half the previous .95; depth remains -1.5 and overview distance remains 8.8.
 
-Liquid glass is rendered with the existing Three.js renderer: a rounded-rectangle
-signed-distance lens refracts the backdrop near the rim, adds a specular highlight,
-soft scattering, tint and shadow. Scattering offsets double from 5 to 10 pixels.
-Photos outside the card remain completely unfiltered: no active-card blur,
-desaturation or darkening is applied to the overall image. This is rendered into both preview and MP4,
-without a DOM-only backdrop-filter dependency. References:
-- [Apple: Meet Liquid Glass](https://developer.apple.com/videos/play/wwdc2025/219/)
-- [Chrome Labs: Liquid Glass reference](https://github.com/GoogleChromeLabs/css-web-ui-demos/blob/main/html-in-canvas/public/assets/liquid_glass_reference/README.md)
+### Product sequence and overlapping detail
 
-All moving composition layers use five temporal shutter samples across 32ms,
-including photo slides, camera/stack movement, glass entry/exit and bag animation.
-Garments retain slow 36-degree-per-second rotation with three angular samples
-at +/-0.04 radians. Steady holds skip redundant background samples while keeping
-angular garment blur. Dramatic side lighting remains the default. Preview garment
-canvases are 360x360; exports use 1000x1000 and original model textures.
+Default order: Victor Doom, California Love, The Ragnarsons, Kingdom Of
+Northumbria, Stand Unshaken. Each product shows Shoot, Macro, then one full-body
+front photo. Genders alternate man/woman/man/woman/man by displayed slot,
+including after reordering. Both gender sources remain bundled; the editor
+shows only the three photos used for that slot. No image-wide filters apply.
 
-A fixed six-second white ending dismisses the last glass, scales its final photo
-to 5% over 1.6 seconds and fades that photo at 1.4-1.8. Five background-free
-models appear at 1.6-2.2 and hold until 4.4, then fade as the black Become/TENZEN/
-globe-tenzen.in lockup appears at 4.6-5.3. The logo is 75% size. The supplied globe
-SVG is bundled unchanged. The outro always uses the full black wordmark on white;
-intro variant/color controls continue to apply only to the intro.
+Each default product lasts 4.4 seconds. Camera enters at 0-.35. Photos swipe
+left at .85-1.1 (Macro) and 1.6-1.9 (selected front). Detail enters at 2.1-2.45,
+holds, then returns to the original photo at 3.5-3.8. Camera pulls out at 3.8-4.05,
+and the outgoing slide tilts in X perspective and exits upward at 4.05-4.4.
+It recycles behind the stack offscreen. The last product holds its fitted photo
+for the ending instead of exiting. Optional gallery durations scale these beats;
+garment rotation stays 36 degrees per real second.
 
-Lineup models alternate man/woman/man/woman/man in the current product order,
-including after reordering. Alpha bounds normalize their visible height and
-slightly overlap adjacent transparent bounds for close spacing. Existing five
-cutouts are reused; five additional gender cutouts are bundled, so every product
-supports either slot. Browser matting runs only when preparing these assets,
-never during preview or export. Missing lineup assets block export with Retry.
+During detail, the background turns white. The transparent person moves left;
+the enlarged 900x900 garment render sits on the right behind the person, so
+sleeves are occluded where their silhouettes overlap. Product name and type/color
+sit below the garment in Geist, using Carousel's title split. There is no glass,
+card outline, Add to Bag, Added or Visit bag animation. The old glass source file
+is retained for recovery but is no longer imported by the active V2 renderer.
 
-Default total is 54.5 seconds: 3 intro + 0.5 hold + 45 gallery + 6 ending. Shorter
-gallery choices total 32.5, 39.5 or 49.5 seconds. Music starts after the three-second
-muted intro. Output remains 720p/1080p 60fps H.264 MP4 with optional AAC music and a
-PNG cover, now taken during the third-photo glass view. Drafts last for the session.
+Garment rotation uses one sharp render with zero angular blur. Other scene
+movement retains five shutter samples across 32ms. Dramatic side lighting remains
+the default. Preview garments render at 360x360; exports at 1000x1000 with original
+model textures. Alpha bounds normalize person placement. Replacing a full-body
+photo regenerates its foreground matte locally using the existing free matting
+engine; defaults reuse bundled cutouts without downloading matting weights.
 
-Modules: lib/album-v2-{motion,media,render,ui,labels,brand,editor,glass,lineup}.js,
-styles/album-v2.css and bundled assets/album-v2/ media. Relative paths support
-both hosting addresses. Cache key: 20261005-albumv2-5. No new dependencies, paid
-services, HQ edits or changes to original Reel animations. This revision remains
-localhost only, not published.
+### Ending
 
-Known traps: intro video must load into a complete Blob URL for deterministic
-seeking on hosts without HTTP range support. Failed media or GLB loads block
-export and expose Retry. Never sample the WebGL output canvas while replacing it
-with the glass pass: the glass uses an independent background canvas texture.
+On white, the final photo shrinks toward 5% over .9s but fades immediately during
+0-.5s, becoming invisible while still much larger than 5%. Five equal-height
+cutouts then appear individually at .55, .85, 1.15, 1.45, 1.75s, each fading in over .35s.
+They remain closely packed and alternate M/W/M/W/M in current product order.
+The lineup fades at 2.9-3.4s. Black Become, the 75%-sized full TENZEN wordmark and
+the supplied globe/tenzen.in SVG appear at 3.15-3.75s and hold to 4.5s. The outro
+always uses the white background and black foreground, independently of intro
+logo variant and color.
 
-Validation: 72 unit tests pass; browser checks pass 24/24 V2, 16/16 V1 and
-24/24 Outfit, with zero page errors. Light/dark layouts have no horizontal
-overflow at 375/768/1024/1440. Actual 1080p export is H.264, 60fps, 3270 frames,
-54.500 seconds, no audio track by default; generation took 65.952 seconds using
-hardware Metal. Exported intro, stack, photo/card timing, white scale-out, lineup
-and brand ending were inspected. One concurrent cold-load check timed out;
-the standalone diagnostic rerun passed all checks without errors. Recovery
-verification passes 793 shipped files, 1876 archive entries and 600 profiles.
-Local-only revision; no push or deployment.
+### Modules and recovery
+
+V2: lib/album-v2-{motion,media,render,ui,labels,brand,editor,lineup,detail}.js and
+styles/album-v2.css. Shared intro markup is lib/album-text-controls.js; behavior
+remains in lib/album-text.js. lib/album-product.js adds a zero-blur fast path;
+V1 continues using its original angular blur. Assets remain in assets/album-v2/
+and assets/album-defaults/. Cache key: 20261005-albumv2-6. Relative URLs support
+both hosting addresses. No new dependencies, paid services or Tenzen HQ edits.
+
+Known traps: intro loads as a complete Blob for deterministic seeking; media/GLB
+failures block export and expose Retry. The full-body photo and its regenerated
+foreground must update together; current product order chooses gender. Model
+foreground always paints after the garment. Do not reintroduce angular shutter
+samples in the V2 rotation. Local-font loading temporarily disables export.
+
+Validation: 71/71 unit tests pass. Browser checks pass 28/28 V2, 16/16 V1 and
+24/24 Outfit with zero page errors. Real pointer dragging and center snapping,
+local font-file loading, independent text-layer styles, and full-body upload with
+foreground/lineup rematting pass. Light/dark layouts show no horizontal overflow
+at 375/768/1024/1440; the restored intro editor also fits all four sizes.
+Actual export: 1080x1920 H.264, 60fps, 1800 frames, exactly 30.000 seconds, no audio
+track by default. Generation took 25.049 seconds on hardware Metal. Exported
+product overlap, sharp rotation, early shrink fade, sequential people and final
+brand lockup were visually inspected. Recovery manifest passes 796 shipped files,
+1876 archive entries and 600 unique profiles/photos. Local only; no push.

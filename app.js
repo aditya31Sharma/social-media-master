@@ -1021,7 +1021,7 @@ function wireReel() {
       $('#workspaceDescription').textContent = 'Winter intro. Shoot gallery. 3D product cards.';
       $('#sheetLabel').textContent = 'Set up Album creator V2';
       $('#emptyState strong').textContent = 'Album creator V2';
-      $('#emptyState > span:last-child').textContent = 'Five products in a frosted-glass gallery.';
+      $('#emptyState > span:last-child').textContent = 'Winter intro, shoot gallery and rotating 3D garments.';
       return;
     }
     $('#workspaceDescription').textContent = album ? 'An album intro. Five models in motion.' : 'One outfit. Two garments turning together.';

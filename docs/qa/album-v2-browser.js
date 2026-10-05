@@ -1,5 +1,5 @@
 (async () => {
-  const $ = s => document.querySelector(s), checks = [];
+  const $ = s => document.querySelector(s.startsWith('#') ? s : '#albumV2Setup ' + s), checks = [];
   const check = (name, ok) => { if (!ok) throw Error(name); checks.push(name); };
   const wait = async predicate => { for (let i = 0; i < 3000; i++) { if (predicate()) return; await new Promise(r => setTimeout(r, 30)); } throw Error('V2 update timed out'); };
   const set = (selector, value, event = 'input') => { const el = $(selector); el.value = value; el.dispatchEvent(new Event(event, { bubbles: true })); };
@@ -8,17 +8,27 @@
   await wait(() => !$('#albumV2Setup [data-v2-generate]').disabled);
   check('All five shoot and garment defaults load', $('[data-v2-count]').textContent === '5 / 5');
   check('Victor Doom is first and Stand Unshaken is last', $('[data-v2-name="0"]').value.includes('Victor Doom') && $('[data-v2-name="4"]').value.includes('Stand Unshaken'));
-  check('Intro has only main text, logo, color and subtext', $('#albumV2Setup [data-v2-intro-controls]').querySelectorAll('input, select, textarea').length === 4);
-  check('Three-second intro, half-second hold and six-second ending surround the 45-second gallery', +$('[data-v2-scrub]').max === 54.5);
-  check('Geist is loaded and intro heading defaults correctly', document.fonts.check('500 44px Geist') && $('[data-v2-main-text]').value === 'Tenzen Presents');
+  check('Intro has complete text controls and both text layers', !!$('[data-font-upload]') && $('[data-layer]').options.length === 2);
+  check('Full reel defaults to exactly 30 seconds', +$('[data-v2-scrub]').max === 30);
+  check('Geist is loaded and intro heading defaults correctly', document.fonts.check('500 44px Geist') && $('[data-text-text]').value === 'Tenzen Presents');
   set('[data-v2-scrub]', '1'); await wait(() => $('[data-v2-time]').textContent.startsWith('1.0'));
   const intro = $('#albumV2Setup canvas').toDataURL();
   set('[data-v2-scrub]', '13'); await wait(() => $('[data-v2-time]').textContent.startsWith('13.0'));
   check('Scrubbing moves between intro and product card', $('#albumV2Setup canvas').toDataURL() !== intro);
-  set('[data-v2-main-text]', 'Winter collection'); await wait(() => $('[data-v2-time]').textContent.startsWith('1.0'));
+  set('[data-text-text]', 'Winter collection'); await wait(() => $('[data-v2-time]').textContent.startsWith('1.0'));
   check('Main text edits return to the intro preview', +$('[data-v2-scrub]').value === 1);
-  check('Subtext is independently editable', $('[data-v2-subtext]').value === 'Tenzen Angels');
-  set('[data-v2-subtext]', 'Winter 2026');
+  set('[data-text-size]', '86'); set('[data-text-spacing]', '6'); set('[data-text-lineHeight]', '1.3');
+  set('[data-text-color]', '#ff0000'); set('[data-text-x]', '32'); $('[data-center-x]').click();
+  check('Text centers horizontally', $('[data-text-x]').value === '50');
+  set('[data-layer]', 'creator', 'change');
+  check('Subtext is independently editable', $('[data-text-text]').value === 'Tenzen Angels');
+  set('[data-text-text]', 'Winter 2026');
+  set('[data-layer]', 'heading', 'change');
+  check('Typography persists independently per text layer', $('[data-text-size]').value === '86' && $('[data-text-spacing]').value === '6');
+  const font = await (await fetch('./assets/fonts/plus-jakarta-sans-latin.woff2')).blob();
+  const dt = new DataTransfer(); dt.items.add(new File([font], 'Local-font.woff2')); $('[data-font-upload]').files = dt.files; $('[data-font-upload]').dispatchEvent(new Event('change', { bubbles: true }));
+  await wait(() => $('[data-font]').value.startsWith('AlbumFontalbumV2Setup'));
+  check('Uploaded local font loads for V2', document.fonts.check(`24px ${$('[data-font]').value}`));
   const logos = [];
   for (const variant of ['japanese', 'wordmark', 'asterisk']) {
     set('[data-v2-logo]', variant); await new Promise(r => setTimeout(r, 100));
@@ -28,16 +38,18 @@
   set('[data-v2-logo-color]', '#ff0000'); await new Promise(r => setTimeout(r, 100));
   check('Logo color changes the rendered preview', $('#albumV2Setup canvas').toDataURL() !== logos[2]);
   set('[data-v2-logo-color]', '#ffffff'); set('[data-v2-logo]', 'japanese');
-  set('[data-v2-main-text]', 'Tenzen Presents'); set('[data-v2-subtext]', 'Tenzen Angels');
+  set('[data-text-text]', 'Tenzen Presents'); set('[data-font]', 'Geist', 'change'); set('[data-text-size]', '68'); set('[data-text-spacing]', '0'); set('[data-text-lineHeight]', '1.2'); set('[data-text-color]', '#ffffff');
+  set('[data-layer]', 'creator', 'change'); set('[data-text-text]', 'Tenzen Angels'); set('[data-layer]', 'heading', 'change');
   $('#v2-tab-1').click();
   check('Products has its own focused settings pane', !$('#v2-panel-1').hidden && $('#v2-panel-0').hidden && $('#v2-panel-2').hidden);
-  check('All twenty product photos preload', document.querySelectorAll('#albumV2Setup .v2-photo canvas').length === 20);
-  check('Four-photo order matches the request', [...document.querySelectorAll('[data-v2-product="0"] .v2-photo > button span')].map(el => el.textContent).join('|') === 'Shoot|Macro|Man front full|Woman front full');
+  check('Three photos per product are available', document.querySelectorAll('#albumV2Setup .v2-photo canvas').length === 15);
+  check('Shoot, macro and male front are used for product one', [...document.querySelectorAll('[data-v2-product="0"] .v2-photo > button span')].map(el => el.textContent).join('|') === 'Shoot|Macro|Man front full');
+  check('Full-body gender alternates by displayed product slot', [...document.querySelectorAll('#albumV2Setup .v2-product')].map(row => row.querySelector('.v2-photo:last-child > button span').textContent).join('|') === 'Man front full|Woman front full|Man front full|Woman front full|Man front full');
   const shots = [];
-  for (let shot = 0; shot < 4; shot++) {
+  for (let shot = 0; shot < 3; shot++) {
     $(`[data-v2-shot-preview="0-${shot}"]`).click(); await new Promise(r => setTimeout(r, 100)); shots.push($('#albumV2Setup canvas').toDataURL());
   }
-  check('Each photo has a working preview shortcut', new Set(shots).size === 4);
+  check('Each photo has a working preview shortcut', new Set(shots).size === 3);
   const top = $('#albumV2Setup canvas').getBoundingClientRect().top;
   $('#albumV2Setup .album-controls').scrollTop = 500;
   check('Settings scroll independently from the preview', $('#albumV2Setup canvas').getBoundingClientRect().top === top);
@@ -48,8 +60,8 @@
   $('[data-v2-move="1"][data-step="-1"]').click(); await wait(() => !$('#albumV2Setup [data-v2-generate]').disabled);
   set('[data-v2-name="0"]', 'Victor Doom test');
   $('#v2-tab-2').click();
-  set('[data-v2-duration]', '30', 'change'); check('Gallery duration includes fixed intro and ending', +$('[data-v2-scrub]').max === 39.5);
-  set('[data-v2-duration]', '45', 'change');
+  set('[data-v2-duration]', '30', 'change'); check('Gallery duration includes fixed intro and ending', +$('[data-v2-scrub]').max === 38);
+  set('[data-v2-duration]', '22', 'change');
   $('[data-v2-play]').click(); await new Promise(r => setTimeout(r, 400)); $('[data-v2-play]').click();
   check('Preview playback advances and stops', +$('[data-v2-scrub]').value > 0 && $('[data-v2-play]').textContent === 'Play');
   $('[data-v2-close]').click(); await new Promise(r => setTimeout(r, 50));
@@ -57,7 +69,7 @@
   set('#reelTemplate', 'outfit', 'change'); check('Outfit template remains available', !$('#outfitTemplate').hidden && $('#albumV2Template').hidden);
   set('#reelTemplate', 'album', 'change'); check('V1 template remains available', !$('#albumTemplate').hidden && $('#albumV2Template').hidden);
   set('#reelTemplate', 'album-v2', 'change'); $('#btnAlbumV2Setup').click();
-  check('V2 draft survives template switches', $('[data-v2-name="0"]').value === 'Victor Doom test' && $('[data-v2-main-text]').value === 'Tenzen Presents');
+  check('V2 draft survives template switches', $('[data-v2-name="0"]').value === 'Victor Doom test' && $('[data-text-text]').value === 'Tenzen Presents');
   set('[data-v2-name="0"]', name); $('[data-v2-close]').click();
   check('Page has no horizontal overflow', document.documentElement.scrollWidth <= innerWidth);
   return { passed: checks.length, checks };

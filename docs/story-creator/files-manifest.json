@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 34218,
-    "sha256": "c9fd370c118fe705af894557ba378acdcb9235d01e8000268ef412c5ecfdce28"
+    "bytes": 33594,
+    "sha256": "a7bfe82dbd329277fbf202f6d394fa3a06b9c7a26191fa942cd16b6b52d0df61"
   },
   {
     "path": "app.css",
@@ -16,8 +16,8 @@
   },
   {
     "path": "app.js",
-    "bytes": 43525,
-    "sha256": "72d7562c9ee81bd98f7e747a295d94296616d2ef271db5446f2519b8cb8180b3"
+    "bytes": 43537,
+    "sha256": "658e0b81d85378990179be6c7d281fb657055749154b5596167b3a88929913a2"
   },
   {
     "path": "assets/album-defaults/california-love-front.webp",
@@ -226,13 +226,13 @@
   },
   {
     "path": "docs/qa/album-v2-browser.js",
-    "bytes": 5766,
-    "sha256": "f1b6460d5fc2ac4ac87cee95dca20bb1e4a1b4bcb8ed4626b988b9d3479602f5"
+    "bytes": 7263,
+    "sha256": "0dcdd7a8eb3a4e7220ed5698bf35ffb590bb53c84ebdc5aeb0ffa464d834ee24"
   },
   {
     "path": "docs/qa/album-v2.test.mjs",
-    "bytes": 9765,
-    "sha256": "55ae4ba83412082a00a96f3f0a3ba185a38c6cbab2f58d941e218270fbdb257b"
+    "bytes": 10459,
+    "sha256": "6505745d79f3e1f85ed09355ab3082d2e131a2746295d09c9452c489ee92a810"
   },
   {
     "path": "docs/qa/album.test.mjs",
@@ -501,8 +501,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 45518,
-    "sha256": "1f18f39f821fcbd566642fc7fea95d4c3312767d020d7f8ef7dad6b53ab617cb"
+    "bytes": 45689,
+    "sha256": "fd250f9eaad1722544a5fa1b523edea670f1f5644049f3710c29b9df8e5108bd"
   },
   {
     "path": "lab/frame.html",
@@ -526,8 +526,8 @@
   },
   {
     "path": "lib/album-product.js",
-    "bytes": 3907,
-    "sha256": "059dc183972c1899f667c67de803440d7aabd518ae6722ba0e0629a7e380ba09"
+    "bytes": 3976,
+    "sha256": "9df741e913243d89b8b90af0b4ead5635d530931c06844b16cab2ae869aa5ecc"
   },
   {
     "path": "lib/album-render.js",
@@ -536,18 +536,18 @@
   },
   {
     "path": "lib/album-text.js",
-    "bytes": 6862,
-    "sha256": "622fc1cd51fe96345417077e8f395cec4ac831e1e6e9b4f609186e38f5fccb5b"
+    "bytes": 6891,
+    "sha256": "46337fe1d23539cae2c4917e826cd93869754639e398b8ab620f106d769e8722"
   },
   {
     "path": "lib/album-ui.js",
-    "bytes": 21781,
-    "sha256": "72a0aab6a100606d7da1953ebc42bf71f54e099a21c5d529282e562c544d92e8"
+    "bytes": 19442,
+    "sha256": "f2925cacc267a0a71d71e35e2ddd269adbd00c430ce0c8c063083ce9654c0f9c"
   },
   {
     "path": "lib/album-v2-labels.js",
-    "bytes": 1666,
-    "sha256": "9c0e6b172fe90f0e74d962d936ef5cf5f0886f46a2126825f36da638d56f9c65"
+    "bytes": 1233,
+    "sha256": "462bb0c1f0ec0f68f513a86d6fe35c71fa74da7cf7f005d5a50debd9f894a6d3"
   },
   {
     "path": "lib/album-v2-media.js",
@@ -556,18 +556,18 @@
   },
   {
     "path": "lib/album-v2-motion.js",
-    "bytes": 4517,
-    "sha256": "3da2db6644095add532d19f5a30264fce2c0e90d7f678859865fe49c26abf8cb"
+    "bytes": 3879,
+    "sha256": "7161fbb94962bcbcfd3e13a9532cafddd6c3ea4809433e49c617bad0bb0cbab7"
   },
   {
     "path": "lib/album-v2-render.js",
-    "bytes": 10302,
-    "sha256": "5a74bf491db0db637870b10b1a24da67dffa31508bf5103163e31cbd63520c7b"
+    "bytes": 6847,
+    "sha256": "6d253b656ef43e8d05a715a20a94882458e3a97da66556e7526a6e4bf3b0b1c6"
   },
   {
     "path": "lib/album-v2-ui.js",
-    "bytes": 15069,
-    "sha256": "486124c593173740f9e130eb364f24a52f5ebe6612229f2e804c1cb50e22c4c9"
+    "bytes": 15996,
+    "sha256": "3e97932344055330aa231ee295bb81217a3fbdb42e1894c27a1c411dceaabeef"
   },
   {
     "path": "lib/audio.js",
@@ -3792,7 +3792,7 @@
   {
     "path": "styles/album-v2.css",
     "bytes": 6177,
-    "sha256": "08dcdcffc7eedac5177c2548df0c77422841dea79e3abdf2bc0efd291300abf8"
+    "sha256": "322baf13226cac24b899d8ecc46bb46b153c4e7771122a72f52bf1a4f3821ca3"
   },
   {
     "path": "styles/album.css",
@@ -3916,13 +3916,13 @@
   },
   {
     "path": "lib/album-v2-editor.js",
-    "bytes": 5516,
-    "sha256": "2dd162ec92a10f61d9cbe0383269d513aba8dcff8faa1cf68692aec359064083"
+    "bytes": 5592,
+    "sha256": "946c7426057dcc3029c1ef38ce2d34890c65bc39940a444d02ba147f2343a955"
   },
   {
     "path": "lib/album-v2-glass.js",
-    "bytes": 3104,
-    "sha256": "39aa3245d4ebf6f125ebbec6c8ea1b269a7814b5885748c52ccf40fb359f137b"
+    "bytes": 3172,
+    "sha256": "a566a2a760695865214bd088c5f8415bc8f81f600dd2b0df77ef6d54e04bb7ae"
   },
   {
     "path": "assets/album-v2/california-love-woman-cutout.webp",
@@ -3961,7 +3961,22 @@
   },
   {
     "path": "lib/album-v2-lineup.js",
-    "bytes": 1690,
-    "sha256": "85973a8867451cdcf9236eba6ccb90e28ae96b70e7217a4dcce20cf33f23c96d"
+    "bytes": 2447,
+    "sha256": "aa9c1a7d1c811d2629d1a73d366c274abe27d97e28436f85a55dcac8130f0e38"
+  },
+  {
+    "path": "docs/plans/2026-10-05-album-v2-30-second-detail.md",
+    "bytes": 1305,
+    "sha256": "d7f447e91f159c1ee40d5aac55957fb10ae61547f00cb00d6ebe31cc10570412"
+  },
+  {
+    "path": "lib/album-text-controls.js",
+    "bytes": 2665,
+    "sha256": "164eccc38daccc5f4d9bbff2f31279dda6b8550ce04e9f32a1820be53d6098ed"
+  },
+  {
+    "path": "lib/album-v2-detail.js",
+    "bytes": 2250,
+    "sha256": "38add45aeebc52381336349babf3274d04e2d3fb6d87148ecadaa60d1c71461e"
   }
 ]

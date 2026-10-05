@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { galleryScene, galleryCardPose, bagEase, GLASS, BAG, INTRO_DURATION, FIRST_STACK_HOLD, OUTRO_DURATION, PRODUCT_DURATION, GALLERY_DURATION, STACK, photoScene, shutterTimes, PRODUCT_ORDER } from '../../lib/album-v2-motion.js';
+import { galleryScene, galleryCardPose, INTRO_DURATION, FIRST_STACK_HOLD, OUTRO_DURATION, PRODUCT_DURATION, GALLERY_DURATION, STACK, photoScene, shutterTimes, PRODUCT_ORDER, frontPhotoIndex, lineupEntrance } from '../../lib/album-v2-motion.js';
 import { galleryAudio } from '../../lib/album-v2-media.js';
 import { introLabels, introControls } from '../../lib/album-v2-labels.js';
 import { splitTitle } from '../../lib/shopify.js';
@@ -19,30 +19,28 @@ test('intro is three seconds and labels appear abruptly at 0.5s before receding 
   assert.equal(labels.find(l => l.id === 'creator').text, 'Tenzen Angels');
   assert.ok(labels.every(l => l.font === 'Geist'));
 });
-test('first stack holds another half-second and glass starts only on the second-last image', () => {
-  assert.deepEqual(PRODUCT_ORDER, [1, 2, 3, 4, 0]);
-  assert.equal(FIRST_STACK_HOLD, .5);
-  assert.equal(galleryScene(3.49, 3).zoom, 0);
+test('30-second reel holds the first stack and stages alternating full-body details', () => {
+  assert.equal(INTRO_DURATION + FIRST_STACK_HOLD + GALLERY_DURATION + OUTRO_DURATION, 30);
+  assert.equal(FIRST_STACK_HOLD, .5); assert.equal(galleryScene(3.49, 3).zoom, 0);
   assert.ok(galleryScene(3.8, 3).zoom > 0);
+  assert.deepEqual(PRODUCT_ORDER, [1, 2, 3, 4, 0]);
   for (let i = 0; i < 5; i++) {
     const start = 3.5 + i * PRODUCT_DURATION;
-    for (const offset of [.7, 2.5, 4.59]) assert.equal(galleryScene(start + offset, 3).glass, 0);
-    assert.equal(photoScene(galleryScene(start + 4.8, 3)).to, 2);
-    assert.ok(galleryScene(start + 4.8, 3).glass > 0);
-    assert.equal(galleryScene(start + 5.1, 3).glass, 1);
+    assert.equal(galleryScene(start + 2, 3).detail, 0);
+    assert.equal(photoScene(galleryScene(start + 2.8, 3)).to, i % 2 ? 3 : 2);
+    assert.equal(galleryScene(start + 2.8, 3).detail, 1);
+    assert.equal(galleryScene(start + 3.9, 3).detail, 0);
+    assert.equal('glass' in galleryScene(start + 2.8, 3), false);
+    assert.equal('split' in galleryScene(start + 2.8, 3), false);
   }
 });
-test('glass floats with 20px margins and 48px corners at 390px design width', () => {
-  assert.equal(GLASS.x * 390, 20); assert.equal(GLASS.w * 390, 350);
-  assert.ok(Math.abs((1 - GLASS.y - GLASS.h) * 390 * 16 / 9 - 20) < 1e-10);
-  assert.equal(GLASS.radius * 390, 48); assert.equal(GLASS.h, .6);
-  assert.equal(BAG.height * 390, 64); assert.equal(BAG.gap * 390, 8);
-});
-test('garments turn slowly and the bag splits without a cursor', () => {
-  const a = galleryScene(5.7), b = galleryScene(6.7);
-  assert.ok(Math.abs(b.turn - a.turn - Math.PI * 2 / 10) < 1e-10);
-  assert.equal('cursor' in a, false); assert.equal(a.split, 0);
-  assert.ok(galleryScene(6.1).press > .99); assert.equal(galleryScene(6.8).split, 1);
+test('garments turn slowly regardless of selected duration, without a bag or cursor', () => {
+  for (const duration of [22, 30, 45]) {
+    const base = FIRST_STACK_HOLD + 2.5 * duration / GALLERY_DURATION;
+    const a = galleryScene(base, 0, duration), b = galleryScene(base + .2, 0, duration);
+    assert.ok(Math.abs(b.turn - a.turn - .2 * Math.PI * 2 / 10) < 1e-10);
+    assert.equal('cursor' in a, false); assert.equal('press' in a, false);
+  }
 });
 test('every outgoing product settles at the rear while its successor becomes centered', () => {
   for (let index = 0; index < 4; index++) {
@@ -60,18 +58,14 @@ test('intro handoff has continuous product positions and the final product holds
     const before = galleryCardPose(order, galleryScene(3 - 1e-7, 3)), after = galleryCardPose(order, galleryScene(3, 3));
     for (const key of ['x', 'y', 'z', 'rotateX']) assert.ok(Math.abs(before[key] - after[key]) < 1e-5);
   }
-  assert.equal(galleryScene(48.5, 3).glass, 1); assert.equal(galleryScene(48.5, 3).index, 4);
+  assert.equal(galleryScene(25.5, 3).detail, 0); assert.equal(galleryScene(25.5, 3).index, 4);
 });
 test('product names use the same split as the carousel', () => {
   assert.deepEqual(splitTitle('Victor Doom Polo Sweatshirt Olive', 'Polo Sweatshirt'), ['Victor Doom', 'Polo Sweatshirt Olive']);
   assert.deepEqual(splitTitle('Stand Unshaken Oversized Hoodie Acid Black', 'Oversized Hoodie'), ['Stand Unshaken', 'Oversized Hoodie Acid Black']);
 });
-test('live bag easing is bounded and monotonic', () => {
-  assert.equal(bagEase(0), 0); assert.equal(bagEase(1), 1); let prior = 0;
-  for (let i = 0; i <= 100; i++) { const n = bagEase(i / 100); assert.ok(n >= prior && n <= 1); prior = n; }
-});
 test('all frame poses remain finite with and without intro at either gallery duration', () => {
-  for (const intro of [0, 3]) for (const duration of [23, 30, 40, 45]) for (let frame = 0; frame <= (intro + FIRST_STACK_HOLD + duration + OUTRO_DURATION) * 60; frame++) {
+  for (const intro of [0, 3]) for (const duration of [22, 23, 30, 40, 45]) for (let frame = 0; frame <= (intro + FIRST_STACK_HOLD + duration + OUTRO_DURATION) * 60; frame++) {
     const scene = galleryScene(frame / 60, intro, duration);
     for (const n of Object.values(scene)) if (typeof n === 'number') assert.ok(Number.isFinite(n));
     for (let i = -1; i < 5; i++) for (const n of Object.values(galleryCardPose(i, scene))) if (typeof n === 'number') assert.ok(Number.isFinite(n));
@@ -102,46 +96,41 @@ test('incoming cards build the stack from below, tilted, in reverse showcase ord
   const tiny = galleryCardPose(-1, galleryScene(2.4, 3));
   assert.ok(Math.abs(tiny.scale / full.scale - .05) < 1e-10);
 });
-test('white ending shrinks the last slide then holds equal-height models before Become branding', () => {
-  assert.equal(OUTRO_DURATION, 6);
-  for (const duration of [23, 30, 40, 45]) {
-    const start = 3.5 + duration;
-    const first = galleryScene(start, 3, duration);
-    assert.equal(first.scale, 1); assert.equal(first.glass, 1); assert.equal(first.logo, 0);
-    const tiny = galleryScene(start + 1.6, 3, duration);
-    assert.ok(Math.abs(tiny.scale - .05) < 1e-10);
-    const lineup = galleryScene(start + 3, 3, duration);
-    assert.equal(lineup.lineup, 1); assert.equal(lineup.opacity, 0); assert.equal(lineup.logo, 0);
-    const last = galleryScene(start + 6, 3, duration);
-    assert.equal(last.logo, 1); assert.equal(last.lineup, 0); assert.equal(last.opacity, 0); assert.equal(last.glass, 0);
-    for (let order = -1; order < 4; order++) assert.equal(galleryCardPose(order, last).visible, false);
+test('ending hides the shrinking slide early and reveals models one by one before branding', () => {
+  assert.equal(OUTRO_DURATION, 4.5);
+  const start = INTRO_DURATION + FIRST_STACK_HOLD + GALLERY_DURATION;
+  const first = galleryScene(start, 3); assert.equal(first.scale, 1); assert.equal(first.opacity, 1);
+  const faded = galleryScene(start + .5, 3); assert.equal(faded.opacity, 0); assert.ok(faded.scale > .3);
+  assert.ok(Math.abs(galleryScene(start + .9, 3).scale - .05) < 1e-10);
+  for (let index = 0; index < 5; index++) {
+    assert.ok(lineupEntrance(.55 + index * .3, index) < 1e-10);
+    assert.equal(lineupEntrance(.95 + index * .3, index), 1);
+    if (index < 4) assert.equal(lineupEntrance(.7 + index * .3, index + 1), 0);
   }
+  const last = galleryScene(start + OUTRO_DURATION, 3);
+  assert.equal(last.logo, 1); assert.equal(last.lineup, 0); assert.equal(last.opacity, 0);
 });
-test('intro settings contain only main text, logo, logo color and subtext', () => {
+test('intro restores full font, typography, position and snapping controls for both text layers', () => {
   const html = introControls();
-  assert.equal((html.match(/<textarea|<select|<input/g) || []).length, 4);
-  assert.ok(html.includes('data-v2-main-text') && html.includes('data-v2-subtext'));
+  for (const field of ['data-layer', 'data-font', 'data-local-fonts', 'data-font-upload', 'data-text-size', 'data-text-spacing', 'data-text-lineHeight', 'data-text-color', 'data-text-weight', 'data-text-x', 'data-text-y', 'data-center-x', 'data-center-y']) assert.ok(html.includes(field), field);
   assert.ok(html.includes('data-v2-logo-color') && html.includes('data-v2-logo'));
-  assert.equal(introLabels().length, 2);
-  assert.equal(galleryAudio({ audio: sound(.4, 10) }, null, 28.5), null);
-  const track = galleryAudio({ audio: sound(.4, 10) }, sound(.2, 1), 28.5);
-  assert.equal(track.out[0][120000], 0); assert.ok(track.out[0][168000] > .19);
+  assert.equal(introLabels().length, 2); assert.ok(!html.includes('value="album"'));
+  assert.equal(galleryAudio({ audio: sound(.4, 10) }, null, 30), null);
 });
 
-test('each product shows shoot, macro, man and woman, before its card reveal', () => {
-  assert.equal(GALLERY_DURATION, 45); assert.equal(PRODUCT_DURATION, 9);
-  for (let product = 0; product < 5; product++) {
-    const start = 3.5 + product * PRODUCT_DURATION;
-    for (const [offset, shot] of [[1,0], [2.9,1], [4.5,2], [6.8,3]]) {
-      assert.equal(photoScene(galleryScene(start + offset, 3)).to, shot);
-    }
-    const sliding = photoScene(galleryScene(start + 2.45, 3));
-    assert.equal(sliding.from, 0); assert.equal(sliding.to, 1); assert.ok(sliding.progress > 0 && sliding.progress < 1);
+test('each product uses shoot, macro and only the alternating front image', () => {
+  assert.equal(GALLERY_DURATION, 22); assert.equal(PRODUCT_DURATION, 4.4);
+  assert.deepEqual([0,1,2,3,4].map(frontPhotoIndex), [2,3,2,3,2]);
+  for (let index = 0; index < 5; index++) {
+    const start = 3.5 + index * PRODUCT_DURATION;
+    for (const [offset, shot] of [[.5,0], [1.2,1], [2,frontPhotoIndex(index)]]) assert.equal(photoScene(galleryScene(start + offset, 3)).to, shot);
+    const sliding = photoScene(galleryScene(start + 1.75, 3));
+    assert.equal(sliding.from, 1); assert.ok(sliding.progress > 0 && sliding.progress < 1);
   }
 });
 test('stack has spacious vertical gaps and exits move upward, tilt and shrink', () => {
-  assert.equal(STACK.y, .95); assert.equal(STACK.z, -1.5);
-  const scene = galleryScene(9.15), pose = galleryCardPose(0, scene);
+  assert.equal(STACK.y, .475); assert.equal(STACK.z, -1.5);
+  const scene = galleryScene(4.75), pose = galleryCardPose(0, scene);
   assert.ok(pose.y > 3); assert.ok(pose.rotateX < -.3); assert.ok(pose.scale < .95);
   assert.ok(shutterTimes(2)[0] - shutterTimes(2).at(-1) > .031);
   assert.ok(shutterTimes(0).every(time => time === 0));
@@ -155,4 +144,17 @@ test('lineup normalizes alpha bounds to equal height and keeps all five people i
   assert.equal(new Set(rows.map(row => row.height)).size, 1);
   assert.ok(rows[0].x >= 39.99); assert.ok(rows.at(-1).x + rows.at(-1).width <= 1040.01);
   rows.slice(1).forEach((row,i) => assert.ok(row.x < rows[i].x + rows[i].width));
+});
+
+import { GARMENT, personPose, paintProductDetail } from '../../lib/album-v2-detail.js';
+test('larger garment overlaps the left person and is painted behind the person', () => {
+  const person = {image: {width:1600,height:2400},crop:{x:450,y:80,w:700,h:2220}};
+  const pose = personPose(person,1); assert.ok(pose.x>=0); assert.ok(pose.x+pose.width<600);
+  assert.ok(GARMENT.size>660); assert.ok(GARMENT.x<pose.x+pose.width);
+  const garment = {}, drawOrder = [], texts = [];
+  const ctx = {save(){},restore(){},fillRect(){},drawImage(image){drawOrder.push(image);},fillText(text,x,y){texts.push({text,x,y});},measureText(text){return {width:text.length*20};}};
+  paintProductDetail(ctx,garment,person,{productName:'Victor Doom Polo Sweatshirt Olive',type:'Polo Sweatshirt'},1);
+  assert.deepEqual(drawOrder,[garment,person.image]);
+  assert.ok(texts.every(item=>item.y>GARMENT.y+GARMENT.size));
+  assert.ok(!texts.some(item=>/bag/i.test(item.text)));
 });
