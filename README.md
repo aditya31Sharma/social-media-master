@@ -652,3 +652,47 @@ across375/768/1024/1440 widths with no page errors. All9 changed/new JavaScript
 files pass syntax checks. Actual mixed-animation export:1080x1920 H.264,60fps,
 2565frames,42.750seconds, generated in30.988seconds. Encoded delayed text fade,
 sliding logo and scaling globe inspected. Default scale-out remains41.8seconds.
+
+
+### Editing performance (2026-10-05)
+
+Album V2 uses lightweight bundled media while editing. The five default garments
+keep their original geometry with512px embedded textures; photos and transparent
+lineup art are limited to960px; the muted intro preview is360x640. Full originals
+are fetched when Generate is pressed. Uploaded photos, garment replacements,
+cutouts, edited names and reordered products retain their own media. Preview
+images must never be used as export sources.
+
+The editor unlocks after preview photos/intro/lineup are ready while garment
+previews finish loading in the background. Generate waits for successful garment
+validation. Loading failure exposes Retry and blocks export without freezing text
+editing. Superseded renderers dispose deferred resources when loading completes.
+
+Rapid slider/drag requests coalesce into one pending animation frame. The intro
+texture uses preview resolution and is reused when its frame/artwork is unchanged.
+Editing transitions use two shutter samples; exports retain all five, original
+textures,1080p resolution,60fps and existing animation timing. Matching default
+garments in Outfit and original Album also use the lighter GLBs for their previews.
+Other uploaded/new catalogue garments continue using their supplied GLB.
+
+New modules: lib/editor-performance.js, generated lib/editor-preview-assets.js,
+and lib/album-v2-export-media.js. Rebuild the36 preview assets with
+`python3 scripts/build-editor-previews.py` using existing ffmpeg and cwebp tools.
+Original files remain untouched. Preview set11.43MB versus41.62MB of source media.
+Cache key:20261005-editor-perf1, including the shared stage3d module.
+
+Measured on390px mobile viewport, cold cache,4Mbps down,100ms latency and4x CPU
+slowdown: editing unlock79.47s before versus6.35s after; all preview media ready
+23.73s after. Total transfer41.36MB to12.73MB (69% less). These are simulated
+mobile measurements, not a physical-iPhone benchmark. Local unthrottled editor
+load7.98s to.46s; worst sampled scrub233ms to50ms.
+
+Validation:94 unit tests;18 animation,36 V2,16 original Album and24 Outfit browser
+checks;9 progressive-loading/recovery checks including blocked GLB downloads,
+reordering while loading, invalid upload and recovery. Real canvas dragging and
+center snapping plus375/768/1024/1440 layouts pass, with no page errors. Full
+1080x1920 H.26460fps export:2565frames,42.750s,85.668s including original downloads.
+Network trace confirms all five original GLBs plus full photos/intro during export.
+Cover SHA256 unchanged; full video SSIM1.000000 to six decimals against prior
+export. No dependencies, paid services, domain/CI changes, deletion or HQ edits.
+Recovery verifier covers850 shipped files,1876 archive entries and600profiles.

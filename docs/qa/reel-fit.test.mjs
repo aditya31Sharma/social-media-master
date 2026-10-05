@@ -1,3 +1,4 @@
+import { editorAssetURL } from '../../lib/editor-performance.js';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFileSync } from 'node:fs';
@@ -38,7 +39,7 @@ class Box3 {
   getSize(v) { return v.set(40, 60, 20); }
   getCenter(v) { return v.set(0, 0, 0); }
 }
-const context = vm.createContext({ THREE: { Vector3, Object3D, Box3 }, LIGHT, FABRIC, FIT, lightingFor, lengthOf, liftOf, Math });
+const context = vm.createContext({ editorAssetURL, THREE: { Vector3, Object3D, Box3 }, LIGHT, FABRIC, FIT, lightingFor, lengthOf, liftOf, Math });
 const source = readFileSync(new URL('../../lib/stage3d.js', import.meta.url), 'utf8');
 vm.runInContext(source.replace(/^import .*;$/gm, '').replace(/^export /gm, '') + '\nglobalThis.Stage = OutfitStage; globalThis.models = cache;', context);
 context.models.set('model', Promise.resolve({ clone: () => ({ position: new Vector3(), traverse() {} }) }));
