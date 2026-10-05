@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 44620,
-    "sha256": "ab86d8593e373d424e25923f08d781b0a08d8e71f67111fac486a1af1d40b565"
+    "bytes": 46276,
+    "sha256": "0a19fd82001176d7e215c8a3d44269d6ab27a914a1e406fea0c139b22f502589"
   },
   {
     "path": "app.css",
@@ -501,8 +501,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 46816,
-    "sha256": "7d2e3cd0b3f6c2302abacbeaa1623014e8626e89f9d1af775fcc462880d04b56"
+    "bytes": 46371,
+    "sha256": "0dbc216843b4cb8f680ffc7d561c23882c435e02ed22eb73d458f3403c5a0b21"
   },
   {
     "path": "lab/frame.html",
@@ -541,8 +541,8 @@
   },
   {
     "path": "lib/album-ui.js",
-    "bytes": 19442,
-    "sha256": "f2925cacc267a0a71d71e35e2ddd269adbd00c430ce0c8c063083ce9654c0f9c"
+    "bytes": 20007,
+    "sha256": "940e320c0343a4a1123b8f9ed3dae11a17e92f9cd7491c2867e0e03bdb6bf0d7"
   },
   {
     "path": "lib/album-v2-labels.js",
@@ -566,8 +566,8 @@
   },
   {
     "path": "lib/album-v2-ui.js",
-    "bytes": 19205,
-    "sha256": "fe9cddcab9a02716f3b6af9158bd0d8c7ad928a257a810b713fa2c2309433c87"
+    "bytes": 19608,
+    "sha256": "de813d74dff7f277ff57127e2908bfc8cbc85a774191c7d51fe89a959b83062f"
   },
   {
     "path": "lib/audio.js",
@@ -646,8 +646,8 @@
   },
   {
     "path": "lib/reel-ui.js",
-    "bytes": 23884,
-    "sha256": "f3215e0cedba7a4e499a614223d68cf117c65dd74183349cb59a82d1da1574e7"
+    "bytes": 23470,
+    "sha256": "46e4e9e7b4063bb7794c6051c9426b19e1e9d1c15718072b12f49a6006b20c32"
   },
   {
     "path": "lib/reel.js",
@@ -3791,8 +3791,8 @@
   },
   {
     "path": "styles/album-v2.css",
-    "bytes": 12794,
-    "sha256": "aca14be5315313b863c9f9dea9c9fb2011afcc5e2767259ef413ef6a358133a1"
+    "bytes": 13045,
+    "sha256": "41fe6f545b7f1a835722df9d7facf2d102a1062b78f9e3d982175685f1fe00f4"
   },
   {
     "path": "styles/album.css",
@@ -4263,5 +4263,30 @@
     "path": "docs/qa/album-v2-audio.test.mjs",
     "bytes": 3602,
     "sha256": "f5051969653719655c987278edd8efc2db6e8f8b5031bd93f7f8f0dc67923c7c"
+  },
+  {
+    "path": "lib/youtube-import.js",
+    "bytes": 4269,
+    "sha256": "c46f008e2d23a00c41dbaaa45d9e07e76b974042d98638f4719c58f3d8e53be1"
+  },
+  {
+    "path": "docs/qa/youtube-import.test.mjs",
+    "bytes": 1023,
+    "sha256": "f4600f9ee34f19ba6bae8e319666feae4cda65a50ace48b3fa9e5c41f0ba12f0"
+  },
+  {
+    "path": "tools/youtube_audio/server.py",
+    "bytes": 7960,
+    "sha256": "fdc85f1c468ef198fe61ad7e7afadc4dfd74756fa6507d2780bf4ad33b7a7ced"
+  },
+  {
+    "path": "tools/youtube_audio/test_server.py",
+    "bytes": 2351,
+    "sha256": "9e6a64ceed3547d0d044531d2eb3b50e54cf7f3871a81c9f6bd668e0814f95df"
+  },
+  {
+    "path": "tools/youtube_audio/README.md",
+    "bytes": 2327,
+    "sha256": "50a892765a8ed8c1e32359dd23d568811adb262e34400a2d1a3e9c8f25f1a08a"
   }
 ]

@@ -724,3 +724,29 @@ pass with zero page errors. Real1080x1920 H.26460fps export:41.8s video and
 48kHz stereo AAC. Measured880Hz selected section throughout intro/middle/ending;
 unselected440Hz section excluded, volume and fades verified. No intro M4A
 request. Existing AAC encoder priming/padding remains approximately44ms/77ms.
+
+## YouTube audio import: local implementation, not deployed (2026-10-06)
+
+The local companion in tools/youtube_audio/server.py serves the editor and its
+conversion API at http://localhost:8091/. Uses already-installed yt-dlp and ffmpeg,
+with no new dependencies. Run `python3 tools/youtube_audio/server.py --port 8091`.
+All three reel templates share lib/youtube-import.js: paste a YouTube link, Import
+audio, then use the existing music editor; optionally Download MP3. Failed or
+cancelled conversion keeps the existing track. AlbumV2 source video remains muted.
+
+Only individual public YouTube videos are accepted, maximum15min/32MB MP3, one
+conversion at a time with150s timeout. Requests validate Host/Origin, video ID and
+fixed process arguments. No browser cookies are used. Temporary output is cleaned.
+The server binds loopback only and must not be exposed as a public service.
+
+Live release is pending backend hosting/authentication. GitHub Pages cannot run
+this conversion endpoint. TenzenHQ remains untouched and its proxy cannot process
+conversion requests. Do not push these UI changes until the backend exists.
+See tools/youtube_audio/README.md for the complete deployment boundary.
+
+Local verification:104 JavaScript tests,5 Python service tests and14 browser
+checks pass. A real YouTube conversion loaded into V2 and played through its
+waveform editor. The resulting MP3 also loaded through V1 and Outfit controls.
+Invalid links, converter errors and cancellation preserve the current song.
+375px viewport fits; zero page errors. Origin/target probes return403/400.
+The existing live release remains65cdf5a; this feature is not published.

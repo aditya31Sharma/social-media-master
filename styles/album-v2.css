@@ -134,3 +134,8 @@
 .v2-audio-actions { display:flex; flex-wrap:wrap; gap:8px; }
 .v2-audio-loop { display:flex; align-items:center; gap:8px; font-size:13px; min-height:44px; }
 .v2-audio:disabled { opacity:.5; }
+
+.youtube-import { display:grid; gap:10px; margin:12px 0 18px; }
+.youtube-import__actions { display:flex; flex-wrap:wrap; gap:8px; }
+.youtube-import .input { width:100%; min-width:0; font-size:16px; }
+.youtube-import .note { overflow-wrap:anywhere; }

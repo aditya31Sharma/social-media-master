@@ -29,7 +29,7 @@
 <script src="./lib/theme.js?v=20261004-reel2"></script>
 <script src="coi-serviceworker.js"></script>
 <link rel="stylesheet" href="./styles/album.css?v=20261005-album3">
-<link rel="stylesheet" href="./styles/album-v2.css?v=20261006-audio1">
+<link rel="stylesheet" href="./styles/album-v2.css?v=20261006-youtube1">
 </head>
 <body data-tool="carousel">
 
@@ -487,15 +487,7 @@
             </span>
           </button>
 
-          <!-- A YouTube link cannot be read from a page: there is no API for
-               the audio and the request is blocked cross-origin. Pasting one
-               here saves it the local fetch command instead of pretending. -->
-          <label class="field">
-            <span class="field__label">…or a YouTube link</span>
-            <input type="url" id="reelYt" class="input" placeholder="https://youtube.com/watch?v=…"
-                   autocomplete="off" spellcheck="false">
-          </label>
-          <p class="note" id="reelYtNote" hidden></p>
+          <div id="reelYoutubeImport"></div>
 
           <!-- Which fifteen seconds of it to use. The waveform is the whole
                track; the lit band is what goes in. -->
@@ -718,7 +710,8 @@
     "./lib/reel-fit.js": "./lib/reel-fit.js?v=20261004-light1",
     "./lib/reel-lighting.js": "./lib/reel-lighting.js?v=20261004-default2",
     "./lib/encode.js": "./lib/encode.js?v=20261004-light1",
-    "./lib/reel-ui.js": "./lib/reel-ui.js?v=20261004-preview1",
+    "./lib/youtube-import.js": "./lib/youtube-import.js?v=20261006-youtube1",
+    "./lib/reel-ui.js": "./lib/reel-ui.js?v=20261006-youtube1",
     "./lib/dialogs.js": "./lib/dialogs.js?v=20261005-editor-perf1",
     "./lib/album-v2-editor.js": "./lib/album-v2-editor.js?v=20261005-editor-perf1",
     "./lib/album-v2-glass.js": "./lib/album-v2-glass.js?v=20261005-editor-perf1",
@@ -731,7 +724,7 @@
     "./lib/album-v2-export-media.js": "./lib/album-v2-export-media.js?v=20261005-editor-perf1",
     "./lib/album-v2-audio.js": "./lib/album-v2-audio.js?v=20261006-audio1",
     "./lib/album-v2-audio-ui.js": "./lib/album-v2-audio-ui.js?v=20261006-audio1",
-    "./lib/album-v2-ui.js": "./lib/album-v2-ui.js?v=20261006-audio1",
+    "./lib/album-v2-ui.js": "./lib/album-v2-ui.js?v=20261006-youtube1",
     "./lib/album-v2-render.js": "./lib/album-v2-render.js?v=20261005-editor-perf1",
     "./lib/album-v2-media.js": "./lib/album-v2-media.js?v=20261006-audio1",
     "./lib/album-text-controls.js": "./lib/album-text-controls.js?v=20261005-editor-perf1",
@@ -743,7 +736,7 @@
     "./lib/album-v2-animation-controls.js": "./lib/album-v2-animation-controls.js?v=20261005-editor-perf1",
     "./lib/album-v2-brand-motion.js": "./lib/album-v2-brand-motion.js?v=20261005-editor-perf1",
     "./lib/album-v2-motion.js": "./lib/album-v2-motion.js?v=20261005-editor-perf1",
-    "./lib/album-ui.js": "./lib/album-ui.js?v=20261005-editor-perf1",
+    "./lib/album-ui.js": "./lib/album-ui.js?v=20261006-youtube1",
     "./lib/album-defaults.js": "./lib/album-defaults.js?v=20261005-album3",
     "./lib/album-product.js": "./lib/album-product.js?v=20261005-editor-perf1",
     "./lib/album-text.js": "./lib/album-text.js?v=20261005-editor-perf1",
