@@ -59,7 +59,17 @@
   check('Reordering carries the product and editable name', $('[data-v2-name="1"]').value === name);
   $('[data-v2-move="1"][data-step="-1"]').click(); await wait(() => !$('#albumV2Setup [data-v2-generate]').disabled);
   set('[data-v2-name="0"]', 'Victor Doom test');
-  $('#v2-tab-2').click();
+  $('#v2-tab-2').click(); await new Promise(r => setTimeout(r, 100));
+  check('Ending tab shows the final composition', !$('#v2-panel-2').hidden && +$('[data-v2-scrub]').value > 39);
+  const ending = $('#albumV2Setup canvas').toDataURL();
+  set('[data-v2-ending="gap"]', '80'); await new Promise(r => setTimeout(r, 100));
+  check('Gap edits update the actual ending preview', $('#albumV2Setup canvas').toDataURL() !== ending && $('[data-v2-gap-value]').textContent === '80 px');
+  set('[data-v2-ending="x"]', '45'); set('[data-v2-ending="y"]', '60');
+  $('[data-v2-center="x"]').click(); $('[data-v2-center="y"]').click();
+  check('Ending group centers on both axes', $('[data-v2-ending="x"]').value === '50' && $('[data-v2-ending="y"]').value === '50');
+  set('[data-v2-ending="gap"]', '-20'); await new Promise(r => setTimeout(r, 100));
+  check('Centering restores the default final composition', $('#albumV2Setup canvas').toDataURL() === ending);
+  $('#v2-tab-3').click();
   set('[data-v2-duration]', '30', 'change'); check('Gallery duration includes fixed intro and ending', +$('[data-v2-scrub]').max === 38);
   set('[data-v2-duration]', '32', 'change');
   $('[data-v2-play]').click(); await new Promise(r => setTimeout(r, 400)); $('[data-v2-play]').click();

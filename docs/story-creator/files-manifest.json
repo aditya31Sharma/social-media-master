@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 34151,
-    "sha256": "94b44e8ff10dd515fbd91dc5a123ea16eb923bfd86e4c88f07b3d0251d0d60b4"
+    "bytes": 35042,
+    "sha256": "863d6c4402b0bfe20ce24fd2ca3435904f11063479c67b17ec1c91cdb6f0ba87"
   },
   {
     "path": "app.css",
@@ -226,13 +226,13 @@
   },
   {
     "path": "docs/qa/album-v2-browser.js",
-    "bytes": 7263,
-    "sha256": "f29c48a858a828cdabcda86effd62f0b44fc30c812b8839a6b3b25ee2aafc080"
+    "bytes": 8213,
+    "sha256": "d9fc903536c2ab764cc5d215d956b19892684574fd9f6f72324b6e0a63e3ea95"
   },
   {
     "path": "docs/qa/album-v2.test.mjs",
-    "bytes": 12131,
-    "sha256": "412b3648f16e3ce3d3aa365f1e7269f495181804a0df367f821b695e77aaaa46"
+    "bytes": 14911,
+    "sha256": "d14326b38ab4fbad50e786e2d8487584d49aef3e12491a6578d39a9192889e46"
   },
   {
     "path": "docs/qa/album.test.mjs",
@@ -501,8 +501,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 45689,
-    "sha256": "30a0ddede0f7db6f0291be1194a1d4f08b680588053a71c912f8052322851220"
+    "bytes": 45770,
+    "sha256": "455166a39f3c4fafd2c62b0ed4fb9c4926a64a9a3180c1eb37c5fe34256bb51c"
   },
   {
     "path": "lab/frame.html",
@@ -556,18 +556,18 @@
   },
   {
     "path": "lib/album-v2-motion.js",
-    "bytes": 4424,
-    "sha256": "03f86b7b89350dd5f32627b7b33f918c3db9d220e822d966ffab703575fcc803"
+    "bytes": 4423,
+    "sha256": "193403386a7c8c8b1d2d9e9959e56cebab9bad1adaa8904de406d67f58022858"
   },
   {
     "path": "lib/album-v2-render.js",
-    "bytes": 6620,
-    "sha256": "1d1e31a7cf16a0e80cd1481616e31a4165342fd9171236349fdb6a348b776c55"
+    "bytes": 6664,
+    "sha256": "862c489ca20f08f41409986805083c8095abe87756a9350d99bb21484cfc9e93"
   },
   {
     "path": "lib/album-v2-ui.js",
-    "bytes": 16056,
-    "sha256": "4d404d015a604f6e8dc7c0526aa5aa4c24d3f780e99dc3c5ed9a2091b9f9b77a"
+    "bytes": 16337,
+    "sha256": "df4273297f290d5c2a654df3645976906682915eb8e71ab9361d7fd7916716e8"
   },
   {
     "path": "lib/audio.js",
@@ -3792,7 +3792,7 @@
   {
     "path": "styles/album-v2.css",
     "bytes": 6177,
-    "sha256": "322baf13226cac24b899d8ecc46bb46b153c4e7771122a72f52bf1a4f3821ca3"
+    "sha256": "fd2f8eac62b3f6ae3eb093bc061fb55cbfc84c9da5c15703f575c7a273012085"
   },
   {
     "path": "styles/album.css",
@@ -3826,8 +3826,8 @@
   },
   {
     "path": "lib/album-v2-brand.js",
-    "bytes": 1831,
-    "sha256": "da339a36708c920c6d6b1fc9a750b64916238d25c11c5cafb4926c02353c6191"
+    "bytes": 1878,
+    "sha256": "24f16347b1c8db6eacaa99ebae06739a7a5b5f8f781c937bc2df57a1840da92d"
   },
   {
     "path": "docs/plans/2026-10-05-album-v2-branding.md",
@@ -3916,8 +3916,8 @@
   },
   {
     "path": "lib/album-v2-editor.js",
-    "bytes": 5592,
-    "sha256": "1615b7c1b54b4d7b35ffe205ae68ca77815f87d09860d188eb6b566fa10c1970"
+    "bytes": 5686,
+    "sha256": "e397c3ed6975dee16adc41a8e17e6e53d9b455bf727e3ca43d32017950c054f7"
   },
   {
     "path": "lib/album-v2-glass.js",
@@ -3961,8 +3961,8 @@
   },
   {
     "path": "lib/album-v2-lineup.js",
-    "bytes": 2447,
-    "sha256": "aa9c1a7d1c811d2629d1a73d366c274abe27d97e28436f85a55dcac8130f0e38"
+    "bytes": 3155,
+    "sha256": "e731e774031d1a20dc65b5da300cc8139eb668fd13240f82dc35b5c4eec15473"
   },
   {
     "path": "docs/plans/2026-10-05-album-v2-30-second-detail.md",
@@ -3976,12 +3976,22 @@
   },
   {
     "path": "lib/album-v2-detail.js",
-    "bytes": 2248,
-    "sha256": "faf3cfb314899da329e75848f0b52164bf7346a49b1ec94394bb456d9eac2900"
+    "bytes": 2657,
+    "sha256": "aa4dbe86cb5be15065eda701d2cfc8cb51e8dda0532c84e88d3d61b9cbfbfe3c"
   },
   {
     "path": "docs/plans/2026-10-05-album-v2-40-second-zoom.md",
     "bytes": 890,
     "sha256": "66138b760af96331ad1c350b4f146f14a9cee02eeabfc1280a0f32219d03ef2f"
+  },
+  {
+    "path": "lib/album-v2-ending.js",
+    "bytes": 1721,
+    "sha256": "b2a7bd403a8e007287844a36fa1a29356d3436778c4089c0beba824d60db45cb"
+  },
+  {
+    "path": "docs/plans/2026-10-05-album-v2-branded-ending.md",
+    "bytes": 889,
+    "sha256": "facef2913914b1199121a76a4fec99cd262353037aacadb2227c84ee635f8482"
   }
 ]

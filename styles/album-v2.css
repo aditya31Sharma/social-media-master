@@ -22,7 +22,7 @@
 #albumV2Setup .album-controls > details { border: 0; padding: var(--v2-space) 0; }
 #albumV2Setup .album-controls > details > summary { display: none; }
 #albumV2Setup .album-controls > details > .note { margin: var(--v2-space) 0 var(--gutter); }
-#albumV2Setup .v2-sections { position: sticky; top: calc(-1 * var(--gutter)); z-index: 3; display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(var(--v2-space) / 2); padding: calc(var(--v2-space) / 2); background: var(--card-2); border-radius: var(--r-pill); }
+#albumV2Setup .v2-sections { position: sticky; top: calc(-1 * var(--gutter)); z-index: 3; display: grid; grid-template-columns: repeat(4, 1fr); gap: calc(var(--v2-space) / 2); padding: calc(var(--v2-space) / 2); background: var(--card-2); border-radius: var(--r-pill); }
 #albumV2Setup .v2-sections button { min-height: var(--v2-touch); border: 0; border-radius: var(--r-pill); background: transparent; color: var(--ink-2); font-size: var(--fs-14); font-weight: 600; cursor: pointer; }
 #albumV2Setup .v2-sections button[aria-selected=true] { color: var(--ink); background: var(--card); box-shadow: var(--shadow-seg); }
 #albumV2Setup .v2-chapters { display: grid; grid-template-columns: repeat(7, minmax(var(--v2-touch), 1fr)); width: 100%; max-width: 400px; gap: calc(var(--v2-space) / 2); }

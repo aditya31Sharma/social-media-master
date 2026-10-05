@@ -464,10 +464,10 @@ SoftwareWebGL QA was much slower; use hardwareMetal on this Mac for full exports
 Recovery manifest now covers744 shipped files.
 
 
-## Album creator V2 (40-second revision, 2026-10-05)
+## Album creator V2 (branded lineup revision, 2026-10-05)
 
 Open Reel > Reel template > Album creator V2 > Set up Album creator V2.
-Intro, Products and Export tabs retain keyboard navigation. The preview stays
+Intro, Products, Ending and Export tabs retain keyboard navigation. The preview stays
 visible while controls scroll independently on mobile and desktop. Defaults,
 photo replacement including HEIC, editable product names, order, GLB uploads,
 music and 720p/1080p export remain. Original Album showcase and Outfit animations
@@ -513,18 +513,22 @@ It recycles behind the stack offscreen. The last product holds its fitted photo
 for the ending instead of exiting. Optional gallery durations scale these beats;
 garment rotation stays 36 degrees per real second.
 
-During detail, the background turns fully white without a ghosted crossfade.
+During detail, the background becomes white with a repeating diagonal crosshatch
+grid (#F2F2F2, 2px strokes, 80px spacing at 1080x1920).
 The transparent person scales to 130% of its original photo size while moving
-left, centered at x250 with its alpha-bound top anchored at y100 in the 1080x1920
+left, centered at x142 (108px, or 10% of the canvas, farther left) with its alpha-bound top anchored at y100 in the 1080x1920
 composition. The closer view intentionally crops the lower legs. This transform
 uses one shared eased progress for size and position;
 the enlarged 900x900 garment render sits on the right behind the person, so
 sleeves are occluded where their silhouettes overlap. Product name and type/color
-sit below the garment in Geist, using Carousel's title split. There is no glass,
+sit below the garment using Carousel's title split: H1 is Geist Regular 400 with
+-3% letter spacing; H2 is Geist Thin 100 with -2% letter spacing. There is no glass,
 card outline, Add to Bag, Added or Visit bag animation. The old glass source file
 is retained for recovery but is no longer imported by the active V2 renderer.
 
-Garment rotation uses one sharp render with zero angular blur. The entire detail
+Each garment holds its initial orientation during the 2.45-3.05s reveal, then
+starts its own rotation clock at 3.05s. Scrubbing and reordering cannot carry
+another product's rotation into its reveal. Rotation uses one sharp render with zero angular blur. The entire detail
 entry, hold and return use a single temporal sample, so the person and garment
 stay crisp throughout. Slide/photo/camera transitions retain five shutter samples
 across 32ms. Ending transitions retain their existing shutter treatment. Dramatic side lighting remains
@@ -539,18 +543,25 @@ On white, the final photo shrinks toward 5% over .9s but fades immediately durin
 0-.5s, becoming invisible while still much larger than 5%. Five equal-height
 cutouts then appear individually at .55, .85, 1.15, 1.45, 1.75s, each fading in over .35s.
 They remain closely packed and alternate M/W/M/W/M in current product order.
-The lineup fades at 2.9-3.4s. Black Become, the 75%-sized full TENZEN wordmark and
-the supplied globe/tenzen.in SVG appear at 3.15-3.75s and hold to 4.5s. The outro
+The lineup stays visible through the final frame. Black Become and the
+75%-sized TENZEN wordmark appear above it; the supplied globe/tenzen.in SVG
+sits below. Branding fades in at 3.15-3.75s and holds to 4.5s. The outro
 always uses the white background and black foreground, independently of intro
 logo variant and color.
 
+The Ending tab edits the gap (-60 to 100 composition pixels, default -20 for
+slight overlap) and the entire branded group's X/Y position (0-100%). Each axis
+has a center button. Group centering includes the header and footer, not only
+the people. Spacing adjusts equal model height to keep the centered row within
+1000px. Settings update the ending preview immediately and carry into export.
+
 ### Modules and recovery
 
-V2: lib/album-v2-{motion,media,render,ui,labels,brand,editor,lineup,detail}.js and
+V2: lib/album-v2-{motion,media,render,ui,labels,brand,editor,lineup,detail,ending}.js and
 styles/album-v2.css. Shared intro markup is lib/album-text-controls.js; behavior
 remains in lib/album-text.js. lib/album-product.js adds a zero-blur fast path;
 V1 continues using its original angular blur. Assets remain in assets/album-v2/
-and assets/album-defaults/. Cache key: 20261005-albumv2-7. Relative URLs support
+and assets/album-defaults/. Cache key: 20261005-albumv2-8. Relative URLs support
 both hosting addresses. No new dependencies, paid services or Tenzen HQ edits.
 
 Known traps: intro loads as a complete Blob for deterministic seeking; media/GLB
@@ -559,13 +570,14 @@ foreground must update together; current product order chooses gender. Model
 foreground always paints after the garment. Do not reintroduce angular shutter
 samples in the V2 rotation. Local-font loading temporarily disables export.
 
-Validation: 74/74 unit tests, 28/28 V2 browser checks, 16/16 V1 checks and
-24/24 Outfit checks pass, with zero page errors. Real text dragging, center
-snapping and uploaded fonts remain functional. Light/dark layouts at
-375/768/1024/1440 have no horizontal overflow. All five detail holds are tested
-at exactly two seconds; detail entry/return use one sample while slide motion
-uses five. The actual export is 1080x1920 H.264, 60fps, 2400 frames and exactly
-40.000 seconds, silent by default. Generation took 29.536 seconds. A transient
-CDN HTTP2 load failure recovered through the existing Retry flow before export.
-Encoded zoom/left-shift and transition frames were inspected. Recovery verifier
-passes 797 shipped files, 1876 archive entries and 600 profiles. Local only.
+Validation: 77/77 unit tests, 32/32 V2 browser checks, 16/16 V1 checks and
+24/24 Outfit checks pass with zero page errors. Ending gap edits change the
+rendered frame; axis center buttons restore the default composition. Real intro
+text dragging/snapping and uploaded fonts remain functional. Light/dark layouts
+at 375/768/1024/1440 have no horizontal overflow. All five reveal clocks reset;
+detail entry/return remain sharp and full detail holds remain two seconds.
+The actual export is 1080x1920 H.264, 60fps, 2400 frames and exactly
+40.000 seconds, silent by default. Generation took 30.659 seconds. Encoded
+frames confirm all five detail compositions, individual lineup entrances and
+the retained branded final frame. Recovery verifier covers 799 shipped files,
+1876 archive entries and 600 profiles. Local only.

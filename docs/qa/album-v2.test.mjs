@@ -36,7 +36,7 @@ test('40-second reel holds the first stack and stages alternating full-body deta
 });
 test('garments turn slowly regardless of selected duration, without a bag or cursor', () => {
   for (const duration of [22, 30, 32, 45]) {
-    const base = FIRST_STACK_HOLD + 2.5 * duration / GALLERY_DURATION;
+    const base = FIRST_STACK_HOLD + 3.5 * duration / GALLERY_DURATION;
     const a = galleryScene(base, 0, duration), b = galleryScene(base + .2, 0, duration);
     assert.ok(Math.abs(b.turn - a.turn - .2 * Math.PI * 2 / 10) < 1e-10);
     assert.equal('cursor' in a, false); assert.equal('press' in a, false);
@@ -108,7 +108,7 @@ test('ending hides the shrinking slide early and reveals models one by one befor
     if (index < 4) assert.equal(lineupEntrance(.7 + index * .3, index + 1), 0);
   }
   const last = galleryScene(start + OUTRO_DURATION, 3);
-  assert.equal(last.logo, 1); assert.equal(last.lineup, 0); assert.equal(last.opacity, 0);
+  assert.equal(last.logo, 1); assert.equal(last.lineup, 1); assert.equal(last.opacity, 0);
 });
 test('intro restores full font, typography, position and snapping controls for both text layers', () => {
   const html = introControls();
@@ -149,10 +149,10 @@ test('lineup normalizes alpha bounds to equal height and keeps all five people i
 import { GARMENT, PERSON_ZOOM, personPose, paintProductDetail } from '../../lib/album-v2-detail.js';
 test('larger garment overlaps the left person and is painted behind the person', () => {
   const person = {image: {width:1600,height:2400},crop:{x:450,y:80,w:700,h:2220}};
-  const pose = personPose(person,1); assert.equal(pose.x + pose.width / 2, 250); assert.ok(pose.x+pose.width<650);
+  const pose = personPose(person,1); assert.equal(pose.x + pose.width / 2, 142); assert.ok(pose.x+pose.width<650);
   assert.ok(GARMENT.size>660); assert.ok(GARMENT.x<pose.x+pose.width);
   const garment = {}, drawOrder = [], texts = [];
-  const ctx = {save(){},restore(){},fillRect(){},drawImage(image){drawOrder.push(image);},fillText(text,x,y){texts.push({text,x,y});},measureText(text){return {width:text.length*20};}};
+  const ctx = {save(){},restore(){},beginPath(){},moveTo(){},lineTo(){},stroke(){},fillRect(){},drawImage(image){drawOrder.push(image);},fillText(text,x,y){texts.push({text,x,y});},measureText(text){return {width:text.length*20};}};
   paintProductDetail(ctx,garment,person,{productName:'Victor Doom Polo Sweatshirt Olive',type:'Polo Sweatshirt'},1);
   assert.deepEqual(drawOrder,[garment,person.image]);
   assert.ok(texts.every(item=>item.y>GARMENT.y+GARMENT.size));
@@ -188,4 +188,41 @@ test('detail zoom, hold and return remain sharp while slide transitions use moti
     const time=base+local;
     assert.equal(sceneShutterTimes(time,galleryScene(time,3)).length,5);
   }
+});
+
+test('each garment reveals front-facing and starts its own rotation only once visible', () => {
+  for (const duration of [22,32,45]) for (let index=0; index<5; index++) {
+    const at = local => galleryScene(3 + FIRST_STACK_HOLD + (index*PRODUCT_DURATION+local)*duration/GALLERY_DURATION,3,duration);
+    for (const local of [0,2.46,2.75,3.05]) assert.ok(Math.abs(at(local).turn)<1e-10);
+    assert.ok(at(3.25).turn>0);
+    assert.ok(Math.abs(at(3.25).turn - .2*duration/GALLERY_DURATION*Math.PI*2/10)<1e-10);
+  }
+});
+
+import { endingLayout } from '../../lib/album-v2-lineup.js';
+import { paintDetailGrid } from '../../lib/album-v2-detail.js';
+import { paintBecome } from '../../lib/album-v2-brand.js';
+test('ending spacing and center align the entire branded group, including header and footer', () => {
+  const crops=Array.from({length:5},()=>({w:350,h:1000}));
+  for(const gap of [-60,-20,0,100]) {
+    const layout=endingLayout(crops,{gap,x:50,y:50}), {bounds,models}=layout;
+    assert.equal(bounds.x+bounds.width/2,540); assert.equal(bounds.y+bounds.height/2,960);
+    for(let i=1;i<5;i++) assert.ok(Math.abs(models[i].x-models[i-1].x-models[i-1].width-gap)<1e-9);
+    assert.ok(layout.logoY+53<models[0].y); assert.ok(layout.globeY-27>models[0].y+models[0].height);
+  }
+  const a=endingLayout(crops),b=endingLayout(crops,{x:40,y:60});
+  assert.equal(b.x-a.x,-108); assert.ok(Math.abs(b.bounds.y-a.bounds.y-192)<1e-9);
+  const labels=[],logos=[],ctx={save(){},restore(){},fillText(...args){labels.push(args)}};
+  paintBecome(ctx,(...args)=>logos.push(args),b);
+  assert.deepEqual(labels[0],['Become',b.x,b.becomeY]);
+  assert.equal(logos[0][2],b.logoY); assert.equal(logos[1][2],b.globeY); assert.ok(logos.every(l=>l[3]===b.x));
+});
+test('detail grid crosses in both directions with F2 strokes and specified Geist typography', () => {
+  const strokes=[],lines=[],texts=[];
+  const ctx={save(){},restore(){},beginPath(){},moveTo(x,y){this.start=[x,y]},lineTo(x,y){lines.push([this.start,[x,y]])},stroke(){strokes.push(this.strokeStyle)},fillRect(){},drawImage(){},measureText(t){return {width:t.length*10}},fillText(t){texts.push({text:t,font:this.font,spacing:this.letterSpacing})}};
+  paintDetailGrid(ctx); assert.deepEqual(strokes,['#f2f2f2']);
+  assert.ok(lines.some(([a,b])=>b[0]>a[0])); assert.ok(lines.some(([a,b])=>b[0]<a[0]));
+  paintProductDetail(ctx,{}, {image:{width:1600,height:2400},crop:{x:450,y:80,w:700,h:2220}}, {productName:'Victor Doom Polo Sweatshirt Olive',type:'Polo Sweatshirt'},1);
+  assert.deepEqual(texts[0],{text:'Victor Doom',font:'400 52px Geist, sans-serif',spacing:'-1.56px'});
+  assert.deepEqual(texts[1],{text:'Polo Sweatshirt Olive',font:'100 34px Geist, sans-serif',spacing:'-0.68px'});
 });
