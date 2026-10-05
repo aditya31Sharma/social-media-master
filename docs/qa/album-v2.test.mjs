@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { galleryScene, galleryCardPose, INTRO_DURATION, FIRST_STACK_HOLD, OUTRO_DURATION, PRODUCT_DURATION, GALLERY_DURATION, STACK, photoScene, shutterTimes, PRODUCT_ORDER, frontPhotoIndex, lineupEntrance } from '../../lib/album-v2-motion.js';
+import { galleryScene, galleryCardPose, INTRO_DURATION, FIRST_STACK_HOLD, OUTRO_DURATION, PRODUCT_DURATION, GALLERY_DURATION, STACK, photoScene, shutterTimes, PRODUCT_ORDER, frontPhotoIndex, lineupEntrance, DETAIL_TIMING, sceneShutterTimes } from '../../lib/album-v2-motion.js';
 import { galleryAudio } from '../../lib/album-v2-media.js';
 import { introLabels, introControls } from '../../lib/album-v2-labels.js';
 import { splitTitle } from '../../lib/shopify.js';
@@ -19,23 +19,23 @@ test('intro is three seconds and labels appear abruptly at 0.5s before receding 
   assert.equal(labels.find(l => l.id === 'creator').text, 'Tenzen Angels');
   assert.ok(labels.every(l => l.font === 'Geist'));
 });
-test('30-second reel holds the first stack and stages alternating full-body details', () => {
-  assert.equal(INTRO_DURATION + FIRST_STACK_HOLD + GALLERY_DURATION + OUTRO_DURATION, 30);
+test('40-second reel holds the first stack and stages alternating full-body details', () => {
+  assert.equal(INTRO_DURATION + FIRST_STACK_HOLD + GALLERY_DURATION + OUTRO_DURATION, 40);
   assert.equal(FIRST_STACK_HOLD, .5); assert.equal(galleryScene(3.49, 3).zoom, 0);
   assert.ok(galleryScene(3.8, 3).zoom > 0);
   assert.deepEqual(PRODUCT_ORDER, [1, 2, 3, 4, 0]);
   for (let i = 0; i < 5; i++) {
     const start = 3.5 + i * PRODUCT_DURATION;
     assert.equal(galleryScene(start + 2, 3).detail, 0);
-    assert.equal(photoScene(galleryScene(start + 2.8, 3)).to, i % 2 ? 3 : 2);
-    assert.equal(galleryScene(start + 2.8, 3).detail, 1);
-    assert.equal(galleryScene(start + 3.9, 3).detail, 0);
-    assert.equal('glass' in galleryScene(start + 2.8, 3), false);
-    assert.equal('split' in galleryScene(start + 2.8, 3), false);
+    assert.equal(photoScene(galleryScene(start + 3.5, 3)).to, i % 2 ? 3 : 2);
+    assert.equal(galleryScene(start + 3.5, 3).detail, 1);
+    assert.equal(galleryScene(start + 5.7, 3).detail, 0);
+    assert.equal('glass' in galleryScene(start + 3.5, 3), false);
+    assert.equal('split' in galleryScene(start + 3.5, 3), false);
   }
 });
 test('garments turn slowly regardless of selected duration, without a bag or cursor', () => {
-  for (const duration of [22, 30, 45]) {
+  for (const duration of [22, 30, 32, 45]) {
     const base = FIRST_STACK_HOLD + 2.5 * duration / GALLERY_DURATION;
     const a = galleryScene(base, 0, duration), b = galleryScene(base + .2, 0, duration);
     assert.ok(Math.abs(b.turn - a.turn - .2 * Math.PI * 2 / 10) < 1e-10);
@@ -58,14 +58,14 @@ test('intro handoff has continuous product positions and the final product holds
     const before = galleryCardPose(order, galleryScene(3 - 1e-7, 3)), after = galleryCardPose(order, galleryScene(3, 3));
     for (const key of ['x', 'y', 'z', 'rotateX']) assert.ok(Math.abs(before[key] - after[key]) < 1e-5);
   }
-  assert.equal(galleryScene(25.5, 3).detail, 0); assert.equal(galleryScene(25.5, 3).index, 4);
+  assert.equal(galleryScene(35.5, 3).detail, 0); assert.equal(galleryScene(35.5, 3).index, 4);
 });
 test('product names use the same split as the carousel', () => {
   assert.deepEqual(splitTitle('Victor Doom Polo Sweatshirt Olive', 'Polo Sweatshirt'), ['Victor Doom', 'Polo Sweatshirt Olive']);
   assert.deepEqual(splitTitle('Stand Unshaken Oversized Hoodie Acid Black', 'Oversized Hoodie'), ['Stand Unshaken', 'Oversized Hoodie Acid Black']);
 });
 test('all frame poses remain finite with and without intro at either gallery duration', () => {
-  for (const intro of [0, 3]) for (const duration of [22, 23, 30, 40, 45]) for (let frame = 0; frame <= (intro + FIRST_STACK_HOLD + duration + OUTRO_DURATION) * 60; frame++) {
+  for (const intro of [0, 3]) for (const duration of [22, 23, 30, 32, 40, 45]) for (let frame = 0; frame <= (intro + FIRST_STACK_HOLD + duration + OUTRO_DURATION) * 60; frame++) {
     const scene = galleryScene(frame / 60, intro, duration);
     for (const n of Object.values(scene)) if (typeof n === 'number') assert.ok(Number.isFinite(n));
     for (let i = -1; i < 5; i++) for (const n of Object.values(galleryCardPose(i, scene))) if (typeof n === 'number') assert.ok(Number.isFinite(n));
@@ -119,18 +119,18 @@ test('intro restores full font, typography, position and snapping controls for b
 });
 
 test('each product uses shoot, macro and only the alternating front image', () => {
-  assert.equal(GALLERY_DURATION, 22); assert.equal(PRODUCT_DURATION, 4.4);
+  assert.equal(GALLERY_DURATION, 32); assert.equal(PRODUCT_DURATION, 6.4);
   assert.deepEqual([0,1,2,3,4].map(frontPhotoIndex), [2,3,2,3,2]);
   for (let index = 0; index < 5; index++) {
     const start = 3.5 + index * PRODUCT_DURATION;
-    for (const [offset, shot] of [[.5,0], [1.2,1], [2,frontPhotoIndex(index)]]) assert.equal(photoScene(galleryScene(start + offset, 3)).to, shot);
-    const sliding = photoScene(galleryScene(start + 1.75, 3));
+    for (const [offset, shot] of [[.7,0], [1.5,1], [2.35,frontPhotoIndex(index)]]) assert.equal(photoScene(galleryScene(start + offset, 3)).to, shot);
+    const sliding = photoScene(galleryScene(start + 2.05, 3));
     assert.equal(sliding.from, 1); assert.ok(sliding.progress > 0 && sliding.progress < 1);
   }
 });
 test('stack has spacious vertical gaps and exits move upward, tilt and shrink', () => {
   assert.equal(STACK.y, .475); assert.equal(STACK.z, -1.5);
-  const scene = galleryScene(4.75), pose = galleryCardPose(0, scene);
+  const scene = galleryScene(6.75), pose = galleryCardPose(0, scene);
   assert.ok(pose.y > 3); assert.ok(pose.rotateX < -.3); assert.ok(pose.scale < .95);
   assert.ok(shutterTimes(2)[0] - shutterTimes(2).at(-1) > .031);
   assert.ok(shutterTimes(0).every(time => time === 0));
@@ -146,10 +146,10 @@ test('lineup normalizes alpha bounds to equal height and keeps all five people i
   rows.slice(1).forEach((row,i) => assert.ok(row.x < rows[i].x + rows[i].width));
 });
 
-import { GARMENT, personPose, paintProductDetail } from '../../lib/album-v2-detail.js';
+import { GARMENT, PERSON_ZOOM, personPose, paintProductDetail } from '../../lib/album-v2-detail.js';
 test('larger garment overlaps the left person and is painted behind the person', () => {
   const person = {image: {width:1600,height:2400},crop:{x:450,y:80,w:700,h:2220}};
-  const pose = personPose(person,1); assert.ok(pose.x>=0); assert.ok(pose.x+pose.width<600);
+  const pose = personPose(person,1); assert.equal(pose.x + pose.width / 2, 250); assert.ok(pose.x+pose.width<650);
   assert.ok(GARMENT.size>660); assert.ok(GARMENT.x<pose.x+pose.width);
   const garment = {}, drawOrder = [], texts = [];
   const ctx = {save(){},restore(){},fillRect(){},drawImage(image){drawOrder.push(image);},fillText(text,x,y){texts.push({text,x,y});},measureText(text){return {width:text.length*20};}};
@@ -157,4 +157,35 @@ test('larger garment overlaps the left person and is painted behind the person',
   assert.deepEqual(drawOrder,[garment,person.image]);
   assert.ok(texts.every(item=>item.y>GARMENT.y+GARMENT.size));
   assert.ok(!texts.some(item=>/bag/i.test(item.text)));
+});
+
+test('person grows and moves left at the same time, with an uncropped head anchor', () => {
+  const person = {image:{width:1600,height:2400},crop:{x:450,y:80,w:700,h:2220}};
+  const start = personPose(person,0), middle = personPose(person,.5), end = personPose(person,1);
+  assert.equal(PERSON_ZOOM,1.3); assert.ok(Math.abs(end.height/start.height-1.3)<1e-10);
+  assert.ok(start.height<middle.height && middle.height<end.height);
+  const center = pose => pose.x + pose.width/2;
+  assert.ok(center(start)>center(middle) && center(middle)>center(end));
+  assert.equal(end.y,100);
+});
+test('all five default product details stay fully settled for two seconds', () => {
+  const settled = DETAIL_TIMING.start + DETAIL_TIMING.enter;
+  assert.equal(DETAIL_TIMING.hold,2); assert.equal(DETAIL_TIMING.enter,.6);
+  for(let index=0;index<5;index++) {
+    const base = INTRO_DURATION + FIRST_STACK_HOLD + index*PRODUCT_DURATION;
+    assert.ok(galleryScene(base+settled-.05,3).detail<1);
+    for(let i=0;i<=120;i++) assert.ok(Math.abs(galleryScene(base+settled+i/60,3).detail-1)<1e-10);
+    assert.ok(galleryScene(base+settled+2.05,3).detail<1);
+  }
+});
+test('detail zoom, hold and return remain sharp while slide transitions use motion blur', () => {
+  const base = INTRO_DURATION + FIRST_STACK_HOLD;
+  for(const local of [2.6,3.5,4.9,5.3]) {
+    const time=base+local;
+    assert.deepEqual(sceneShutterTimes(time,galleryScene(time,3)),[time]);
+  }
+  for(const local of [.2,1.2,2.05,5.8,6.2]) {
+    const time=base+local;
+    assert.equal(sceneShutterTimes(time,galleryScene(time,3)).length,5);
+  }
 });

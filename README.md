@@ -464,7 +464,7 @@ SoftwareWebGL QA was much slower; use hardwareMetal on this Mac for full exports
 Recovery manifest now covers744 shipped files.
 
 
-## Album creator V2 (30-second revision, 2026-10-05)
+## Album creator V2 (40-second revision, 2026-10-05)
 
 Open Reel > Reel template > Album creator V2 > Set up Album creator V2.
 Intro, Products and Export tabs retain keyboard navigation. The preview stays
@@ -473,10 +473,10 @@ photo replacement including HEIC, editable product names, order, GLB uploads,
 music and 720p/1080p export remain. Original Album showcase and Outfit animations
 are unchanged. This revision is localhost only, not published.
 
-The default total is exactly 30 seconds: 3-second muted winter intro, 0.5-second
-stack hold, 22-second gallery and 4.5-second ending. Gallery duration options
-remain internally 22/23/30/40/45 seconds, labeled by complete reel lengths of
-30/31/38/48/53 seconds. Export is 60fps H.264 MP4, optional AAC music, plus a PNG
+The default total is exactly 40 seconds: 3-second muted winter intro, 0.5-second
+stack hold, 32-second gallery and 4.5-second ending. Gallery duration options
+remain internally 22/23/30/32/40/45 seconds, labeled by complete reel lengths of
+30/31/38/40/48/53 seconds. The default is 40 seconds. Export is 60fps H.264 MP4, optional AAC music, plus a PNG
 cover taken during the first product detail. Music starts after the intro.
 
 ### Intro text and logo
@@ -504,23 +504,30 @@ front photo. Genders alternate man/woman/man/woman/man by displayed slot,
 including after reordering. Both gender sources remain bundled; the editor
 shows only the three photos used for that slot. No image-wide filters apply.
 
-Each default product lasts 4.4 seconds. Camera enters at 0-.35. Photos swipe
-left at .85-1.1 (Macro) and 1.6-1.9 (selected front). Detail enters at 2.1-2.45,
-holds, then returns to the original photo at 3.5-3.8. Camera pulls out at 3.8-4.05,
-and the outgoing slide tilts in X perspective and exits upward at 4.05-4.4.
+Each default product lasts 6.4 seconds. Camera enters at 0-.55. Photos swipe
+left at 1-1.4 (Macro) and 1.85-2.3 (selected front). Detail zooms and shifts left
+simultaneously at 2.45-3.05, holds fully settled for exactly two seconds through
+5.05, then returns at 5.05-5.6. Camera pulls out at 5.6-5.95, and the outgoing
+slide tilts in X perspective and exits upward at 5.95-6.4.
 It recycles behind the stack offscreen. The last product holds its fitted photo
 for the ending instead of exiting. Optional gallery durations scale these beats;
 garment rotation stays 36 degrees per real second.
 
-During detail, the background turns white. The transparent person moves left;
+During detail, the background turns fully white without a ghosted crossfade.
+The transparent person scales to 130% of its original photo size while moving
+left, centered at x250 with its alpha-bound top anchored at y100 in the 1080x1920
+composition. The closer view intentionally crops the lower legs. This transform
+uses one shared eased progress for size and position;
 the enlarged 900x900 garment render sits on the right behind the person, so
 sleeves are occluded where their silhouettes overlap. Product name and type/color
 sit below the garment in Geist, using Carousel's title split. There is no glass,
 card outline, Add to Bag, Added or Visit bag animation. The old glass source file
 is retained for recovery but is no longer imported by the active V2 renderer.
 
-Garment rotation uses one sharp render with zero angular blur. Other scene
-movement retains five shutter samples across 32ms. Dramatic side lighting remains
+Garment rotation uses one sharp render with zero angular blur. The entire detail
+entry, hold and return use a single temporal sample, so the person and garment
+stay crisp throughout. Slide/photo/camera transitions retain five shutter samples
+across 32ms. Ending transitions retain their existing shutter treatment. Dramatic side lighting remains
 the default. Preview garments render at 360x360; exports at 1000x1000 with original
 model textures. Alpha bounds normalize person placement. Replacing a full-body
 photo regenerates its foreground matte locally using the existing free matting
@@ -543,7 +550,7 @@ V2: lib/album-v2-{motion,media,render,ui,labels,brand,editor,lineup,detail}.js a
 styles/album-v2.css. Shared intro markup is lib/album-text-controls.js; behavior
 remains in lib/album-text.js. lib/album-product.js adds a zero-blur fast path;
 V1 continues using its original angular blur. Assets remain in assets/album-v2/
-and assets/album-defaults/. Cache key: 20261005-albumv2-6. Relative URLs support
+and assets/album-defaults/. Cache key: 20261005-albumv2-7. Relative URLs support
 both hosting addresses. No new dependencies, paid services or Tenzen HQ edits.
 
 Known traps: intro loads as a complete Blob for deterministic seeking; media/GLB
@@ -552,13 +559,13 @@ foreground must update together; current product order chooses gender. Model
 foreground always paints after the garment. Do not reintroduce angular shutter
 samples in the V2 rotation. Local-font loading temporarily disables export.
 
-Validation: 71/71 unit tests pass. Browser checks pass 28/28 V2, 16/16 V1 and
-24/24 Outfit with zero page errors. Real pointer dragging and center snapping,
-local font-file loading, independent text-layer styles, and full-body upload with
-foreground/lineup rematting pass. Light/dark layouts show no horizontal overflow
-at 375/768/1024/1440; the restored intro editor also fits all four sizes.
-Actual export: 1080x1920 H.264, 60fps, 1800 frames, exactly 30.000 seconds, no audio
-track by default. Generation took 25.049 seconds on hardware Metal. Exported
-product overlap, sharp rotation, early shrink fade, sequential people and final
-brand lockup were visually inspected. Recovery manifest passes 796 shipped files,
-1876 archive entries and 600 unique profiles/photos. Local only; no push.
+Validation: 74/74 unit tests, 28/28 V2 browser checks, 16/16 V1 checks and
+24/24 Outfit checks pass, with zero page errors. Real text dragging, center
+snapping and uploaded fonts remain functional. Light/dark layouts at
+375/768/1024/1440 have no horizontal overflow. All five detail holds are tested
+at exactly two seconds; detail entry/return use one sample while slide motion
+uses five. The actual export is 1080x1920 H.264, 60fps, 2400 frames and exactly
+40.000 seconds, silent by default. Generation took 29.536 seconds. A transient
+CDN HTTP2 load failure recovered through the existing Retry flow before export.
+Encoded zoom/left-shift and transition frames were inspected. Recovery verifier
+passes 797 shipped files, 1876 archive entries and 600 profiles. Local only.
