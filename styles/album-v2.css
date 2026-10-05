@@ -116,3 +116,6 @@
   #albumV2Setup .v2-chapters { grid-column: 2; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   #albumV2Setup .v2-chapters button:last-child { grid-column: 1 / -1; }
 }
+
+#albumV2Setup .v2-animation { padding: 10px 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; }
+#albumV2Setup .v2-animation > summary { min-height: 36px; font-size: 13px; font-weight: 500; }

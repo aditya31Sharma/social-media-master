@@ -280,3 +280,57 @@ test('ending branding appears at full opacity on its first frame', () => {
   assert.equal(galleryScene(start+3.149,INTRO_DURATION).logo,0);
   assert.equal(galleryScene(start+3.15,INTRO_DURATION).logo,1);
 });
+
+import { endingBrandScale, endingBrandPose, endingDuration, animationDefaults, ANIMATION_STYLES, paintEndingLayer } from '../../lib/album-v2-brand-motion.js';
+test('ending branding starts larger and shrinks quickly to its final scale', () => {
+  assert.equal(endingBrandScale(3.14), 0); assert.equal(endingBrandScale(3.15), 1.45);
+  assert.ok(endingBrandScale(3.25) > 1 && endingBrandScale(3.25) < 1.2);
+  const scales=Array.from({length:39},(_,i)=>endingBrandScale(3.15+i/100));
+  assert.ok(scales.every((scale,i)=>scale>=1 && (!i || scale<=scales[i-1])));
+  assert.equal(endingBrandScale(3.54),1); assert.equal(endingBrandScale(4.5),1);
+  const calls=[],ctx={globalAlpha:1,save(){},restore(){},translate(...args){calls.push(args)},scale(...args){calls.push(args)}};
+  paintEndingLayer(ctx,{x:.5,y:.3},{scale:.8,x:0,y:0,opacity:1},()=>calls.push('paint'));
+  assert.deepEqual(calls,[[540,576],[.8,.8],[-540,-576],'paint']);
+});
+
+test('all eight entrances start correctly and settle at their exact final pose', () => {
+  assert.equal(ANIMATION_STYLES.length,8);
+  for(const [style] of ANIMATION_STYLES) {
+    const a={...animationDefaults(),style,delay:.2,duration:.8};
+    assert.equal(endingBrandPose(3.2,a).opacity,0);
+    const start=endingBrandPose(3.35,a), end=endingBrandPose(4.2,a);
+    assert.deepEqual(end,{scale:1,x:0,y:0,opacity:1});
+    if(style==='scale-in')assert.ok(start.scale<1e-9);
+    if(style==='scale-out')assert.ok(Math.abs(start.scale-1.45)<1e-9);
+    if(style==='fade-in')assert.ok(start.opacity<1e-9);
+    if(style==='instant')assert.deepEqual(start,end);
+    if(style==='slide-left')assert.ok(start.x<0);
+    if(style==='slide-right')assert.ok(start.x>0);
+    if(style==='slide-top')assert.ok(start.y<0);
+    if(style==='slide-bottom')assert.ok(start.y>0);
+  }
+});
+test('easing, duration and travel sliders control deterministic intermediate poses', () => {
+  const config={...animationDefaults(),style:'slide-left',duration:1,distance:50};
+  assert.ok(Math.abs(endingBrandPose(3.65,{...config,easing:'linear'}).x+270)<1e-9);
+  assert.ok(Math.abs(endingBrandPose(3.65,{...config,easing:'snappy'}).x+67.5)<1e-9);
+  assert.ok(Math.abs(endingBrandPose(3.65,{...config,easing:'smooth'}).x+270)<1e-9);
+  for(const [style] of ANIMATION_STYLES) for(const duration of [.1,.38,3]) for(const delay of [0,2]) {
+    for(let time=0;time<9;time+=.05)assert.ok(Object.values(endingBrandPose(time,{style,duration,delay})).every(Number.isFinite));
+  }
+});
+test('long or delayed layer animations extend the ending without changing the default total', () => {
+  const ending=endingDefaults();assert.equal(endingDuration(ending),4.5);
+  ending.brand.animation.duration=3;ending.brand.animation.delay=2;
+  assert.equal(endingDuration(ending),8.55);
+  assert.equal(ending.labels[0].animation.duration,.38);
+  ending.brand.enabled=false;assert.equal(endingDuration(ending),4.5);
+  ending.brand.enabled=true;ending.brand.animation.style='instant';
+  assert.ok(Math.abs(endingDuration(ending)-5.55)<1e-9);
+});
+test('fade opacity reaches both text callbacks and artwork painting', () => {
+  let seen;
+  const ctx={globalAlpha:1,save(){},restore(){},translate(){},scale(){}};
+  paintEndingLayer(ctx,{x:.5,y:.3},{scale:1,x:20,y:0,opacity:.4},opacity=>{seen=opacity;assert.equal(ctx.globalAlpha,.4)});
+  assert.equal(seen,.4);
+});

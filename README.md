@@ -557,8 +557,9 @@ cutouts then appear individually at .55, .85, 1.15, 1.45, 1.75s, each fading in 
 They remain closely packed and alternate M/W/M/W/M in current product order.
 The lineup stays visible through the final frame. Black Become and the
 75%-sized TENZEN wordmark appear above it; the supplied globe/tenzen.in SVG
-sits below. Branding appears abruptly at3.15s and holds to4.5s. It paints once after the
-temporal samples, so motion blur cannot soften the first visible branding frame. The outro
+sits below. Branding defaults to the approved scale-out at3.15s:145% to100% over.38s
+with snappy cubic easing and no fade. Each layer has independent animation
+settings. Branding paints after temporal sampling so its movement remains crisp. The outro
 always uses the white background and black foreground, independently of intro
 logo variant and color.
 
@@ -595,7 +596,7 @@ V2: lib/album-v2-{motion,media,render,ui,labels,brand,editor,lineup,detail,endin
 styles/album-v2.css. Native font families use lib/album-font-picker.js. Shared text markup is lib/album-text-controls.js; behavior
 remains in lib/album-text.js. lib/album-product.js adds a zero-blur fast path;
 V1 continues using its original angular blur. Assets remain in assets/album-v2/
-and assets/album-defaults/. Cache key: 20261005-albumv2-10. Relative URLs support
+and assets/album-defaults/. Cache key: 20261005-albumv2-13. Relative URLs support
 both hosting addresses. No new dependencies, paid services or Tenzen HQ edits.
 
 Known traps: intro loads as a complete Blob for deterministic seeking; media/GLB
@@ -604,7 +605,7 @@ foreground must update together; current product order chooses gender. Model
 foreground always paints after the garment. Do not reintroduce angular shutter
 samples in the V2 rotation. Local-font loading temporarily disables export.
 
-Validation:82/82 unit tests,36 V2 browser checks,16 original Album checks,
+Previous release validation:82/82 unit tests,36 V2 browser checks,16 original Album checks,
 24 Outfit checks,7 Carousel checks,6 workspace-input checks and13 Story setup
 checks pass. Direct manipulation verified with real pointer events: SVG/text
 selection, dragging, SVG resizing, snapping, nudging, globe and lineup movement,
@@ -613,6 +614,41 @@ No page errors. All14 changed/new JavaScript files pass node --check. Actual1080
 60fps,41.800seconds, generated in34.579seconds. Encoded intro, all five detail
 views, sequential lineup and abrupt branding onset inspected. No new dependencies,
 paid services, CI changes, file deletions or Tenzen HQ edits.
-Recovery verifier covers806 shipped files,1876 archive entries and600 unique
+Recovery verifier now covers809 shipped files,1876 archive entries and600 unique
 profiles/photos. The public Pages deployment is the release source; the Tenzen HQ
 route uses the same app and requires login. No Tenzen HQ source changes.
+
+### Ending animation controls (approved for release)
+
+Select Ending, then Heading, Subheading, Tenzen logo or Globe link. The compact,
+collapsible Animation inspector offers scale-in, scale-out, fade-in, instant,
+slide from left/right/top/bottom. Each layer has its own duration(.1-3s),
+delay(0-2s), and Snappy/Smooth/Linear easing. Scale styles expose starting size;
+slides expose travel distance(20-150% of viewport). All numeric fields have
+real sliders and exact entry. Instant hides duration/easing controls.
+
+Default: scale-out145% to100%,.38s, zero delay, Snappy. Apply to all ending
+layers copies the current settings independently to both text labels and SVGs.
+Preview animation starts just before the ending entrance, without replaying the
+full reel. Model lineup entrances remain unchanged; selecting Models hides the
+text/SVG animation controls.
+
+The ending remains at least4.5s. Longer enabled-layer animations extend it to
+finish their delay+duration and hold the final pose for.4s. Empty/hidden labels
+do not extend it. The default reel stays41.8s; duration labels, scrubber, preview
+and export all use the computed total. Final-pose editing waits until every
+animation has settled, keeping drag handles aligned with the layers.
+
+lib/album-v2-brand-motion.js shares deterministic animation poses and anchored
+painting between preview/export. lib/album-v2-animation-controls.js wires the
+inspector, reusing existing value sliders and layer selection. Text receives the
+computed opacity explicitly because paintLabel sets its own canvas alpha.
+No dependencies or HQ edits. Aditya approved scale-out and requested publishing
+all animation controls. Local reference clip remains at localhost:8089.
+
+Current animation release validation:87/87 unit tests;18 animation browser checks,
+36 V2,16 V1 and24 Outfit checks pass. Targeted animation/editor QA passes35 checks
+across375/768/1024/1440 widths with no page errors. All9 changed/new JavaScript
+files pass syntax checks. Actual mixed-animation export:1080x1920 H.264,60fps,
+2565frames,42.750seconds, generated in30.988seconds. Encoded delayed text fade,
+sliding logo and scaling globe inspected. Default scale-out remains41.8seconds.
