@@ -23,18 +23,16 @@ The local server binds127.0.0.1 and rejects foreign Host/Origin headers.
 
 ## Deployment boundary
 
-This is currently a LOCAL companion, not a public converter. It serves the editor
-and `/api/youtube-audio` from the same origin. The GitHub Pages site remains static
-and cannot execute this endpoint. Do not publish the UI changes until a production
-backend is available. Do not expose this development server using a public tunnel.
+This remains a LOCAL companion and serves `/api/youtube-audio` on the same origin.
+The GitHub Pages site remains static. Its hosted importer uses the authenticated
+Node service in Tenzen HQ, not this Python server. Do not expose this development
+server through a public tunnel.
 
-To enable public/mobile use, a separately approved backend must run conversion,
-enforce operator authentication, keep the single-job/time/size limits, and offer
-HTTPS access from the editor. The current relative API URL works when a host
-routes the API alongside the editor; a separate origin will need explicit CORS
-and authentication wiring. No public API key belongs in the static repository.
-Tenzen HQ is separately owned and has not been changed. Its existing Pages proxy
-does not implement this API. Live deployment needs Aditya's hosting decision.
+The hosted integration is prepared but not deployed. It uses existing HQ operator
+sign-in, exact origin checks, short-lived in-memory capability tokens for Pages,
+and the same single-job/time/size limits. See the main README for release status.
+Aditya authorized the HQ integration; the proposed runtime dependency/Dockerfile
+patch still needs its separate required approval. No public API key is needed.
 
 Tests:
 

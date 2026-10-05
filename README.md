@@ -725,28 +725,41 @@ pass with zero page errors. Real1080x1920 H.26460fps export:41.8s video and
 unselected440Hz section excluded, volume and fades verified. No intro M4A
 request. Existing AAC encoder priming/padding remains approximately44ms/77ms.
 
-## YouTube audio import: local implementation, not deployed (2026-10-06)
+## YouTube audio import: hosted integration prepared (2026-10-06)
 
-The local companion in tools/youtube_audio/server.py serves the editor and its
-conversion API at http://localhost:8091/. Uses already-installed yt-dlp and ffmpeg,
-with no new dependencies. Run `python3 tools/youtube_audio/server.py --port 8091`.
 All three reel templates share lib/youtube-import.js: paste a YouTube link, Import
 audio, then use the existing music editor; optionally Download MP3. Failed or
-cancelled conversion keeps the existing track. AlbumV2 source video remains muted.
+cancelled conversion keeps the existing track. Album V2 source video remains muted.
 
-Only individual public YouTube videos are accepted, maximum15min/32MB MP3, one
-conversion at a time with150s timeout. Requests validate Host/Origin, video ID and
-fixed process arguments. No browser cookies are used. Temporary output is cleaned.
-The server binds loopback only and must not be exposed as a public service.
+The hosted service is implemented in the Tenzen HQ repository, at
+`/social-media-master/api/youtube-audio`. HQ users use their existing operator
+session. GitHub Pages opens an HQ sign-in tab, then receives a ten-minute,
+origin-bound conversion token through youtube-auth.html and BroadcastChannel.
+The callback clears the URL fragment immediately; tokens stay in memory only.
+The draft editor stays open. The service accepts only the HQ and Pages origins.
+No API secrets are stored in this repository or browser storage.
 
-Live release is pending backend hosting/authentication. GitHub Pages cannot run
-this conversion endpoint. TenzenHQ remains untouched and its proxy cannot process
-conversion requests. Do not push these UI changes until the backend exists.
-See tools/youtube_audio/README.md for the complete deployment boundary.
+Only individual public YouTube videos are accepted, maximum 15 minutes / 32 MB MP3,
+one conversion at a time and a 150-second server deadline. Server-side validation
+canonicalizes the video ID and uses fixed subprocess arguments. Requests never
+forward browser cookies to YouTube. Temporary downloads are removed after each job.
+The UI allows time for sign-in separately from conversion. YouTube can reject
+cloud-hosted extraction; the service reports this without replacing existing music.
 
-Local verification:104 JavaScript tests,5 Python service tests and14 browser
-checks pass. A real YouTube conversion loaded into V2 and played through its
-waveform editor. The resulting MP3 also loaded through V1 and Outfit controls.
-Invalid links, converter errors and cancellation preserve the current song.
-375px viewport fits; zero page errors. Origin/target probes return403/400.
-The existing live release remains65cdf5a; this feature is not published.
+Local development still uses tools/youtube_audio/server.py and the machine's
+existing yt-dlp/ffmpeg executables. Run
+`python3 tools/youtube_audio/server.py --port 8091` and open http://localhost:8091/.
+The loopback-only companion must not be exposed publicly.
+
+Release order: install the approved HQ runtime tools and deploy the authenticated
+HQ API first, then publish this frontend including youtube-auth.html. Both Pages
+and HQ keep their existing addresses. The standalone HQ runtime patch adds free
+FFmpeg and checksum-pinned yt-dlp 2026.08.19, with no new service or npm dependency.
+Dockerfile/runtime dependency approval and live authenticated verification are
+still pending. The published frontend remains 65cdf5a; this feature is not live.
+
+Verification: 104 SMM JavaScript tests and 133 isolated HQ tests pass, along with
+HQ lint/typecheck. Eight cross-origin Chrome checks pass with real MP3 conversion,
+COOP isolation, sign-in return, no persistent token storage and authorization reuse
+at a 375px viewport. Local Chrome testing grants only its loopback-network test
+permission; the production app changes no browser security policy.

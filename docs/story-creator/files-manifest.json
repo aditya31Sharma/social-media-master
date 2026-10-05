@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 46276,
-    "sha256": "0a19fd82001176d7e215c8a3d44269d6ab27a914a1e406fea0c139b22f502589"
+    "bytes": 47094,
+    "sha256": "50dd6a1de347f223afa2f6602d7694d11dbd1f7a98a2fdf7c4b6904ff07f4953"
   },
   {
     "path": "app.css",
@@ -501,8 +501,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 46371,
-    "sha256": "0dbc216843b4cb8f680ffc7d561c23882c435e02ed22eb73d458f3403c5a0b21"
+    "bytes": 46451,
+    "sha256": "4d868c115e6e35e4a25d82367f5dd6b03f2daa11b3734ee9c1f413a0de78c4aa"
   },
   {
     "path": "lab/frame.html",
@@ -4266,8 +4266,8 @@
   },
   {
     "path": "lib/youtube-import.js",
-    "bytes": 4269,
-    "sha256": "c46f008e2d23a00c41dbaaa45d9e07e76b974042d98638f4719c58f3d8e53be1"
+    "bytes": 4229,
+    "sha256": "4a979e80111ff03171c7198324e6e5d7a6bee5d8a714c1a0220bc9bf78be845d"
   },
   {
     "path": "docs/qa/youtube-import.test.mjs",
@@ -4286,7 +4286,22 @@
   },
   {
     "path": "tools/youtube_audio/README.md",
-    "bytes": 2327,
-    "sha256": "50a892765a8ed8c1e32359dd23d568811adb262e34400a2d1a3e9c8f25f1a08a"
+    "bytes": 2123,
+    "sha256": "ca996de43cd42c556e119f0f63485f1f0dcd120c92f79de325672585871dde79"
+  },
+  {
+    "path": "lib/youtube-service.js",
+    "bytes": 2749,
+    "sha256": "bee6f087eff65c0146a2626fc4fedab291ce380c6fd843c03186bc1a5c129c5a"
+  },
+  {
+    "path": "lib/youtube-auth.js",
+    "bytes": 1164,
+    "sha256": "52eef14b6a7bed1bcb9d74cafa68f244a56c0248f8148f033c1d682c8eb86c11"
+  },
+  {
+    "path": "youtube-auth.html",
+    "bytes": 592,
+    "sha256": "28c7062c0776db6c1e443b7c8114df7b47c0caa1c458a213427ca255fee61595"
   }
 ]
