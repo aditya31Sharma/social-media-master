@@ -464,7 +464,7 @@ SoftwareWebGL QA was much slower; use hardwareMetal on this Mac for full exports
 Recovery manifest now covers744 shipped files.
 
 
-## Album creator V2 (branded lineup revision, 2026-10-05)
+## Album creator V2 (artwork and font editors, 2026-10-05)
 
 Open Reel > Reel template > Album creator V2 > Set up Album creator V2.
 Intro, Products, Ending and Export tabs retain keyboard navigation. The preview stays
@@ -481,17 +481,24 @@ cover taken during the first product detail. Music starts after the intro.
 
 ### Intro text and logo
 
-Heading and Creator now have the full shared V1 text editor: font selection,
-local font access where supported, TTF/OTF/WOFF/WOFF2 uploads, size, tracking,
-line height, color, weight, italic, alignment, visibility, X/Y positions, drag,
+Heading and Creator have full text tools: font selection, local font access
+where supported, TTF/OTF/WOFF/WOFF2 uploads, size, tracking, line height, color,
+alignment, visibility, X/Y positions, drag,
 keyboard nudging, horizontal/vertical center buttons and snapping guides.
-Defaults remain Tenzen Presents and Tenzen Angels in Geist. Text is rendered at
+Defaults are Tenzen Presents at x50/y50% and Tenzen Angels at x50/y56%, in
+Geist Regular. The logo sits above at x50/y42%, at25% of its previous size. Text is rendered at
 its chosen size without silently shrinking it. Editing jumps to the unscaled
 intro at one second. Guides appear only in the editor and never in the export.
-Font uploads are named per editor to avoid V1/V2 font collisions.
+Font uploads are named per scoped editor to avoid intro/outro/V1 collisions.
+The V2 font picker groups families once, with searchable visual previews and a
+separate list of actual faces. Included, local and uploaded fonts are grouped.
+Each loaded face gets its own family at normal CSS weight/style; V2 has no
+synthetic weight or italic controls. SVG shapes keep their original strokes.
+Font menus fit within the settings viewport; Escape closes the menu first.
 
-Original logo choices and color controls remain. Intro logos use 75% of their
-original size. Text/logo appear at 0.5 seconds and remain attached as the intro
+Original logo choices and color controls remain. Both intro and ending expose
+SVG size, visibility, X/Y position and axis-centering controls. Intro logos
+default to25% of the previous75% baseline (18.75% of their initial size). Text/logo appear at 0.5 seconds and remain attached as the intro
 shrinks. Incoming slides rise with perspective tilt; after the extra half-second
 hold the first slide fills 9:16. Stack vertical spacing is .475 per layer, exactly
 half the previous .95; depth remains -1.5 and overview distance remains 8.8.
@@ -513,13 +520,15 @@ It recycles behind the stack offscreen. The last product holds its fitted photo
 for the ending instead of exiting. Optional gallery durations scale these beats;
 garment rotation stays 36 degrees per real second.
 
-During detail, the background becomes white with a repeating diagonal crosshatch
-grid (#F2F2F2, 2px strokes, 80px spacing at 1080x1920).
+During detail, the background becomes white with an orthogonal square
+grid (#F2F2F2, 2px strokes, 120px cells at1080x1920,1.5x the former spacing).
 The transparent person scales to 130% of its original photo size while moving
 left, centered at x142 (108px, or 10% of the canvas, farther left) with its alpha-bound top anchored at y100 in the 1080x1920
 composition. The closer view intentionally crops the lower legs. This transform
 uses one shared eased progress for size and position;
-the enlarged 900x900 garment render sits on the right behind the person, so
+the720x720 garment render is centered at x754 and y770, fitting the right
+column without clipping its sleeves, and exactly aligned with
+the product text (moved16px left from x770), and sits behind the person, so
 sleeves are occluded where their silhouettes overlap. Product name and type/color
 sit below the garment using Carousel's title split: H1 is Geist Regular 400 with
 -3% letter spacing; H2 is Geist Thin 100 with -2% letter spacing. There is no glass,
@@ -549,19 +558,27 @@ sits below. Branding fades in at 3.15-3.75s and holds to 4.5s. The outro
 always uses the white background and black foreground, independently of intro
 logo variant and color.
 
-The Ending tab edits the gap (-60 to 100 composition pixels, default -20 for
-slight overlap) and the entire branded group's X/Y position (0-100%). Each axis
-has a center button. Group centering includes the header and footer, not only
+The Ending tab edits the global gap and each of the four gaps to the right of
+adjacent models independently (-60 to100 composition pixels, default -20).
+The last model has no following model. The global slider resets all four gaps.
+Group X/Y position (0-100%) carries the models, text and SVGs together; each
+axis has a center button. Group centering includes the header and footer, not only
 the people. Spacing adjusts equal model height to keep the centered row within
 1000px. Settings update the ending preview immediately and carry into export.
+The ending also has the complete scoped text editor for Become and optional
+subtext, including local fonts, color, size, spacing, line height, alignment,
+dragging, keyboard nudging, snapping and visibility. Its wordmark and globe
+link each have independent SVG transforms and color. Intro/outro edits remain
+independent. The default Become label is regular weight; branding stays black
+on white and the five models remain present.
 
 ### Modules and recovery
 
-V2: lib/album-v2-{motion,media,render,ui,labels,brand,editor,lineup,detail,ending}.js and
-styles/album-v2.css. Shared intro markup is lib/album-text-controls.js; behavior
+V2: lib/album-v2-{motion,media,render,ui,labels,brand,editor,lineup,detail,ending,artwork}.js and
+styles/album-v2.css. Native font families use lib/album-font-picker.js. Shared text markup is lib/album-text-controls.js; behavior
 remains in lib/album-text.js. lib/album-product.js adds a zero-blur fast path;
 V1 continues using its original angular blur. Assets remain in assets/album-v2/
-and assets/album-defaults/. Cache key: 20261005-albumv2-8. Relative URLs support
+and assets/album-defaults/. Cache key: 20261005-albumv2-9. Relative URLs support
 both hosting addresses. No new dependencies, paid services or Tenzen HQ edits.
 
 Known traps: intro loads as a complete Blob for deterministic seeking; media/GLB
@@ -570,14 +587,13 @@ foreground must update together; current product order chooses gender. Model
 foreground always paints after the garment. Do not reintroduce angular shutter
 samples in the V2 rotation. Local-font loading temporarily disables export.
 
-Validation: 77/77 unit tests, 32/32 V2 browser checks, 16/16 V1 checks and
-24/24 Outfit checks pass with zero page errors. Ending gap edits change the
-rendered frame; axis center buttons restore the default composition. Real intro
-text dragging/snapping and uploaded fonts remain functional. Light/dark layouts
-at 375/768/1024/1440 have no horizontal overflow. All five reveal clocks reset;
-detail entry/return remain sharp and full detail holds remain two seconds.
-The actual export is 1080x1920 H.264, 60fps, 2400 frames and exactly
-40.000 seconds, silent by default. Generation took 30.659 seconds. Encoded
-frames confirm all five detail compositions, individual lineup entrances and
-the retained branded final frame. Recovery verifier covers 799 shipped files,
-1876 archive entries and 600 profiles. Local only.
+Validation:80/80 unit tests,32/32 V2 browser checks,16/16 V1 checks and24/24
+Outfit checks. Targeted editor QA additionally covered50 faces grouped under
+one family, native face loading, logo size/position, individual gap edits,
+independent outro text, real intro/outro pointer dragging and center snapping.
+Menus stay inside the editor and Escape preserves the enclosing dialog.
+375/768/1024/1440 layouts have no horizontal overflow. No page errors.
+A real1080x1920 H.264 export has2400frames at60fps and exactly40.000seconds;
+generation took30.009seconds. Encoded intro, all five detail views and the final
+lineup were inspected. Recovery verifier covers802 shipped files,1876 archive
+entries and600 profiles. Local only.

@@ -27,7 +27,7 @@
   check('Typography persists independently per text layer', $('[data-text-size]').value === '86' && $('[data-text-spacing]').value === '6');
   const font = await (await fetch('./assets/fonts/plus-jakarta-sans-latin.woff2')).blob();
   const dt = new DataTransfer(); dt.items.add(new File([font], 'Local-font.woff2')); $('[data-font-upload]').files = dt.files; $('[data-font-upload]').dispatchEvent(new Event('change', { bubbles: true }));
-  await wait(() => $('[data-font]').value.startsWith('AlbumFontalbumV2Setup'));
+  await wait(() => $('[data-font]').value.startsWith('AlbumFontv2IntroEditor'));
   check('Uploaded local font loads for V2', document.fonts.check(`24px ${$('[data-font]').value}`));
   const logos = [];
   for (const variant of ['japanese', 'wordmark', 'asterisk']) {

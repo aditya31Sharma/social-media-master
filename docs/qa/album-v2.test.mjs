@@ -112,7 +112,7 @@ test('ending hides the shrinking slide early and reveals models one by one befor
 });
 test('intro restores full font, typography, position and snapping controls for both text layers', () => {
   const html = introControls();
-  for (const field of ['data-layer', 'data-font', 'data-local-fonts', 'data-font-upload', 'data-text-size', 'data-text-spacing', 'data-text-lineHeight', 'data-text-color', 'data-text-weight', 'data-text-x', 'data-text-y', 'data-center-x', 'data-center-y']) assert.ok(html.includes(field), field);
+  for (const field of ['data-layer', 'data-font', 'data-local-fonts', 'data-font-upload', 'data-text-size', 'data-text-spacing', 'data-text-lineHeight', 'data-text-color', 'data-text-x', 'data-text-y', 'data-center-x', 'data-center-y']) assert.ok(html.includes(field), field);
   assert.ok(html.includes('data-v2-logo-color') && html.includes('data-v2-logo'));
   assert.equal(introLabels().length, 2); assert.ok(!html.includes('value="album"'));
   assert.equal(galleryAudio({ audio: sound(.4, 10) }, null, 30), null);
@@ -217,12 +217,48 @@ test('ending spacing and center align the entire branded group, including header
   assert.deepEqual(labels[0],['Become',b.x,b.becomeY]);
   assert.equal(logos[0][2],b.logoY); assert.equal(logos[1][2],b.globeY); assert.ok(logos.every(l=>l[3]===b.x));
 });
-test('detail grid crosses in both directions with F2 strokes and specified Geist typography', () => {
+test('detail grid uses larger square cells with F2 strokes and specified Geist typography', () => {
   const strokes=[],lines=[],texts=[];
   const ctx={save(){},restore(){},beginPath(){},moveTo(x,y){this.start=[x,y]},lineTo(x,y){lines.push([this.start,[x,y]])},stroke(){strokes.push(this.strokeStyle)},fillRect(){},drawImage(){},measureText(t){return {width:t.length*10}},fillText(t){texts.push({text:t,font:this.font,spacing:this.letterSpacing})}};
   paintDetailGrid(ctx); assert.deepEqual(strokes,['#f2f2f2']);
-  assert.ok(lines.some(([a,b])=>b[0]>a[0])); assert.ok(lines.some(([a,b])=>b[0]<a[0]));
+  assert.ok(lines.every(([a,b])=>a[0]===b[0] || a[1]===b[1]));
+  assert.deepEqual(lines[1],[[120,0],[120,1920]]);
+  assert.ok(lines.some(([a,b])=>a[1]===120 && b[1]===120));
   paintProductDetail(ctx,{}, {image:{width:1600,height:2400},crop:{x:450,y:80,w:700,h:2220}}, {productName:'Victor Doom Polo Sweatshirt Olive',type:'Polo Sweatshirt'},1);
   assert.deepEqual(texts[0],{text:'Victor Doom',font:'400 52px Geist, sans-serif',spacing:'-1.56px'});
   assert.deepEqual(texts[1],{text:'Polo Sweatshirt Olive',font:'100 34px Geist, sans-serif',spacing:'-0.68px'});
+});
+
+import { introBrand } from '../../lib/album-v2-artwork.js';
+import { endingDefaults, endingControls, moveEnding } from '../../lib/album-v2-ending.js';
+import { groupFontFamilies } from '../../lib/album-font-picker.js';
+test('intro logo is quarter size above centered regular labels without synthetic controls', () => {
+  const brand=introBrand(),labels=introLabels();
+  assert.equal(brand.scale,.25); assert.equal(brand.x,.5);
+  assert.equal(labels[0].y,.5); assert.ok(brand.y<labels[0].y); assert.ok(labels[1].y>labels[0].y);
+  assert.ok(labels.every(l=>l.weight===400 && l.italic===false));
+  for(const markup of [introControls(),endingControls()]) {
+    assert.ok(!markup.includes('data-text-weight')); assert.ok(!markup.includes('data-text-italic'));
+    for(const key of ['data-font-upload','data-text-size','data-text-spacing','data-text-lineHeight','data-text-color','data-center-x','data-center-y','data-art-x','data-art-y','data-art-scale']) assert.ok(markup.includes(key),key);
+  }
+});
+test('local font faces collapse under families, deduplicate and prefer real regular faces', () => {
+  const groups=groupFontFamilies([
+    {family:'Test Sans',style:'Bold',postscriptName:'test-bold'},
+    {family:'Test Sans',style:'Regular',postscriptName:'test-regular'},
+    {family:'Test Sans',style:'Bold',postscriptName:'test-bold'},
+    {family:'Other',style:'Thin',postscriptName:'other-thin'},
+  ]);
+  assert.equal(groups.length,2); assert.equal(groups[1].faces.length,2); assert.equal(groups[1].faces[0].style,'Regular');
+});
+test('individual right gaps remain independent and group motion carries ending text and SVGs', () => {
+  const settings=endingDefaults(),crops=Array.from({length:5},()=>({w:350,h:1000}));
+  assert.deepEqual(settings.gaps,[-20,-20,-20,-20]); settings.gaps[1]=30;
+  const {models}=endingLayout(crops,settings);
+  models.slice(1).forEach((rect,i)=>assert.ok(Math.abs(rect.x-models[i].x-models[i].width-settings.gaps[i])<1e-9));
+  const previous=settings.labels.map(l=>l.x); moveEnding(settings,'x',60);
+  settings.labels.forEach((l,i)=>assert.ok(Math.abs(l.x-previous[i]-.1)<1e-9));
+  assert.equal(settings.brand.x,.6); assert.equal(settings.link.x,.6);
+  moveEnding(settings,'x',50); assert.equal(settings.brand.x,.5);
+  assert.equal(GARMENT.x+GARMENT.size/2,754);
 });
