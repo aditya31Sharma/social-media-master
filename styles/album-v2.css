@@ -139,3 +139,6 @@
 .youtube-import__actions { display:flex; flex-wrap:wrap; gap:8px; }
 .youtube-import .input { width:100%; min-width:0; font-size:16px; }
 .youtube-import .note { overflow-wrap:anywhere; }
+#albumV2Setup [data-intro-filename] { overflow-wrap: anywhere; }
+#albumV2Setup [data-intro-crop-controls] input[type="range"] { width: 100%; min-height: 36px; }
+#albumV2Setup [data-intro-crop-mode][aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }

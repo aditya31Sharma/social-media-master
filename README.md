@@ -787,3 +787,24 @@ passed. Fourteen browser checks pass across all three templates, including actua
 MP3 import, audition, error recovery, cancellation and a375px layout. Production
 operator sign-in requires the owner session; QA verified its protected routes and
 tested the complete sign-in return locally without bypassing production auth.
+
+## Intro video upload and crop (2026-10-06)
+
+Album V2 > Intro > Upload intro video accepts browser-decodable videos up to two
+minutes. Source audio remains muted. Crop video enables drag/touch/arrow-key
+positioning on the existing preview, zoom from100% to500%, horizontal/vertical
+sliders and Reset crop. Selecting a text/logo layer returns to normal editing.
+The output frame remains9:16 and the intro hold remains3.5seconds.
+
+lib/intro-crop.js reuses existing frame placement and Story crop clamping.
+Normalized introCrop state is shared by preview, full-quality export and intro
+texture caching. Default preview upgrades preserve the crop; uploaded video
+uses its original source. Successful replacement resets the crop and releases
+the previous blob; invalid files preserve the previous video/crop. Uploads and
+crop settings stay in the current editor session. No new dependency or server.
+
+Validation:107 automated tests pass. Browser checks cover landscape/portrait
+uploads, muted audio, dragging, zoom/reset, keyboard, error recovery, text/logo
+editing and375/768/1024/1440 layouts. A six-frame actual H.264720x1280/60fps
+export sample passed through the normal media preparation/draw/encode path
+with the custom video and crop.

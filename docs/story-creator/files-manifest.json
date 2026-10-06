@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 48687,
-    "sha256": "9fb9a2c0a7428b056185f0d9d0fe9d513553883cace91fdce7b222d9a87d8bea"
+    "bytes": 49925,
+    "sha256": "a5131382523d165adddd4d1a4bc0df4f7330ae09d45e97870b8948cd0659d4ce"
   },
   {
     "path": "app.css",
@@ -501,8 +501,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 46451,
-    "sha256": "4d868c115e6e35e4a25d82367f5dd6b03f2daa11b3734ee9c1f413a0de78c4aa"
+    "bytes": 46621,
+    "sha256": "93088362b1fe50542a2944c9bbbc959c471c650dcb2eaa5791af8fc435c2a8ad"
   },
   {
     "path": "lab/frame.html",
@@ -546,8 +546,8 @@
   },
   {
     "path": "lib/album-v2-labels.js",
-    "bytes": 946,
-    "sha256": "a75b9129fd07fe5c3a027f9e38869e2cc9c50d94ae710570397c76b726e3498a"
+    "bytes": 1033,
+    "sha256": "f7848068dc20d22dc71a3726017fd6482bc6ebc2ad6239a9f23205374260475f"
   },
   {
     "path": "lib/album-v2-media.js",
@@ -561,13 +561,13 @@
   },
   {
     "path": "lib/album-v2-render.js",
-    "bytes": 7960,
-    "sha256": "7b1730249b66790cd4c2a7aa270ab81596a2e144d0b8934e63e6e887ca267860"
+    "bytes": 8129,
+    "sha256": "55d7db620fd6b4e20bd6f7b3f0f4d9d8bea7e11a82cebea13c4256495335759f"
   },
   {
     "path": "lib/album-v2-ui.js",
-    "bytes": 19608,
-    "sha256": "de813d74dff7f277ff57127e2908bfc8cbc85a774191c7d51fe89a959b83062f"
+    "bytes": 20289,
+    "sha256": "8701b21ba289d68533a552982c242ff08df2d6776899db759c061be1625db39a"
   },
   {
     "path": "lib/audio.js",
@@ -3791,8 +3791,8 @@
   },
   {
     "path": "styles/album-v2.css",
-    "bytes": 13045,
-    "sha256": "41fe6f545b7f1a835722df9d7facf2d102a1062b78f9e3d982175685f1fe00f4"
+    "bytes": 13319,
+    "sha256": "923ccf478f2c27b630d62491ca4be466a0416b06382c0273c1b39bb6605c43c3"
   },
   {
     "path": "styles/album.css",
@@ -4303,5 +4303,20 @@
     "path": "youtube-auth.html",
     "bytes": 592,
     "sha256": "28c7062c0776db6c1e443b7c8114df7b47c0caa1c458a213427ca255fee61595"
+  },
+  {
+    "path": "lib/intro-crop.js",
+    "bytes": 720,
+    "sha256": "ae14a615ad25aca52a116da30619aed8047bda1898ce13851be9f8459f577c76"
+  },
+  {
+    "path": "lib/album-v2-intro-video.js",
+    "bytes": 5106,
+    "sha256": "db7a21ab58a0d3bcf7cf410fee675012dcc876a6c7bfabb120738dc3f748b9e3"
+  },
+  {
+    "path": "docs/qa/intro-crop.test.mjs",
+    "bytes": 1322,
+    "sha256": "b4b72f02b7b3b2e713f29f9e2c4c4a990a4cd88e639419659090744ebaa53d26"
   }
 ]
