@@ -1,13 +1,13 @@
 [
   {
     "path": "PRODUCT.md",
-    "bytes": 2292,
-    "sha256": "7bdc751ef25286301d97fd56bbfb7b98f44dfffd234f0fb20186313907ef062f"
+    "bytes": 2571,
+    "sha256": "35305531163216cdf4c9912732b6d20a4b5ec6c6ac600c0a7ddf8dd35b7a5fa5"
   },
   {
     "path": "README.md",
-    "bytes": 49925,
-    "sha256": "a5131382523d165adddd4d1a4bc0df4f7330ae09d45e97870b8948cd0659d4ce"
+    "bytes": 52362,
+    "sha256": "6b2f85fb8fc6fd63faeb4785ac9bbe9e76c0a5919132a95e3665a1ca78b8ce8d"
   },
   {
     "path": "app.css",
@@ -501,8 +501,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 46621,
-    "sha256": "93088362b1fe50542a2944c9bbbc959c471c650dcb2eaa5791af8fc435c2a8ad"
+    "bytes": 46922,
+    "sha256": "971cabedfccc715ea67efb08496456615ac6b0d392bd96a474c21dadf1074d4d"
   },
   {
     "path": "lab/frame.html",
@@ -547,12 +547,12 @@
   {
     "path": "lib/album-v2-labels.js",
     "bytes": 1033,
-    "sha256": "f7848068dc20d22dc71a3726017fd6482bc6ebc2ad6239a9f23205374260475f"
+    "sha256": "e2ed706b5d6ee1efdd64ce0d237ff9dd532f5e27a6498d8000d01736926b203a"
   },
   {
     "path": "lib/album-v2-media.js",
-    "bytes": 4044,
-    "sha256": "89faa5b88cdfd70ae904dfe858d625d779b7f29dfaf05aa0cdde3c8138b79b34"
+    "bytes": 4059,
+    "sha256": "11d88888e5169d1d65bf7216c93b4036a6442524ea1adc56d3c7849d21ed8946"
   },
   {
     "path": "lib/album-v2-motion.js",
@@ -566,8 +566,8 @@
   },
   {
     "path": "lib/album-v2-ui.js",
-    "bytes": 20289,
-    "sha256": "8701b21ba289d68533a552982c242ff08df2d6776899db759c061be1625db39a"
+    "bytes": 22194,
+    "sha256": "c872898822b7fd91ce0051d3207aac91b73e98eaecb9a42d7a7f22ca431b78c4"
   },
   {
     "path": "lib/audio.js",
@@ -3916,8 +3916,8 @@
   },
   {
     "path": "lib/album-v2-editor.js",
-    "bytes": 5686,
-    "sha256": "e397c3ed6975dee16adc41a8e17e6e53d9b455bf727e3ca43d32017950c054f7"
+    "bytes": 6562,
+    "sha256": "36d8917efcb8c8592b319cba98f56607b06382c9ba0d29a17a2c7e76ab9e4d52"
   },
   {
     "path": "lib/album-v2-glass.js",
@@ -3996,8 +3996,8 @@
   },
   {
     "path": "lib/album-font-picker.js",
-    "bytes": 7758,
-    "sha256": "08f04a025270b3ac0a9d65f324afaa7073eb671de69dc9106a3f87e063bcb37e"
+    "bytes": 8071,
+    "sha256": "7804e4ffda2387dd45d143a3054b870d266563904f00fd450ef62b293eb277ba"
   },
   {
     "path": "lib/album-v2-artwork.js",
@@ -4026,8 +4026,8 @@
   },
   {
     "path": "lib/album-v2-inspector.js",
-    "bytes": 3634,
-    "sha256": "215c5a99fbb7f7e7309195be51014665e591ae6b3afa161f1f7b1aac46a64694"
+    "bytes": 3900,
+    "sha256": "d32d8e4776ba07eeae68e09f7449d13122e6712745eb63396ed699e8433dfd05"
   },
   {
     "path": "lib/album-v2-brand-motion.js",
@@ -4036,8 +4036,8 @@
   },
   {
     "path": "lib/album-v2-animation-controls.js",
-    "bytes": 2908,
-    "sha256": "4a47330f152257d41481ffb46b978fb6dc45899c3ef49500b753f1e19ef651b3"
+    "bytes": 2888,
+    "sha256": "a31d131a698ab1ef219a3faaf3ae9ac04d3b12726bf3c7ec51f515d88bb5ac99"
   },
   {
     "path": "docs/qa/album-v2-animation-browser.js",
@@ -4311,12 +4311,37 @@
   },
   {
     "path": "lib/album-v2-intro-video.js",
-    "bytes": 5106,
-    "sha256": "db7a21ab58a0d3bcf7cf410fee675012dcc876a6c7bfabb120738dc3f748b9e3"
+    "bytes": 5598,
+    "sha256": "6b107df505655c3aea34e6c7bb3d2f998acc5f60e8783bf1343681e56b6f1415"
   },
   {
     "path": "docs/qa/intro-crop.test.mjs",
     "bytes": 1322,
     "sha256": "b4b72f02b7b3b2e713f29f9e2c4c4a990a4cd88e639419659090744ebaa53d26"
+  },
+  {
+    "path": "docs/qa/intro-timing.test.mjs",
+    "bytes": 1035,
+    "sha256": "82a784ab854cf300c85b223e8cc7928bab8a3875e2225b8f1f2fde1f290b3536"
+  },
+  {
+    "path": "lib/intro-image.js",
+    "bytes": 305,
+    "sha256": "79fa475ba4b7df07b4a28e5ae70f2c12573551797571555ea6193da9c7c6677b"
+  },
+  {
+    "path": "lib/intro-timeline.js",
+    "bytes": 6587,
+    "sha256": "0fe96bbb113ceef05bcb208194dcf98636c50b2865a9b76f53ffa7a4beb07a62"
+  },
+  {
+    "path": "lib/intro-timing.js",
+    "bytes": 858,
+    "sha256": "1c7fe6f9fbc137a2bc17429dfb22cd089b59a00b3db192efb9ab6812d4e1c7a9"
+  },
+  {
+    "path": "styles/reel-editor.css",
+    "bytes": 9040,
+    "sha256": "b984c95aa1cd1f2c4d49fb98e71677755b1f96f9196132bfa5b4c4fd61d53746"
   }
 ]

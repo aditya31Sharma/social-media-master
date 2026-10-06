@@ -1,6 +1,6 @@
 # Social Media Master
 
-An internal tool for one person. It turns a cover shot and a Tenzen product
+An internal tool for Aditya and his authorized team. It turns a cover shot and a Tenzen product
 link into six 3:4 Carousel slides and a caption, two garments into a turning
 Reel and its cover, five model photos into an Album showcase reel, and review photos into Instagram-style Stories. All three
 tools live in one workspace and keep their drafts when switching tabs.
@@ -10,8 +10,8 @@ the job of getting a post out.
 
 ## Who uses it
 
-Aditya, who runs Tenzen. Usually on a phone, often standing up, usually right
-before posting. Not a designer sitting at a desk with time to read a form.
+Aditya and the Tenzen team, often editing on a phone before posting. Desktop
+editing should offer a compact canvas and a spacious, focused inspector.
 
 ## What it has to get right
 
@@ -21,9 +21,12 @@ before posting. Not a designer sitting at a desk with time to read a form.
    Everything else arrives filled in from the catalogue and folds away.
 3. **What is on screen is what gets exported.** The editor and the export
    share one piece of placement arithmetic, never two.
-4. **No server.** Everything runs in the browser, which is what lets it sit on
-   GitHub Pages. The Shopify Storefront token it ships is public and read-only
-   by design.
+4. **Browser rendering.** Editing and export stay in the browser on GitHub
+   Pages. YouTube audio import uses the authenticated HQ service. The Shopify
+   Storefront token is public and read-only by design.
+5. **Focused editing.** Album V2 separates Intro, Products, Ending, Audio and
+   Export with a persistent timeline. Select a layer to expose its properties;
+   video trimming and crop remain together under Intro > Background.
 
 ## Constraints
 

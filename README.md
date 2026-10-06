@@ -9,8 +9,9 @@ save: the cover with the wordmark on it, then the five product slides in the
 order that SKU's tag calls for, backgrounds cut out and everything set on the
 brand gradient.
 
-Everything runs in the browser. There is no server and no build step, which is
-what lets it sit on GitHub Pages.
+Rendering and editing run in the browser with no build step, so the workspace
+stays on GitHub Pages. YouTube audio import uses the authenticated HQ service
+described below.
 
 ## Aditya Tools Design System
 
@@ -794,7 +795,8 @@ Album V2 > Intro > Upload intro video accepts browser-decodable videos up to two
 minutes. Source audio remains muted. Crop video enables drag/touch/arrow-key
 positioning on the existing preview, zoom from100% to500%, horizontal/vertical
 sliders and Reset crop. Selecting a text/logo layer returns to normal editing.
-The output frame remains9:16 and the intro hold remains3.5seconds.
+The output frame remains9:16. The default intro hold is3.5seconds; the source
+selection controls below now determine the actual hold.
 
 lib/intro-crop.js reuses existing frame placement and Story crop clamping.
 Normalized introCrop state is shared by preview, full-quality export and intro
@@ -808,3 +810,39 @@ uploads, muted audio, dragging, zoom/reset, keyboard, error recovery, text/logo
 editing and375/768/1024/1440 layouts. A six-frame actual H.264720x1280/60fps
 export sample passed through the normal media preparation/draw/encode path
 with the custom video and crop.
+
+## Focused reel workspace and intro timeline (2026-10-06)
+
+Album V2 has five settings tabs: Intro, Products, Ending, Audio and Export.
+The preview takes27% of desktop width; settings take the rest. On phones the
+preview is134px high within a150px strip. A persistent reel timeline provides
+scene selection, playback and scrubbing. Intro and Ending each expose a focused
+layer inspector; all prior text, font, SVG, animation and lineup controls remain.
+Product photo replacement, 3D replacement, ordering and names remain available.
+The Audio tab contains YouTube/import controls and reveals the existing waveform,
+trim, gain, fades and loop controls after a track is loaded.
+
+Intro > Background accepts either a video or an image, including HEIC through
+the existing decoder. Videos show eight source thumbnails, draggable In/Out
+handles, exact start/end seconds, a draggable selected range, source scrubbing
+and Play selection. Preview and export share the same selected source offset.
+The final selected frame holds during the existing1.3-second intro transition.
+Images use the same9:16 crop controls and have an adjustable0.5-30-second hold.
+Changing the source selection or image hold updates reel duration automatically.
+The default total remains41.8seconds. All source video audio stays muted.
+
+New modules: lib/intro-timing.js, lib/intro-timeline.js, lib/intro-image.js.
+styles/reel-editor.css scopes the focused workspace to Album V2. Changed modules
+and stylesheet use import-map/cache key20261007-workspace1. No dependencies added.
+Selections and uploads remain in memory for the current editor session.
+
+QA:110 unit tests and37 browser checks pass. Tests cover source In/Out, scrubbing,
+selection playback, video-to-image replacement, crop, font menu positioning and
+375/768/1024/1440px layouts. Two actual six-frame720x1280/60fps H.264 exports
+verify trimmed source timestamps and image rendering; full encode requests
+correctly contain2478frames for41.3s and2658frames for44.3s respectively.
+
+YouTube status: the existing HQ service reports ready and its private Mac worker
+reports online. This release does not remove that worker dependency. A separate
+hosted converter URL has been requested but has not been supplied; do not claim
+cloud-only availability until it is integrated and verified.
