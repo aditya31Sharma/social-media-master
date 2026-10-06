@@ -725,13 +725,13 @@ pass with zero page errors. Real1080x1920 H.26460fps export:41.8s video and
 unselected440Hz section excluded, volume and fades verified. No intro M4A
 request. Existing AAC encoder priming/padding remains approximately44ms/77ms.
 
-## YouTube audio import: hosted integration prepared (2026-10-06)
+## YouTube audio import (2026-10-06)
 
 All three reel templates share lib/youtube-import.js: paste a YouTube link, Import
 audio, then use the existing music editor; optionally Download MP3. Failed or
 cancelled conversion keeps the existing track. Album V2 source video remains muted.
 
-The hosted service is implemented in the Tenzen HQ repository, at
+The hosted API is implemented in the Tenzen HQ repository, at
 `/social-media-master/api/youtube-audio`. HQ users use their existing operator
 session. GitHub Pages opens an HQ sign-in tab, then receives a ten-minute,
 origin-bound conversion token through youtube-auth.html and BroadcastChannel.
@@ -754,12 +754,36 @@ The loopback-only companion must not be exposed publicly.
 Release order: install the approved HQ runtime tools and deploy the authenticated
 HQ API first, then publish this frontend including youtube-auth.html. Both Pages
 and HQ keep their existing addresses. The standalone HQ runtime patch adds free
-FFmpeg and checksum-pinned yt-dlp 2026.08.19, with no new service or npm dependency.
-Dockerfile/runtime dependency approval and live authenticated verification are
-still pending. The published frontend remains 65cdf5a; this feature is not live.
+FFmpeg and checksum-pinned yt-dlp 2026.08.19, with no new npm dependency.
+Aditya approved the runtime installation and live release. HQ is deployed; the
+frontend release follows successful hosted conversion verification. The public readiness URL
+`https://dashboard.tenzen.in/social-media-master/api/youtube-audio/health` reports
+the result of one fixed sample conversion at startup. It does not accept URLs or
+start jobs, and it exposes no credentials.
 
-Verification: 104 SMM JavaScript tests and 133 isolated HQ tests pass, along with
+Verification: 104 SMM JavaScript tests and 163 HQ tests pass, along with
 HQ lint/typecheck. Eight cross-origin Chrome checks pass with real MP3 conversion,
 COOP isolation, sign-in return, no persistent token storage and authorization reuse
 at a 375px viewport. Local Chrome testing grants only its loopback-network test
 permission; the production app changes no browser security policy.
+
+Current execution path: YouTube rejected direct extraction from Koyeb and the
+Cloudflare network probe. HQ therefore forwards signed jobs through the free
+Cloudflare tenzen-audio-relay queue to a private converter on Aditya's Mac. The
+website and imports are accessible from desktop/mobile, but this Mac must stay
+awake and online. The installed LaunchAgent prevents idle sleep and restarts at
+login; closing the lid, shutdown or disconnection can interrupt availability.
+This is a working private-worker fallback, not a cloud-only converter.
+
+The worker code, queue configuration and recovery instructions are committed in
+the HQ repository under tools/audio-worker and tools/audio-relay. Private credentials
+are deliberately excluded from GitHub. A machine wipe requires reinstalling a
+worker on an always-on machine and rotating its credential. Existing audio uploads,
+editing controls and exports remain available when the worker is offline.
+
+Hosted verification: HQ release 300736e and the private relay returned a real
+331101-byte MP3 through the production startup check on 2026-10-06. GitHub CI
+passed. Fourteen browser checks pass across all three templates, including actual
+MP3 import, audition, error recovery, cancellation and a375px layout. Production
+operator sign-in requires the owner session; QA verified its protected routes and
+tested the complete sign-in return locally without bypassing production auth.

@@ -28,11 +28,11 @@ The GitHub Pages site remains static. Its hosted importer uses the authenticated
 Node service in Tenzen HQ, not this Python server. Do not expose this development
 server through a public tunnel.
 
-The hosted integration is prepared but not deployed. It uses existing HQ operator
+The hosted integration uses existing HQ operator
 sign-in, exact origin checks, short-lived in-memory capability tokens for Pages,
 and the same single-job/time/size limits. See the main README for release status.
-Aditya authorized the HQ integration; the proposed runtime dependency/Dockerfile
-patch still needs its separate required approval. No public API key is needed.
+Aditya approved the HQ integration, runtime tools and live deployment. No public
+API key is needed. The local companion remains optional for development.
 
 Tests:
 
@@ -44,3 +44,9 @@ node --test docs/qa/youtube-import.test.mjs
 A real19-second YouTube sample was converted locally to a331101-byte MP3 and
 verified with ffprobe. YouTube availability or extraction requirements can change;
 failed imports preserve the current song and show an error.
+
+The same bounded `convert()` function is reused by HQ's private pull worker.
+Production currently needs that Mac awake and online because cloud IPs were
+blocked by YouTube. See HQ tools/audio-worker/README.md for deployment/recovery.
+The local HTTP server is not exposed; only the private worker makes outbound
+requests to the authenticated queue. No YouTube cookies are exported.
