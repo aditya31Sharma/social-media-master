@@ -2,6 +2,7 @@ import { loadCatalogue } from '../lib/shopify.js';
 import { storyWebP } from './download.js';
 import { connectDrive } from './drive-auth.js';
 import { DRIVE_ACCOUNT } from './drive-api.js';
+import { normalizeUsername } from './saved-users.js';
 
 export function setupDrive(getStories, onSavedUsers, root = document, onProductSelected = () => {}) {
   const $ = selector => root.querySelector(selector);
@@ -50,7 +51,7 @@ export function setupDrive(getStories, onSavedUsers, root = document, onProductS
     }
   }
   function refresh() {
-    $('#driveSave').disabled = busy || !drive || !selected || !savedUsers || !getStories().some(story => story.ready);
+    $('#driveSave').disabled = busy || !drive || !selected || !savedUsers || !getStories().some(story => story.ready && !savedUsers.has(normalizeUsername(story.username)));
     $('#driveConnect').disabled = busy;
     $('#driveRefresh').disabled = busy || loadingProducts;
     $('#driveSearch').disabled = busy || !products.length;
@@ -125,25 +126,46 @@ export function setupDrive(getStories, onSavedUsers, root = document, onProductS
   });
   $('#driveSave').addEventListener('click', async () => {
     if (busy || !drive || !selected || !savedUsers) return;
-    const ready = getStories().filter(story => story.ready);
+    const ready = getStories().filter(story => story.ready && !savedUsers.has(normalizeUsername(story.username)));
     if (!ready.length) return;
     busy = true; refresh(); $('#driveFolderLink').hidden = true;
     let saved = 0;
     try {
       status(`Preparing ${ready.length} WebPs…`);
-      const files = await Promise.all(ready.map(async story => ({ ...await storyWebP(story), username: story.username })));
+      const files = await Promise.all(ready.map(async story => {
+        const username = story.username;
+        return { ...await storyWebP(story), username };
+      }));
+      let result;
+      try { result = await drive.savedUsernames(); }
+      catch (error) {
+        resetSavedUsers();
+        $('#driveConnectionNote').textContent = `Could not check all saved stories: ${error.message}. Reconnect Google Drive to retry.`;
+        throw error;
+      }
+      savedUsers = result.usernames; savedFileCount = result.fileCount;
+      const batch = new Set();
+      const duplicate = files.find(file => {
+        const name = normalizeUsername(file.username);
+        if (savedUsers.has(name) || batch.has(name)) return true;
+        batch.add(name);
+        return false;
+      });
+      onSavedUsers(new Set(savedUsers));
+      globalSummary();
+      if (duplicate) throw new Error(`@${duplicate.username} already has a saved story. Choose an unused profile before saving.`);
       const folder = await drive.productFolder(selected);
       $('#driveFolderLink').href = `https://drive.google.com/drive/u/0/folders/${encodeURIComponent(folder)}`;
       $('#driveFolderLink').hidden = false;
       for (const file of files) {
         await drive.upload(folder, file, selected);
-        savedUsers.add(file.username.toLowerCase());
+        savedUsers.add(normalizeUsername(file.username));
         savedFileCount++;
         globalSummary();
-        onSavedUsers(new Set(savedUsers), { source: 'upload' });
+        onSavedUsers(new Set(savedUsers), { source: 'upload', uploadedUsername: file.username });
         saved++; status(`Saved ${saved} of ${files.length} to ${selected.title}.`);
       }
-      const skipped = getStories().length - ready.length;
+      const skipped = getStories().filter(story => !story.ready).length;
       status(`Saved ${saved} WebPs to ${selected.title}.${skipped ? ` ${skipped} unfinished ${skipped === 1 ? 'story' : 'stories'} skipped.` : ''}`);
     } catch (error) {
       if (/auth|token|credential|unauthoriz/i.test(error.message)) {

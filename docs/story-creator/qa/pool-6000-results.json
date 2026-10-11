@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "date": "2026-10-11",
+  "profiles": 6000,
+  "preserved_profiles": 600,
+  "added_profiles": 5400,
+  "new_profile_countries_or_territories": 160,
+  "india_profiles_added": 0,
+  "photos_decoded_in_browser": 6000,
+  "photo_decode_failures": 0,
+  "drive_inventory": {
+    "folders_including_root": 13,
+    "webp_files": 82,
+    "used_usernames": 80,
+    "available_profiles": 5920,
+    "requests_before": 14,
+    "requests_after": 3
+  },
+  "tests": {
+    "node_passed": 119,
+    "node_failed": 0,
+    "story_setup_checks": 13,
+    "workspace_checks": 14,
+    "retry_checks": 4,
+    "draft_exclusion_checks": 14,
+    "saved_user_flow": "PASS",
+    "upload_exclusion_flow": "PASS"
+  },
+  "performance": {
+    "old_pool_size": 600,
+    "new_pool_size": 6000,
+    "old_picker_options": 601,
+    "new_picker_max_options": 101,
+    "old_search_median_ms": 0.7,
+    "old_search_p95_ms": 1.4,
+    "new_search_median_ms": 0.3,
+    "new_search_p95_ms": 0.4,
+    "runtime_index_bytes": 333932,
+    "runtime_index_gzip_bytes": 73933,
+    "avatars_loaded_only_when_selected": true
+  },
+  "drive_test_writes": "Mocked only; existing Drive library preserved."
+}

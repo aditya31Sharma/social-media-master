@@ -1,6 +1,8 @@
 # Story Creator: portable recovery package
 
-**Recovery archive published and verified:** GitHub contains the complete package. A fresh GitHub clone passed file/archive verification and all six crop tests. The live story editor loaded all600 DPs and passed41 browser checks. Read [UPLOAD-STATUS.md](UPLOAD-STATUS.md). Historical cleanup applied to the original standalone working copies; the maintained repository is the current source.
+**Current dataset:** 6,000 local profiles and JPEGs: the original600 retained in order, plus5,400 additions covering160 source countries and territories. No India profiles were added in this expansion. The complete6,000-profile source collection remains separate from the dashboard's selected5,400 additions.
+
+The original600-profile recovery archive was published and verified through a fresh clone, six crop tests and41 live browser checks. Read [UPLOAD-STATUS.md](UPLOAD-STATUS.md) for that historical check. Historical cleanup applied to the original standalone working copies; the maintained repository is the current source.
 
 This package supersedes the machine-local storage and uncommitted-state notes in the original handoff. The feature and all collected project data are now intended to travel with the Git repository. No file under Documents, /tmp, or a previous developer home directory is needed to run the editor.
 
@@ -26,15 +28,21 @@ status. Selection outlines have 12px scroll padding so their 6px extent fits at
 both ends. `../qa/story-setup-check.js` covers this layout and connection failures.
 
 Story Creator can search the current published Shopify catalogue by product title or SKU and save all ready WebPs to an app-created `Tenzen Reviews/<product title>` folder in the `team@tenzen.in` Drive. Folders are created when first needed, keyed by Shopify product ID in Drive properties. Google OAuth is configured for both hosted origins and localhost:8088; see [DRIVE-SETUP.md](DRIVE-SETUP.md).
-Connection starts a complete scan of all product folders under `Tenzen Reviews`, including nested folders and every results page. Randomize excludes saved usernames across all SKUs, without requiring a selected product. Earlier saves use the `story-<number>-<username>-<time><m|h>.webp` filename; new saves also store username metadata. The 600-account manual picker remains intact. Product changes and catalogue refreshes never clear exclusions. The connection strip shows global WebP/user counts. Each successful upload updates exclusions immediately. A failed or incomplete scan keeps Randomize and Drive saving disabled; reconnect to retry or refresh saves from another session.
+Choose a SKU and complete the global Drive check before assigning a profile. Connection and each SKU change scan every product folder under `Tenzen Reviews`, including nested folders and every results page. Scans batch up to20 parent folders per query, with at most3 concurrent requests. Earlier saves use the `story-<number>-<username>-<time><m|h>.webp` filename; new saves also store username metadata. A read-only inventory recorded82 saved WebPs and80 distinct usernames; the current scan always supplies exclusions.
+
+The manual picker and Randomize exclude saved usernames across all SKUs. Other drafts' current usernames never appear in the picker, and random draws do not repeat within the session. Search covers all6,000 profiles while rendering at most100 matching options. Initial drafts have no default profile; failed or incomplete checks keep manual selection, Randomize and Drive saving unavailable. Product changes retain saved-user and session exclusions while waiting for a fresh result. Reconnect to retry a failed check.
+
+Before uploading, the editor scans again and rejects a batch if a username was saved elsewhere or appears twice in the batch. Each successful upload immediately updates exclusions. The connection strip reports global saved WebP and username counts.
 
 HEIC and HEIF review photos are decoded in the browser through a pinned `heic-to@1.6.5` script when native decoding fails. The converter loads only for those photos. Run `qa/heic-check.js` on a fresh Story page to check actual HEIC input and WebP export; its fixture is `qa/heic-sample.heic`.
 
 ## What is preserved
 
-- `../../stories/`: complete runnable editor,600 DP JPEGs, users.json, local font/license and original Figma SVGs.
+- `../../stories/`: complete runnable editor,6,000 DP JPEGs, users.json, local font/license and original Figma SVGs.
 - `data/instagram_users.json`: original100 full metadata records.
 - `data/instagram_users_india.json`: supplemental500 full metadata records, including source URLs and image hashes.
+- `data/instagram_users_expansion.json`: selected5,400 full metadata records, source hash and deterministic regional/country quotas. All160 source countries are retained, with90% of each source region selected.
+- `import-profiles.py`: reproducible import from the complete6,000-profile source JSON and its local photos; preserves the original600 and checks all image hashes before copying additions.
 - `archives/source-dataset.zip`: complete original Documents dataset including all600 source photos and both metadata files.
 - `archives/global-collection.zip`: original global collection scripts, public source HTML snapshots, raw downloaded images, candidate pools, download results and contact sheet.
 - `archives/india-collection.zip`: India collection scripts, public source HTML snapshots, candidate pools, selected/eligible records, failures, raw downloads and staged JPEGs, including unused candidates.
@@ -53,15 +61,18 @@ Archives are below GitHub's ordinary per-file limit and committed directly; no G
 
 ## Verification and integration
 
-Run the verifier after cloning. It checks600 unique usernames/photos, metadata-to-photo hashes, all archive members, shipped-file hashes, safe paths and local JS module dependencies. It does not replace browser tests.
+Run the verifier after cloning. It checks6,000 unique usernames/photos, original600 continuity, the5,400-profile supplement, metadata-to-photo hashes, all archive members, shipped-file hashes, safe paths and local JS module dependencies. It does not replace browser tests.
 
-Browser tests in `qa/` run after the Story tab loads on a fresh `./#story` page using the receiving session's approved browser tool. Run batch-check.js on a blank editor. Random-user and India checks require a connected Drive account and completed global scan before Randomize becomes available. Upload qa/figma-sample.png via .story-file before random-user-check.js or progress-check.js. Reload between scripts. These tests mutate the page; some intercept download clicks to inspect actual WebP bytes. The preserved old result files are historical evidence, not proof of a new deployment.
-For a repeatable no-login check of saved-user exclusion, run `qa/saved-users-check.js` on a fresh editor page. It simulates 11 older WebPs in one product folder, verifies manual selection and 25 random clicks, then simulates a new upload and verifies that user is excluded in 25 more clicks.
+Browser tests in `qa/` run after the Story tab loads on a fresh `./#story` page using the receiving session's approved browser tool. Run batch-check.js on a blank editor. Select a SKU and finish the Drive check before scripts that export or randomize profiles. Upload qa/figma-sample.png via .story-file before random-user-check.js or progress-check.js. Reload between scripts. These tests mutate the page; some intercept download clicks to inspect actual WebP bytes. Preserved old result files are historical evidence, not proof of a new deployment.
+
+`qa/india-check.js` requires no Drive connection: it verifies the original500 India profiles and decodes all6,000 local JPEGs at32-96px. `qa/random-user-check.js` checks DP/name correspondence, the100-option limit, draft reservations and session draw uniqueness after SKU/Drive setup.
+
+For repeatable no-login checks, run `qa/saved-users-check.js` on a fresh editor page. It mocks Drive responses to cover saved-user exclusions, whole-pool search, SKU checks, draft reservations, stale/failed scans, upload rechecks and exhausted pools. `../qa/story-setup-check.js`, `story-retry-check.js` and `workspace-check.js` cover disconnected gating, retry and shared workspace state.
 
 The shared workspace owns navigation in `lib/workspace.js` and mounts the existing
 Story markup through `mountStory(root, {isActive})`. Story selectors are scoped,
 profile/icon URLs are module-relative, and paste/drop handlers act only while
-Story is active. Both photo ratios and all600 profiles are retained. The
+Story is active. Both photo ratios and all6,000 profiles are available. The
 workspace uses the Aditya Tools Design System in `styles/`, while Story canvas
 artwork keeps its original font and geometry. See [the workspace plan](../WORKSPACE-REVAMP.md).
 

@@ -20,26 +20,28 @@
   product.selectedIndex = 1; product.dispatchEvent(new Event('change'));
   if ($('#profile').value || !$('#randomProfile').disabled) throw new Error('SKU assigned an unchecked user before Drive scan');
   const originalGoogle = window.google;
-  let failScan = false, scanRequests = 0, holdNextScan = false, releaseOldScan;
+  let failScan = false, scanRequests = 0, uploads = 0, holdNextScan = false, releaseOldScan;
   const mockGoogle = { accounts: { oauth2: { initTokenClient: config => ({ requestAccessToken: () => config.callback({ access_token: 'test-token' }) }) } } };
   window.google = mockGoogle;
   const originalFetch = window.fetch;
   window.fetch = async (input, options = {}) => {
     const url = String(input);
-    if (url.startsWith('https://www.googleapis.com/upload/drive/v3/files?')) return Response.json({ id: 'new-story', name: 'saved.webp' });
+    if (url.startsWith('https://www.googleapis.com/upload/drive/v3/files?')) { uploads++; return Response.json({ id: 'new-story', name: 'saved.webp' }); }
     if (!url.startsWith('https://www.googleapis.com/drive/v3/')) return originalFetch(input, options);
     if (url.includes('/about?')) return Response.json({ user: { emailAddress: 'team@tenzen.in' } });
     if (options.method === 'PATCH') return Response.json({ id: 'product1', name: 'Updated product' });
     const query = new URL(url).searchParams.get('q');
     if (query.includes("'root' in parents")) return Response.json({ files: [{ id: 'root1', name: 'Tenzen Reviews' }] });
     if (query.includes("'root1' in parents")) return Response.json({ files: Array.from({ length: 5 }, (_, i) => ({ id: `product${i + 1}`, name: `Mock product ${i + 1}`, mimeType: 'application/vnd.google-apps.folder', properties: { shopifyProductId: i === 0 ? selectedId : `other${i}` } })) });
-    const group = /'product(\d)' in parents/.exec(query);
-    if (group) {
+    const groups = [...query.matchAll(/'product(\d)' in parents/g)].map(match => Number(match[1]));
+    if (groups.length) {
       scanRequests++;
-      if (failScan && group[1] === '5') return Response.json({ error: { message: 'Folder unavailable' } }, { status: 403 });
-      const offset = (Number(group[1]) - 1) * 5;
-      const files = excluded.slice(offset, Number(group[1]) === 5 ? undefined : offset + 5).map((name, i) => ({ id: `file${offset + i}`, name: `story-${i + 1}-${name}-12m.webp`, mimeType: 'image/webp' }));
-      if (holdNextScan && group[1] === '5') {
+      if (failScan && groups.includes(5)) return Response.json({ error: { message: 'Folder unavailable' } }, { status: 403 });
+      const files = groups.flatMap(group => {
+        const offset = (group - 1) * 5;
+        return excluded.slice(offset, group === 5 ? undefined : offset + 5).map((name, i) => ({ id: `file${offset + i}`, name: `story-${i + 1}-${name}-12m.webp`, mimeType: 'image/webp' }));
+      });
+      if (holdNextScan && groups.includes(5)) {
         holdNextScan = false;
         await new Promise(resolve => { releaseOldScan = resolve; });
       }
@@ -47,9 +49,12 @@
     }
     throw new Error(`Unexpected Drive request ${url}`);
   };
+  try {
   $('#driveConnect').click();
   await wait(() => !$('#randomProfile').disabled);
-  if ([...$('#profile').options].filter(o => o.value).length !== 600) throw new Error('Manual picker lost profiles');
+  if ($('#profile').options.length > 101 || !$('#profileCount').textContent.includes(`${users.length} profiles`)) throw new Error('Picker limit or total incorrect');
+  if ([...$('#profile').options].some(option => excluded.includes(option.value))) throw new Error('Saved username appears in picker');
+  const drawn = new Set([$('#profile').value]);
   if (!$('#driveConnectionNote').textContent.includes('25 saved WebPs across Tenzen Reviews')) throw new Error('Saved count missing');
   if (!$('#profile').value || excluded.includes($('#profile').value)) throw new Error('SKU did not auto-assign an unused profile after scan');
   const random = Math.random;
@@ -57,18 +62,24 @@
     Math.random = () => 0;
     for (let i = 0; i < 25; i++) {
       $('#randomProfile').click();
-      if (excluded.includes($('#profile').value)) throw new Error('Randomize selected saved username');
+      if (excluded.includes($('#profile').value) || drawn.has($('#profile').value)) throw new Error('Randomize repeated a saved or drawn username');
+      drawn.add($('#profile').value);
     }
   } finally { Math.random = random; }
+  $('#profile').add(new Option(excluded[0], excluded[0]));
   $('#profile').value = excluded[0];
   $('#profile').dispatchEvent(new Event('change'));
-  if ($('#profile').value !== excluded[0]) throw new Error('Manual selection blocked');
+  if ($('#profile').value === excluded[0] || $('canvas').getAttribute('aria-label').includes(`: ${excluded[0]},`)) throw new Error('Manual selection accepted saved user');
+  $('#profileSearch').value = users.at(-1).username; $('#profileSearch').dispatchEvent(new Event('input'));
+  if (![...$('#profile').options].some(option => option.value === users.at(-1).username)) throw new Error('Search cannot reach last profile');
+  const beforeRescan = scanRequests;
   const newUser = users[40].username;
   product.selectedIndex = 1;
   product.dispatchEvent(new Event('change'));
   if ($('#profile').value || !$('#randomProfile').disabled) throw new Error('SKU switch retained a profile before its check');
   await wait(() => !$('#randomProfile').disabled);
-  if (excluded.includes($('#profile').value) || scanRequests !== 10) throw new Error('SKU selection failed to recheck global exclusions');
+  if (excluded.includes($('#profile').value) || scanRequests <= beforeRescan) throw new Error('SKU selection failed to recheck global exclusions');
+  $('#profileSearch').value = newUser; $('#profileSearch').dispatchEvent(new Event('input'));
   $('#profile').value = newUser;
   $('#profile').dispatchEvent(new Event('change'));
   const photo = document.createElement('canvas');
@@ -84,6 +95,8 @@
   $('#driveSave').click();
   await wait(() => $('#driveStatus').textContent.startsWith('Saved 1 WebPs'));
   if (!$('#randomProfileNote').textContent.startsWith('26 saved users')) throw new Error('New save did not update exclusions');
+  if (uploads !== 1 || !$('#driveSave').disabled) throw new Error('Saved story can be uploaded twice');
+  if ([...$('#profile').options].some(option => option.value === newUser)) throw new Error('Uploaded username remains selectable');
   excluded.push(newUser);
   product.selectedIndex = 2; product.dispatchEvent(new Event('change'));
   await wait(() => !$('#randomProfile').disabled);
@@ -93,13 +106,24 @@
   product.selectedIndex = 1; product.dispatchEvent(new Event('change'));
   await wait(() => !$('#randomProfile').disabled);
   const chosen = new Set([...excluded, newUser]);
+  const timings = [];
+  for (let i = 0; i < 100; i++) {
+    $('#profileSearch').value = i % 2 ? '' : 'a';
+    const started = performance.now(); $('#profileSearch').dispatchEvent(new Event('input'));
+    timings.push(performance.now() - started);
+  }
+  timings.sort((a, b) => a - b);
   for (let i = 0; i < 25; i++) {
     $('#randomProfile').click();
-    if (chosen.has($('#profile').value)) throw new Error('Randomize selected a saved username after upload');
+    if (chosen.has($('#profile').value) || drawn.has($('#profile').value)) throw new Error('Randomize repeated after upload');
+    drawn.add($('#profile').value);
   }
   const assigned = $('#profile').value;
   $('#addStory').click();
   if (!$('#profile').value || $('#profile').value === assigned || chosen.has($('#profile').value)) throw new Error('New story repeated a saved or open-draft user');
+  const otherDraftUser = assigned;
+  $('#profileSearch').value = otherDraftUser; $('#profileSearch').dispatchEvent(new Event('input'));
+  if ([...$('#profile').options].some(option => option.value === otherDraftUser)) throw new Error('Picker allows overlapping drafts');
   failScan = true; window.google = mockGoogle; $('#driveConnect').click();
   if (!$('#randomProfile').disabled || $('#profile').value) throw new Error('Reconnect reused stale exclusions or profile');
   await wait(() => !$('#driveConnect').disabled);
@@ -120,8 +144,8 @@
   if (!$('#randomProfileNote').textContent.startsWith('27 saved users') || $('#profile').value !== latestUser) throw new Error('An older SKU scan replaced the latest result');
   excluded.splice(0, excluded.length, ...users.map(user => user.username));
   product.selectedIndex = 1; product.dispatchEvent(new Event('change'));
-  await wait(() => $('#randomProfileNote').textContent.startsWith('600 saved users'));
+  await wait(() => $('#randomProfileNote').textContent.startsWith(`${users.length} saved users`));
   if ($('#profile').value || !$('#randomProfile').disabled || !$('#driveSave').disabled) throw new Error('Exhausted profile pool fell back to a used user');
-  window.fetch = originalFetch; window.google = originalGoogle;
-  return { result: 'PASS', folders: 5, priorSavedCount: 25, excludedAfterSave: 26, randomClicks: 50, productIndependent: true, partialScanBlocked: true, manualProfiles: [...$('#profile').options].filter(o => o.value).length, blankInitialUser: true, skuAutoAssignment: true, uniqueDrafts: true, connectionWithoutSkuBlank: true, exhaustedPoolBlank: true, staleScanIgnored: true };
+  return { result: 'PASS', folders: 5, priorSavedCount: 25, excludedAfterSave: 26, randomClicks: 50, productIndependent: true, partialScanBlocked: true, profiles: users.length, maxOptions: 101, searchMedianMs: timings[50], searchP95Ms: timings[95], uploads, noRepeatDraws: drawn.size, blankInitialUser: true, skuAutoAssignment: true, uniqueDrafts: true, connectionWithoutSkuBlank: true, exhaustedPoolBlank: true, staleScanIgnored: true };
+  } finally { window.fetch = originalFetch; window.google = originalGoogle; }
 })()

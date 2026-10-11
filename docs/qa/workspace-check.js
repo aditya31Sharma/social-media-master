@@ -7,7 +7,8 @@
   };
   const origin = performance.timeOrigin;
   $('#tabStory').click();
-  await wait(() => [...($('#profile')?.options || [])].filter(o => o.value).length === 600);
+  await wait(() => $('#profileCount')?.textContent.includes('6000 profiles'));
+  check('Fresh Story starts without an unchecked profile', !$('#profile').value && $('#profile').disabled && $('#randomProfile').disabled);
   const canvas = $('.story-canvas');
   $('#timeValue').value = '17'; $('#timeValue').dispatchEvent(new Event('change'));
   const frame = canvas.toDataURL();
@@ -21,7 +22,7 @@
   check('Tabs do not navigate or embed another page', performance.timeOrigin === origin && !document.querySelector('iframe[src*="stories"]'));
   const ids = [...document.querySelectorAll('[id]')].map(element => element.id);
   check('Combined document has unique IDs', ids.length === new Set(ids).size);
-  check('Drive, HEIC, bulk download and profile controls retained', !!$('#driveSave') && $('.story-file').accept.includes('.heic') && !!$('#downloadAll') && [...$('#profile').options].filter(o => o.value).length === 600);
+  check('Drive, HEIC, bulk download and bounded profile controls retained', !!$('#driveSave') && $('.story-file').accept.includes('.heic') && !!$('#downloadAll') && $('#profileCount').textContent.includes('6000 profiles') && [...$('#profile').options].filter(o => o.value).length <= 100);
   $('#tabCarousel').click();
   check('Carousel input survives switching', $('#prodInput').value === before);
   check('Build action belongs to its composer', $('#btnBuild').closest('#rail'));

@@ -2,6 +2,8 @@ import { savedUsername } from './saved-users.js';
 
 const API = 'https://www.googleapis.com/drive/v3';
 const FOLDER = 'application/vnd.google-apps.folder';
+const SCAN_PARENT_LIMIT = 20;
+const SCAN_CONCURRENCY = 3;
 export const ROOT_NAME = 'Tenzen Reviews';
 export const DRIVE_ACCOUNT = 'team@tenzen.in';
 
@@ -32,9 +34,10 @@ export function createDriveApi(token, send = fetch) {
     if (name) q.push(`name = '${queryValue(name)}'`);
     let pageToken = '', found = [];
     do {
-      const params = new URLSearchParams({ q: q.join(' and '), fields: 'nextPageToken,files(id,name,properties)', pageSize: '1000' });
+      const params = new URLSearchParams({ q: q.join(' and '), fields: 'nextPageToken,incompleteSearch,files(id,name,properties)', pageSize: '1000' });
       if (pageToken) params.set('pageToken', pageToken);
       const page = await request(`${API}/files?${params}`);
+      if (page.incompleteSearch) throw new Error('Google Drive returned incomplete search results.');
       found = found.concat(page.files || []); pageToken = page.nextPageToken || '';
     } while (pageToken);
     return found;
@@ -66,28 +69,38 @@ export function createDriveApi(token, send = fetch) {
   async function savedUsernames() {
     const pending = (await folders('root', ROOT_NAME)).map(folder => folder.id);
     const visited = new Set(), usernames = new Set();
-    let fileCount = 0;
-    for (let index = 0; index < pending.length; index++) {
-      const folderId = pending[index];
-      if (visited.has(folderId)) continue;
-      visited.add(folderId);
-      let pageToken = '';
-      do {
-        const params = new URLSearchParams({
-          q: `'${queryValue(folderId)}' in parents and trashed = false`,
-          fields: 'nextPageToken,files(id,name,mimeType,properties)', pageSize: '1000',
-        });
-        if (pageToken) params.set('pageToken', pageToken);
-        const page = await request(`${API}/files?${params}`);
-        for (const file of page.files || []) {
-          if (file.mimeType === FOLDER) { pending.push(file.id); continue; }
-          if (file.mimeType !== 'image/webp' && !/\.webp$/i.test(file.name || '')) continue;
-          fileCount++;
-          const username = savedUsername(file);
-          if (username) usernames.add(username);
+    let fileCount = 0, index = 0;
+    while (index < pending.length) {
+      const batches = [];
+      while (index < pending.length && batches.length < SCAN_CONCURRENCY) {
+        const folderIds = [];
+        while (index < pending.length && folderIds.length < SCAN_PARENT_LIMIT) {
+          const folderId = pending[index++];
+          if (visited.has(folderId)) continue;
+          visited.add(folderId); folderIds.push(folderId);
         }
-        pageToken = page.nextPageToken || '';
-      } while (pageToken);
+        if (folderIds.length) batches.push(folderIds);
+      }
+      await Promise.all(batches.map(async folderIds => {
+        let pageToken = '';
+        do {
+          const params = new URLSearchParams({
+            q: `(${folderIds.map(id => `'${queryValue(id)}' in parents`).join(' or ')}) and trashed = false`,
+            fields: 'nextPageToken,incompleteSearch,files(id,name,mimeType,properties)', pageSize: '1000',
+          });
+          if (pageToken) params.set('pageToken', pageToken);
+          const page = await request(`${API}/files?${params}`);
+          if (page.incompleteSearch) throw new Error('Google Drive returned incomplete search results.');
+          for (const file of page.files || []) {
+            if (file.mimeType === FOLDER) { pending.push(file.id); continue; }
+            if (file.mimeType !== 'image/webp' && !/\.webp$/i.test(file.name || '')) continue;
+            fileCount++;
+            const username = savedUsername(file);
+            if (username) usernames.add(username);
+          }
+          pageToken = page.nextPageToken || '';
+        } while (pageToken);
+      }));
     }
     return { fileCount, usernames };
   }

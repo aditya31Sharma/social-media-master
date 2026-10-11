@@ -4,28 +4,26 @@ import { downloadStories } from './download.js';
 import { setupDrive } from './drive-ui.js';
 import { isReviewPhoto } from './heic.js';
 import { normalizeUsername } from './saved-users.js';
+import { createProfilePool } from './profile-pool.js';
 
 export async function mountStory(root, { isActive = () => true } = {}) {
 const $ = selector => root.querySelector(selector);
 
 const stories = [];
+const uploadedUsers = new Set();
 let assets = null, users = [], active = null, exporting = false;
 let savedUsers = null, selectedProduct = null;
 let driveUI;
 // Load before wiring listeners so a failed mount can be retried cleanly.
-const response = await fetch(new URL('profiles/users.json', import.meta.url), { signal: AbortSignal.timeout(15000) });
+const response = await fetch(new URL('profiles/users.json?v=20261011-pool6000', import.meta.url), { signal: AbortSignal.timeout(15000) });
 if (!response.ok) throw new Error('Profiles could not load.');
 users = await response.json();
+const pool = createProfilePool(users);
 assets = await loadAssets();
-const randomChoices = () => {
-  if (!selectedProduct || !savedUsers) return [];
-  const reserved = new Set(stories.map(story => normalizeUsername(story.username)));
-  return users.filter(user => !reserved.has(normalizeUsername(user.username)) && !savedUsers.has(normalizeUsername(user.username)));
-};
 function assignUser(story) {
-  const choices = randomChoices();
-  if (!choices.length) return;
-  story.setProfile(choices[Math.floor(Math.random() * choices.length)]);
+  if (!selectedProduct) return;
+  const user = pool.draw();
+  if (user) story.setProfile(user);
 }
 function assignBlankStories() {
   let assigned = false;
@@ -42,14 +40,18 @@ function setProduct(product) {
   assignBlankStories();
   refresh(active);
 }
-function setSavedUsers(usernames, { source = 'scan' } = {}) {
+function setSavedUsers(usernames, { source = 'scan', uploadedUsername } = {}) {
   savedUsers = usernames;
+  if (uploadedUsername) uploadedUsers.add(normalizeUsername(uploadedUsername));
+  pool.setSavedUsers(usernames);
   if (source !== 'upload') {
     for (const story of stories) {
-      if (!usernames || usernames.has(normalizeUsername(story.username))) story.setProfile(null);
+      const username = normalizeUsername(story.username);
+      if (!usernames || (usernames.has(username) && !uploadedUsers.has(username))) story.setProfile(null);
     }
     assignBlankStories();
   }
+  filterProfiles();
   $('#randomProfileNote').textContent = usernames
     ? `${usernames.size} saved ${usernames.size === 1 ? 'user' : 'users'} excluded from Randomize across all products.`
     : 'Connect Google Drive and complete the global check to randomize unused users.';
@@ -70,7 +72,7 @@ function refresh(story) {
   }
   const valid = $('#timeValue').checkValidity() && $('#progressValue').checkValidity();
   $('#download').disabled = exporting || !active?.ready || !valid;
-  $('#randomProfile').disabled = !active || !savedUsers || !randomChoices().length;
+  $('#randomProfile').disabled = !active || !selectedProduct || !pool.remaining;
   $('#downloadAll').disabled = exporting || !stories.some(story => story.ready) || !valid;
   stories.forEach(story => { story.element.querySelector('.story-save').disabled = exporting || !story.ready; });
   const ready = stories.filter(story => story.ready).length;
@@ -82,13 +84,14 @@ function showUnits() {
 }
 function filterProfiles() {
   const query = $('#profileSearch').value.trim().toLowerCase().replace(/^@/, '');
-  const matches = users.filter(user => user.username.toLowerCase().includes(query));
+  const reserved = new Set(stories.map(story => normalizeUsername(story.username)));
+  const { matches, count } = selectedProduct ? pool.search(query, reserved, active?.username) : { matches: [], count: 0 };
   const placeholder = new Option(matches.length ? 'Select a profile' : 'No matching profiles', '');
   placeholder.disabled = true;
   $('#profile').replaceChildren(placeholder, ...matches.map(user => new Option(`@${user.username}`, user.username)));
   $('#profile').disabled = !matches.length;
   $('#profile').value = matches.some(user => user.username === active?.username) ? active.username : '';
-  $('#profileCount').textContent = `${matches.length} of ${users.length} profiles`;
+  $('#profileCount').textContent = `${matches.length} shown · ${count} available · ${users.length} profiles`;
 }
 function select(story) {
   if (active === story) return;
@@ -126,7 +129,13 @@ $('#downloadAll').addEventListener('click', () => download([...stories]));
 $('#download').addEventListener('click', () => download([active]));
 $('#upload').addEventListener('click', () => active?.pickPhoto());
 $('#profileSearch').addEventListener('input', () => filterProfiles());
-$('#profile').addEventListener('change', () => active?.setProfile(users.find(user => user.username === $('#profile').value)));
+$('#profile').addEventListener('change', () => {
+  if (!active || !selectedProduct) return;
+  const reserved = new Set(stories.filter(story => story !== active).map(story => normalizeUsername(story.username)));
+  const user = pool.find($('#profile').value, reserved);
+  if (user) active.setProfile(pool.use(user.username));
+  filterProfiles();
+});
 $('#randomProfile').addEventListener('click', () => {
   if (!active) return;
   assignUser(active);

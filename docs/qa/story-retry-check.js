@@ -14,10 +14,11 @@
     if ($('.story-editor')) throw new Error('Partial editor left behind after failure');
     window.fetch = original;
     $('#retryStory').click();
-    await wait(() => [...($('#profile')?.options || [])].filter(o => o.value).length === 600);
+    await wait(() => $('#profileCount')?.textContent.includes('6000 profiles'));
     if (document.querySelectorAll('.story-editor').length !== 1 || document.querySelectorAll('.story-card').length !== 1) throw new Error('Retry duplicated the editor');
+    if (!$('#profile').disabled || !$('#randomProfile').disabled || $('#profile').value) throw new Error('Retry assigned an unchecked profile');
     $('#addStory').click();
     if (document.querySelectorAll('.story-card').length !== 2) throw new Error('Retry duplicated event listeners');
-    return { passed: 3, checks: ['Failure offers retry', 'Retry restores one editor and 600 profiles', 'One click adds exactly one story'] };
+    return { passed: 4, checks: ['Failure offers retry', 'Retry restores one editor and 6000 profiles', 'Profiles stay gated before SKU and Drive checks', 'One click adds exactly one story'] };
   } finally { window.fetch = original; }
 })()

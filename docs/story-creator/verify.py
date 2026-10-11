@@ -42,23 +42,28 @@ def verify():
     users = json.loads((profiles / "users.json").read_text())
     originals = json.loads((PACKAGE / "data/instagram_users.json").read_text())["users"]
     added = json.loads((PACKAGE / "data/instagram_users_india.json").read_text())["users"]
-    assert len(originals) == 100 and len(added) == 500 and len(users) == 600
-    assert [u["username"] for u in users] == [u["username"] for u in originals + added]
-    assert len({u["username"].lower() for u in users}) == 600
-    assert len(list(profiles.glob("*.jpg"))) == 600
+    expansion = json.loads((PACKAGE / "data/instagram_users_expansion.json").read_text())
+    sources = originals + added + expansion["users"]
+    assert len(originals) == 100 and len(added) == 500 and len(expansion["users"]) == 5400
+    assert len(users) == 6000 and len(sources) == 6000
+    assert [u["username"] for u in users] == [u["username"] for u in sources]
+    assert len({u["username"].lower() for u in users}) == 6000
+    assert len(list(profiles.glob("*.jpg"))) == 6000
+    assert all(u["country_or_territory"] != "India" for u in expansion["users"])
+    assert len({u["country_or_territory"] for u in expansion["users"]}) == 160
     hashes = set()
-    for user, source in zip(users, originals + added):
+    for user, source in zip(users, sources):
         data = safe_path(profiles, user["photo"]).read_bytes()
         assert data.startswith(b"\xff\xd8\xff"), user["username"]
         assert digest(data) == source["sha256"], user["username"]
         hashes.add(digest(data))
-    assert len(hashes) == 600
+    assert len(hashes) == 6000
     for module in (ROOT / "stories").glob("*.js"):
         for ref in re.findall(r"from\s+['\"]([^'\"]+)['\"]", module.read_text()):
             if ref.startswith("."):
                 assert safe_path(ROOT, str((module.parent / ref).relative_to(ROOT))).is_file(), ref
     print(f"PASS: {len(manifest)} shipped files, {len(entries)} archive entries, "
-          "600 unique profiles/photos, metadata hashes and local module imports.")
+          "6000 unique profiles/photos, metadata hashes and local module imports.")
 
 
 if __name__ == "__main__":
